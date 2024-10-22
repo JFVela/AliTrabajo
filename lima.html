@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <style>
+        .profile-container {
+            position: relative;
+            width: 100px;
+            margin: 0 auto;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .login-menu {
+            display: none;
+            position: absolute;
+            top: 110px;
+            width: 200px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 1;
+        }
+
+        .login-menu input {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+    <img src="https://via.placeholder.com/100" alt="Perfil" class="profile-image" onclick="toggleMenu()">
+    <div class="login-menu" id="loginMenu">
+        <form>
+            <input type="text" placeholder="Usuario" required>
+            <input type="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+            <button type="button">Crear Cuenta</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById('loginMenu');
+        if (menu.style.display === 'block') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

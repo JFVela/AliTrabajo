@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+/* Variables */
+:root {
+  --gris-claro: #b0bac3;
+  --gris-oscuro: #7c838a;
+  --fondo-login: #e6f3ff;
+  --blanco: white;
+  --negro: #000000;
+  --fondo-Boton: #f9ed32;
+  --elejir: #F2D335;
+  --link: #d9bd32;
+}
+
+/* Estilos generales */
+.body__login {
+  background-color: var(--fondo-login);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px;
+}
+
+.contenido__inicioSecion {
+  margin: 15px;
+  width: 80%;
+  height: 100%;
+  display: flex;
+  flex-direction: row; 
+}
+
+.imagenLogin {
+  height: auto;
+}
+
+.imagenLogin img {
+  border-radius: 1rem;
+  width: 120%; 
+  height: 100%; 
+  object-fit: cover;
+}
+
+.iniciarsesion {
+  background-color: var(--blanco);
+  width: 100%;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estilos para el título */
+.titulo {
+  margin-top: 50px;
+  margin-bottom: 0;
+  font-family: "Poppins", serif;
+  font-weight: 600;
+  font-size: 26px;
+}
+
+/* Estilos para el formulario */
+form {
+  margin: 10px;
+  width: 75%;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 1px;
+  display: block;
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--gris-oscuro);
+}
+
+input {
+  padding-left: 15px;
+  height: 65px;
+  border-radius: 20px;
+  background-color: var(--gris-claro);
+  color: var(--blanco);
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+.formulario__input {
+  width: 100%;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Estilos para el botón de iniciar sesión */
+.iniciar {
+  margin: 0 10px 50px 10px;
+  text-align: center;
+}
+
+.button__login {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-size: 20px;
+  height: 60px;
+  border-radius: 10px;
+  padding: 2px 50px;
+  background-color: var(--fondo-Boton);
+  color: #000000;
+}
+
+button:hover {
+  background-color: var(--elejir);
+}
+
+/* Estilos para el enlace de inicio */
+.linkInicio {
+  color: var(--fondo-Boton);
+  text-decoration: none;
+}
+
+/* Media query para pantallas de 1000px o menos */
+@media (max-width: 1000px) {
+  .contenido__inicioSecion {
+    flex-direction: column; /* Cambia a columna cuando el ancho sea <= 1000px */
+  }
+
+  .imagenLogin {
+    width: auto; 
+    height: 150px;
+  }
+
+  .imagenLogin img {
+    width: 100%; 
+  }
+
+  .iniciarsesion {
+    width: 100%; /* También ajusta el ancho de la sección de inicio al 100% */
+  }
+}

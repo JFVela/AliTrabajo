@@ -1,0 +1,241 @@
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+:root {
+  --colorLetra: #fff;
+  --fondoLetra: #0066cc;
+  --color-footer-1: #21325e;
+  --color-footer-2: #3e497a;
+  --header-bg-color: #003366;
+  --header-link-color: #ffffff;
+  --header-link-hover: #f9ed32;
+}
+
+/* Cabecera */
+.body__header {
+  background-color: var(--header-bg-color);
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 98.7%;
+  font-family: "Lilita One", sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para los enlaces del header */
+.links__a {
+  text-decoration: none;
+  color: var(--header-link-color);
+  font-size: 1.1rem;
+  margin-left: 25px;
+  transition: color 0.3s ease, transform 0.3s ease; /* Suavizar los efectos */
+}
+
+/* Efecto hover para los enlaces */
+.links__a:hover {
+  color: var(--header-link-hover); /* Cambio de color en hover */
+  transform: scale(1.1); /* Crecimiento suave */
+}
+
+/* Espaciado ajustado en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .body__header {
+    flex-direction: column; /* Cambia el layout a columna en pantallas pequeñas */
+    align-items: flex-start;
+  }
+
+  .links__a {
+    margin-left: 15px;
+    margin-bottom: 10px; /* Espacio entre enlaces en dispositivos móviles */
+  }
+}
+
+/* Estilos para el menú hamburguesa */
+.hamburger {
+  display: none; /* Ocultar por defecto */
+  flex-direction: column;
+  cursor: pointer;
+  margin-left: 25px; /* Alinear a la derecha */
+}
+
+.bar {
+  height: 4px;
+  width: 30px;
+  background-color: var(--header-link-color);
+  margin: 4px 0; /* Espacio entre las barras */
+  transition: 0.3s;
+}
+
+/* Estilo para la navegación */
+.navbar {
+  display: flex; /* Mostrar en pantallas grandes */
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    display: none; /* Ocultar navegación en pantallas pequeñas */
+    flex-direction: column; /* Apilar los enlaces */
+    width: 100%; /* Asegurarse de que ocupe el ancho completo */
+    background-color: var(--header-bg-color); /* Fondo del menú */
+    position: absolute; /* Posicionar sobre otros elementos */
+    top: 60px; /* Espacio debajo del header */
+    left: 0;
+    padding: 10px 0;
+    z-index: 1; /* Asegurar que esté por encima */
+  }
+
+  .navbar.active {
+    display: flex; /* Mostrar el menú cuando esté activo */
+  }
+
+  .links__a {
+    margin: 10px 0; /* Espaciado vertical entre enlaces */
+    padding: 10px; /* Añadir un poco de espacio alrededor de los enlaces */
+    text-align: center; /* Centrados en el menú */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Línea divisoria */
+  }
+  
+  .hamburger {
+    display: flex; /* Mostrar el botón de hamburguesa en pantallas pequeñas */
+  }
+}
+
+
+/* Estilos generales del footer */
+.footer__secion {
+  background-color: #333; /* Fondo oscuro */
+  color: white; /* Texto en blanco */
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  height: 100%;
+}
+
+.texto {
+  width: 80%;
+}
+
+.footer__secion .parte1 {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.footer__secion .parte2 {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 15px;
+}
+
+/* Parte 1 - Contenido */
+.parte1 {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px; /* Espacio entre Parte 1 y Parte 2 */
+}
+
+.tituloEmpresa {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.parrafoFooter {
+  max-width: 400px; /* Limitar el ancho del párrafo */
+  font-size: 16px;
+}
+
+.iconos {
+  margin-top: 10px;
+}
+
+.links__iconos {
+  color: white;
+  font-size: 24px;
+  margin-right: 10px;
+  text-decoration: none;
+}
+
+.links__iconos:hover {
+  color: #f9ed32; /* Color de hover para iconos */
+}
+
+/* Links de footer */
+.links__footer {
+  text-align: right; /* Alineación a la derecha */
+}
+
+.footer__menu {
+  list-style-type: none; /* Elimina los puntos de la lista */
+  padding: 0;
+}
+
+.footer__menu li {
+  margin-bottom: 10px;
+}
+
+.footer__menu li a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+}
+
+.footer__menu li a:hover {
+  color: #f9ed32; /* Color hover para los enlaces */
+}
+
+/* Parte 2 - Logo y Derechos */
+.parte2 {
+  text-align: center; /* Alineación centrada para pantallas pequeñas */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-footer-2);
+}
+
+.parte2 img {
+  max-width: 80px;
+  margin-right: 20px;
+}
+
+.parte2 p {
+  font-size: 14px;
+}
+
+/* Responsivo */
+@media screen and (min-width: 768px) {
+  /* Ajustes para pantallas más grandes */
+  .parte1 {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .parte2 {
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .footer__menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .texto {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
