@@ -34,7 +34,7 @@
         </div>
         <div class="iniciarsesion">
             <p class="titulo">Crear Usuario</p>
-            <form action="funcion/crearUsuario.php" method="post">
+            <form id="formCrearUsuario" action="funcion/crearUsuario.php" method="post">
                 <ul>
                     <li>
                         <label for="nombre">Nombre completo:</label>
@@ -112,7 +112,6 @@
 </body>
 
 <script>
-
     // Selecciona los elementos necesarios
     const hamburger = document.getElementById("hamburger");
     const navbar = document.getElementById("navbar");
@@ -127,6 +126,42 @@
         if (window.innerWidth > 768) { // Cambia el tamaño según tu media query
             navbar.classList.remove("active"); // Cierra el menú
         }
+    });
+</script>
+<script>
+    document.getElementById('formCrearUsuario').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Validar nombre (sin números)
+        const nombre = document.getElementById('nombre').value;
+        if (/\d/.test(nombre)) {
+            Swal.fire('Error', 'El nombre no debe contener números.', 'error');
+            return;
+        }
+
+        // Validar teléfono (9 dígitos)
+        const telefono = document.getElementById('telefono').value;
+        if (!/^\d{9}$/.test(telefono)) {
+            Swal.fire('Error', 'El teléfono debe contener 9 dígitos.', 'error');
+            return;
+        }
+
+        // Validar DNI (8 dígitos)
+        const dni = document.getElementById('dni').value;
+        if (!/^\d{8}$/.test(dni)) {
+            Swal.fire('Error', 'El DNI debe contener 8 dígitos.', 'error');
+            return;
+        }
+
+        // Validar contraseña (letras y números)
+        const password = document.getElementById('password').value;
+        if (!/(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]/.test(password)) {
+            Swal.fire('Error', 'La contraseña debe contener tanto letras como números.', 'error');
+            return;
+        }
+
+        // Si todas las validaciones son correctas, se envía el formulario
+        this.submit();
     });
 </script>
 
