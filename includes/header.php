@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start();
 ?>
 <header class="body__header">
     <div class="hamburger" id="hamburger">
@@ -13,15 +13,18 @@ session_start();
         <a href="#" class="links__a">FAQ</a>
 
         <?php
-        if (isset($_SESSION['emailcliente'])) {           
+        if (isset($_SESSION['emailcliente'])) {
             echo '<a href="/logout.php" class="links__a">Logout</a>';
         } else {
             echo '<a href="/loginCliente.php" class="links__a">Login</a>';
             echo '<a href="/createUser.php" class="links__a">Create</a>';
         }
-        ?> 
+        ?>
     </nav>
 </header>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Selecciona los elementos necesarios
     const hamburger = document.getElementById("hamburger");
@@ -38,4 +41,21 @@ session_start();
             navbar.classList.remove("active"); // Cierra el menú
         }
     });
+
+    <?php
+    if (isset($_SESSION['mensaje'])) {
+        echo "Swal.fire({
+            position: '" . $_SESSION['posision'] . "',
+            icon: '" . $_SESSION['icono'] . "',
+            title: '" . $_SESSION['tituloMensaje'] . "',
+            text: '" . $_SESSION['mensaje'] . "',
+            showConfirmButton: false,
+            timer: 2500
+        });";
+        unset($_SESSION['posision']); 
+        unset($_SESSION['icono']); 
+        unset($_SESSION['tituloMensaje']); 
+        unset($_SESSION['mensaje']); 
+    }
+    ?>
 </script>

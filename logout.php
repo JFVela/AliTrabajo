@@ -1,9 +1,11 @@
 <?php
 session_start();
+unset($_SESSION['emailcliente']);
 
-// Destruir todas las sesiones
-session_unset();
-session_destroy();
+$_SESSION['tituloMensaje'] = "Se cerró sesión";
+$_SESSION['mensaje'] = "Adios! ";
+$_SESSION['icono'] = "success";
+$_SESSION['posision'] = "top-end";
 
 header("Location: loginCliente.php");
 exit();

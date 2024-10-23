@@ -7,7 +7,6 @@
     <title>Document</title>
     <link rel="stylesheet" href="Styles/login.css">
     <link rel="stylesheet" href="Styles/includes.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="body__login">
