@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $direccion = $conn->real_escape_string($_POST['user_direccion']);
     $email = $conn->real_escape_string($_POST['user_email']);
     $dni = $conn->real_escape_string($_POST['user_dni']);
-    $password = $_POST['user_password']; // No se escapa aquí para validación
+    $password = $_POST['user_password']; 
 
     // Validaciones básicas
     if (empty($nombre) || empty($telefono) || empty($direccion) || empty($email) || empty($dni) || empty($password)) {
@@ -42,7 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($contadorErrores === 0) {
         // Encriptar la contraseña
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
         // Consulta SQL para insertar datos
         $sql = "INSERT INTO clientes (nombre_cliente, telefono, email, direccion, dni, password) VALUES ('$nombre', '$telefono', '$email', '$direccion', '$dni', '$passwordHash')";
 

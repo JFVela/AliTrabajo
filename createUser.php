@@ -26,27 +26,27 @@
                 <ul>
                     <li>
                         <label for="nombre">Nombre completo:</label>
-                        <input type="text" id="nombre" name="user_nombre" class="formulario__input" required />
+                        <input type="text" id="nombre" name="user_nombre" class="formulario__input" placeholder="Nombre(s) y Apellido(s)" required />
                     </li>
                     <li>
                         <label for="telefono">Teléfono:</label>
-                        <input type="tel" id="telefono" name="user_telefono" class="formulario__input" required />
+                        <input type="tel" id="telefono" name="user_telefono" class="formulario__input" placeholder="Ingrese 9 dígitos" required />
                     </li>
                     <li>
                         <label for="direccion">Dirección:</label>
-                        <input type="text" id="direccion" name="user_direccion" class="formulario__input" required />
+                        <input type="text" id="direccion" name="user_direccion" class="formulario__input" placeholder="Departamento/Distrito/Calle" required />
                     </li>
                     <li>
                         <label for="email">Correo electrónico:</label>
-                        <input type="email" id="email" name="user_email" class="formulario__input" required />
+                        <input type="email" id="email" name="user_email" class="formulario__input" placeholder="correo@ejemplo.com" required />
                     </li>
                     <li>
                         <label for="dni">DNI:</label>
-                        <input type="text" id="dni" name="user_dni" class="formulario__input" required />
+                        <input type="number" id="dni" name="user_dni" class="formulario__input" placeholder="Ingrese 8 dígitos" required />
                     </li>
                     <li>
                         <label for="password">Contraseña:</label>
-                        <input type="password" id="password" name="user_password" class="formulario__input" required />
+                        <input type="password" id="password" name="user_password" class="formulario__input" placeholder="Tanto números y letras" required />
                     </li>
                     <li class="button__login">
                         <button type="submit">Crear usuario</button>

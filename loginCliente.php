@@ -25,11 +25,11 @@
                 <ul>
                     <li>
                         <label for="email">Correo electrónico:</label>
-                        <input type="email" id="email" name="user_email" class="formulario__input" required />
+                        <input type="email" id="email" name="user_email" class="formulario__input" placeholder="correo@ejemplo.com" required />
                     </li>
                     <li>
                         <label for="password">Contraseña:</label>
-                        <input type="password" id="password" name="user_password" class="formulario__input" required />
+                        <input type="password" id="password" name="user_password" class="formulario__input" placeholder="********" required />
                     </li>
                     <li class="button__login">
                         <button type="submit">Iniciar sesión</button>

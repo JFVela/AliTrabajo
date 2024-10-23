@@ -32,6 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['mensaje'] = "No existe una cuenta con ese correo electrónico.";
         $_SESSION['icono'] = "warning";
     }
-    header("Location: /loginCliente.php");
+    header("Location: /index.php");
     exit();
 }

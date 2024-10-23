@@ -2,10 +2,10 @@
 session_start();
 unset($_SESSION['emailcliente']);
 
-$_SESSION['tituloMensaje'] = "👋 Sesión cerrada";
-$_SESSION['mensaje'] = "¡Hasta luego! 😊 Esperamos verte pronto.";
+$_SESSION['tituloMensaje'] = "Se cerró sesión";
+$_SESSION['mensaje'] = "Adios! ";
 $_SESSION['icono'] = "success";
-$_SESSION['posicion'] = "top-end";
+$_SESSION['posision'] = "top-end";
 
-header("Location: loginCliente.php");
+header("Location: index.php");
 exit();
