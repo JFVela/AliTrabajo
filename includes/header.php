@@ -50,7 +50,7 @@ session_start();
             title: '" . $_SESSION['tituloMensaje'] . "',
             text: '" . $_SESSION['mensaje'] . "',
             showConfirmButton: false,
-            timer: 2500
+            timer: 3500
         });";
         unset($_SESSION['posision']); 
         unset($_SESSION['icono']); 

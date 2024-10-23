@@ -1,10 +1,13 @@
 <?php
-// Incluir el archivo de conexión a la base de datos
+session_start();
 include 'conexion.php';
 
-// Inicializar variables
-$mensajeError = [];
 $contadorErrores = 0;
+
+$_SESSION['tituloMensaje'] = "";
+$_SESSION['mensaje'] = "";
+$_SESSION['icono'] = "";
+$_SESSION['posision'] = "";
 
 // Comprobar si se recibieron los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -14,11 +17,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $direccion = $conn->real_escape_string($_POST['user_direccion']);
     $email = $conn->real_escape_string($_POST['user_email']);
     $dni = $conn->real_escape_string($_POST['user_dni']);
-    $password = $_POST['user_password']; 
+    $password = $_POST['user_password'];
 
     // Validaciones básicas
     if (empty($nombre) || empty($telefono) || empty($direccion) || empty($email) || empty($dni) || empty($password)) {
-        $mensajeError[] = "Error: Todos los campos son obligatorios.";
+        $_SESSION['tituloMensaje'] = "Campos vacíos!";
+        $_SESSION['mensaje'] = "Verifica que el formulario esté completo";
+        $_SESSION['icono'] = "warning";
+        $_SESSION['posision'] = "center";
         $contadorErrores++;
     }
 
@@ -26,7 +32,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $checkEmailQuery = "SELECT * FROM clientes WHERE email='$email'";
     $result = $conn->query($checkEmailQuery);
     if ($result->num_rows > 0) {
-        $mensajeError[] = "Error: El correo electrónico ya está en uso.";
+        $_SESSION['tituloMensaje'] = "Email ya existente!";
+        $_SESSION['mensaje'] = "Prueba con otro correo electrónico.";
+        $_SESSION['icono'] = "warning";
+        $_SESSION['posision'] = "center";
         $contadorErrores++;
     }
 
@@ -34,7 +43,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $checkDNIQuery = "SELECT * FROM clientes WHERE dni='$dni'";
     $resultDNI = $conn->query($checkDNIQuery);
     if ($resultDNI->num_rows > 0) {
-        $mensajeError[] = "Error: El DNI ya está en uso.";
+        $_SESSION['tituloMensaje'] = "DNI ya registrado!";
+        $_SESSION['mensaje'] = "Intenta con otro DNI";
+        $_SESSION['icono'] = "warning";
+        $_SESSION['posision'] = "center";
         $contadorErrores++;
     }
 
@@ -46,16 +58,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO clientes (nombre_cliente, telefono, email, direccion, dni, password) VALUES ('$nombre', '$telefono', '$email', '$direccion', '$dni', '$passwordHash')";
 
         if ($conn->query($sql) === TRUE) {
-            echo json_encode(['success' => true, 'message' => 'Usuario creado exitosamente.']);
+            $_SESSION['tituloMensaje'] = "Usuario creado!";
+            $_SESSION['mensaje'] = "Bienvenido " . $direccion;
+            $_SESSION['icono'] = "success";
+            $_SESSION['posision'] = "top-end";
+            $_SESSION['emailcliente'] = $email;
+            header("Location: /index.php");
         } else {
-            echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+            $_SESSION['tituloMensaje'] = "Oops!";
+            $_SESSION['mensaje'] = "Ha ocurrido un error dentro del sistema.";
+            $_SESSION['icono'] = "error";
+            $_SESSION['posision'] = "center";
+            header("Location: /createUser.php");
         }
     } else {
-        // Devolver errores en formato JSON
-        echo json_encode(['success' => false, 'message' => implode("\n", $mensajeError)]);
+        header("Location: /createUser.php");
     }
 }
 
 // Cerrar conexión
 $conn->close();
-?>

@@ -49,11 +49,10 @@
                         <input type="password" id="password" name="user_password" class="formulario__input" placeholder="Tanto números y letras" required />
                     </li>
                     <li class="button__login">
-                        <button type="submit">Crear usuario</button>
+                        <button type="button" id="crearUsuarioBtn">Crear usuario</button>
                     </li>
                 </ul>
             </form>
-
             <p class="iniciar">Ya tienes cuenta? Inicia sesión <a class="linkInicio" href="loginCliente.php">Aquí</a></p>
         </div>
     </div>
