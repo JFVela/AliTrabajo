@@ -8,22 +8,22 @@ session_start();
         <span class="bar"></span>
     </div>
     <nav class="navbar" id="navbar">
-        <a href="#" class="links__a">Inicio</a>
+        <a href="../usuario/index.php" class="links__a">Inicio</a>
         <a href="#" class="links__a">Reservas</a>
         <a href="#" class="links__a">FAQ</a>
 
         <?php
         if (isset($_SESSION['emailcliente'])) {
-            echo '<a href="/logout.php" class="links__a">Logout</a>';
+            echo '<a href="../usuario/logout.php" class="links__a">Logout</a>';
+            echo '<span class="links__a">Hola ' . $_SESSION['emailcliente'] . '!</span>';
         } else {
-            echo '<a href="/loginCliente.php" class="links__a">Login</a>';
-            echo '<a href="/createUser.php" class="links__a">Create</a>';
+            echo '<a href="../usuario/loginCliente.php" class="links__a">Login</a>';
+            echo '<a href="../usuario/createUser.php" class="links__a">Create</a>';
         }
         ?>
+
     </nav>
 </header>
-
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Selecciona los elementos necesarios
@@ -52,10 +52,10 @@ session_start();
             showConfirmButton: false,
             timer: 3500
         });";
-        unset($_SESSION['posision']); 
-        unset($_SESSION['icono']); 
-        unset($_SESSION['tituloMensaje']); 
-        unset($_SESSION['mensaje']); 
+        unset($_SESSION['posision']);
+        unset($_SESSION['icono']);
+        unset($_SESSION['tituloMensaje']);
+        unset($_SESSION['mensaje']);
     }
     ?>
 </script>

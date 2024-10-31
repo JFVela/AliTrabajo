@@ -5,24 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="Styles/login.css">
-    <link rel="stylesheet" href="Styles/includes.css">
+    <link rel="stylesheet" href="/public/css/usuario/login.css">
+    <link rel="stylesheet" href="/public/css/usuario/includes.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="body__login">
 
     <?php
-    include 'includes/header.php';
+    include '../../../includes/header.php';
     ?>
 
     <div class="contenido__inicioSecion">
         <div class="imagenLogin">
-            <img src="img/session.jpeg" alt="imagenSesion">
+            <img src="/public/img/diseño5.jpeg" alt="imagenSesion">
         </div>
         <div class="iniciarsesion">
             <p class="titulo">Crear Usuario</p>
-            <form id="formCrearUsuario" action="funcion/crearUsuario.php" method="post">
+            <form id="formCrearUsuario" action="/app/controllers/UsuarioController.php" method="post">
                 <ul>
                     <li>
                         <label for="nombre">Nombre completo:</label>
@@ -49,7 +49,7 @@
                         <input type="password" id="password" name="user_password" class="formulario__input" placeholder="Tanto números y letras" required />
                     </li>
                     <li class="button__login">
-                        <button type="button" id="crearUsuarioBtn">Crear usuario</button>
+                        <button type="submit" id="crearUsuarioBtn">Crear usuario</button>
                     </li>
                 </ul>
             </form>
@@ -58,7 +58,7 @@
     </div>
 
     <?php
-    include 'includes/footer.php';
+    include '../../../includes/footer.php';
     ?>
 
 </body>

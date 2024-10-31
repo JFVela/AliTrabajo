@@ -5,23 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="Styles/login.css">
-    <link rel="stylesheet" href="Styles/includes.css">
+    <link rel="stylesheet" href="/public/css/usuario/login.css">
+    <link rel="stylesheet" href="/public/css/usuario/includes.css">
 </head>
 
 <body class="body__login">
 
     <?php
-    include 'includes/header.php';
+    include '../../../includes/header.php';
     ?>
 
     <div class="contenido__inicioSecion">
         <div class="imagenLogin">
-            <img src="img/session.jpeg" alt="imagenSesion">
+            <img src="/public/img/diseño5.jpeg" alt="imagenSesion">
         </div>
         <div class="iniciarsesion">
             <p class="titulo">Iniciar Sesión</p>
-            <form id="formIniciarSesion" action="funcion/iniciarSesion.php" method="post">
+            <form id="formIniciarSesion" action="/app/controllers/AuthController.php" method="post">
                 <ul>
                     <li>
                         <label for="email">Correo electrónico:</label>
@@ -43,7 +43,7 @@
     </div>
 
     <?php
-    include 'includes/footer.php';
+    include '../../../includes/footer.php';
     ?>
 
 </body>

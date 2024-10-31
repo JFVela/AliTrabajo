@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+}
+
+header {
+    background-color: #003366;
+    padding: 15px 0;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.highlighted {
+    color: #f6c346;
+}
+
+.button {
+    background-color: white;
+    color: #003366;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 1px solid #003366;
+}
+
+.quote-section {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.quote-section h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.quote-section p {
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.steps {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.step {
+    width: 150px;
+    padding: 10px;
+    border: 2px solid #003366;
+    border-radius: 25px;
+    margin: 0 10px;
+    color: #003366;
+}
+
+.step.active {
+    background-color: #003366;
+    color: white;
+}
+
+.filters {
+    margin-bottom: 40px;
+}
+
+.filters button {
+    background-color: #003366;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filters button:hover {
+    background-color: #002244;
+}
+
+.models {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.model-card {
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    width: 200px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.model-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.model-card p {
+    margin-top: 10px;
+    font-weight: bold;
+}

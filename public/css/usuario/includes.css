@@ -22,7 +22,11 @@
   width: 98.7%;
   font-family: "Lilita One", sans-serif;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: fixed; /* Fija la cabecera en la parte superior de la página */
+  top: 0; /* Posiciona la cabecera en la parte superior */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
 }
+
 
 /* Estilo para los enlaces del header */
 .links__a {

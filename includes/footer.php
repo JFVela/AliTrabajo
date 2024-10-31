@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="parte2">
-        <img src="img/logo.jpeg" alt="logo">
+        <img src="/public/img/logo.jpeg" alt="logo">
         <p>© 2023 Lorem Ipsum. All Rights Reserved.</p>
     </div>
 </footer>

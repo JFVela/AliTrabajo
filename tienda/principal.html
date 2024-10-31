@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Web de Inventarios</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Enlace para los íconos -->
+</head>
+<body>
+
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <div class="sidebar-title">
+            <h2>SIS-INVENTARIOS</h2>
+        </div>
+        <ul class="nav">
+            <li><a href="#" onclick="loadData('clientes')"><i class="fas fa-user"></i> Usuario</a></li>
+            <li><a href="#" onclick="loadData('cotizaciones')"><i class="fas fa-file-invoice-dollar"></i> Cotizaciones</a></li>
+            <li><a href="#" onclick="loadData('productos')"><i class="fas fa-boxes"></i> Inventario</a></li>
+            <li><a href="#" onclick="loadData('reservas')"><i class="fas fa-calendar-check"></i> Reservas</a></li>
+            <li><a href="#" onclick="loadData('ventas')"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+        </ul>
+    </div>
+
+    <!-- Barra superior -->
+    <header>
+        <h1>Sistema web de inventarios</h1>
+        <div class="user-status">
+            <i class="fas fa-check-circle"></i> Tarea Completo
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="dashboard" id="tabla-container">
+            <h2>Selecciona una opción para ver los datos</h2>
+        </div>
+    </div>
+
+    <script>
+        function loadData(table) {
+            fetch(`get_data.php?table=${table}`)
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById("tabla-container");
+                    container.innerHTML = "";  // Limpiar contenido previo
+                    
+                    // Crear tabla sólo si hay columnas
+                    if (data.columns && data.columns.length > 0) {
+                        const tableEl = document.createElement("table");
+                        tableEl.classList.add("data-table");
+                        
+                        // Crear encabezado de tabla
+                        const headerRow = document.createElement("tr");
+                        data.columns.forEach(col => {
+                            const th = document.createElement("th");
+                            th.textContent = col;
+                            headerRow.appendChild(th);
+                        });
+                        tableEl.appendChild(headerRow);
+
+                        // Crear filas de datos (si existen)
+                        if (data.data && data.data.length > 0) {
+                            data.data.forEach(row => {
+                                const rowEl = document.createElement("tr");
+                                data.columns.forEach(col => {
+                                    const td = document.createElement("td");
+                                    td.textContent = row[col] || ''; // Mostrar vacío si no hay datos
+                                    rowEl.appendChild(td);
+                                });
+                                tableEl.appendChild(rowEl);
+                            });
+                        } else {
+                            const emptyRow = document.createElement("tr");
+                            const emptyCell = document.createElement("td");
+                            emptyCell.textContent = "No hay datos disponibles.";
+                            emptyCell.colSpan = data.columns.length;
+                            emptyRow.appendChild(emptyCell);
+                            tableEl.appendChild(emptyRow);
+                        }
+
+                        container.appendChild(tableEl);
+                    } else {
+                        container.innerHTML = "<p>Tabla no permitida o sin columnas.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al cargar los datos:", error);
+                });
+        }
+    </script>
+</body>
+</html>
