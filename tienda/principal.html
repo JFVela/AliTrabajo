@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Web de Inventarios</title>
     <link rel="stylesheet" href="styles.css"> <!-- Enlace al archivo CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Enlace para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Enlace para los íconos -->
 </head>
+
 <body>
 
     <!-- Barra lateral -->
@@ -16,7 +19,8 @@
         </div>
         <ul class="nav">
             <li><a href="#" onclick="loadData('clientes')"><i class="fas fa-user"></i> Usuario</a></li>
-            <li><a href="#" onclick="loadData('cotizaciones')"><i class="fas fa-file-invoice-dollar"></i> Cotizaciones</a></li>
+            <li><a href="#" onclick="loadData('cotizaciones')"><i class="fas fa-file-invoice-dollar"></i>
+                    Cotizaciones</a></li>
             <li><a href="#" onclick="loadData('productos')"><i class="fas fa-boxes"></i> Inventario</a></li>
             <li><a href="#" onclick="loadData('reservas')"><i class="fas fa-calendar-check"></i> Reservas</a></li>
             <li><a href="#" onclick="loadData('ventas')"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
@@ -33,6 +37,13 @@
 
     <!-- Contenido principal -->
     <div class="main-content">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Buscar..." oninput="buscar()">
+            <button class="boton__limpiar" onclick="limpiar()" style="display: block;">
+                Limpiar
+                <i class="bi bi-eraser-fill"></i>
+            </button>
+        </div>
         <div class="dashboard" id="tabla-container">
             <h2>Selecciona una opción para ver los datos</h2>
         </div>
@@ -45,12 +56,12 @@
                 .then(data => {
                     const container = document.getElementById("tabla-container");
                     container.innerHTML = "";  // Limpiar contenido previo
-                    
+
                     // Crear tabla sólo si hay columnas
                     if (data.columns && data.columns.length > 0) {
                         const tableEl = document.createElement("table");
                         tableEl.classList.add("data-table");
-                        
+
                         // Crear encabezado de tabla
                         const headerRow = document.createElement("tr");
                         data.columns.forEach(col => {
@@ -90,5 +101,40 @@
                 });
         }
     </script>
+    <script>
+        function buscar() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll(".data-table tr:not(:first-child)");
+            const limpiarBtn = document.querySelector(".boton__limpiar");
+
+            limpiarBtn.style.display = input ? "inline-block" : "none"; // Muestra u oculta el botón "Limpiar"
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                let match = false;
+
+                for (const cell of cells) {
+                    if (cell.textContent.toLowerCase().includes(input)) {
+                        match = true;
+                        break; // Sale del bucle de celdas si hay coincidencia
+                    }
+                }
+
+                row.style.display = match ? "" : "none";
+            });
+        }
+
+        function limpiar() {
+            document.getElementById("searchInput").value = "";
+            document.querySelector(".boton__limpiar").style.display = "none"; // Oculta el botón de limpiar
+
+            const rows = document.querySelectorAll(".data-table tr:not(:first-child)");
+
+            rows.forEach(row => {
+                row.style.display = "";
+            });
+        }
+    </script>
 </body>
+
 </html>
