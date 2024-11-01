@@ -9,6 +9,8 @@ session_start();
     </div>
     <nav class="navbar" id="navbar">
         <a href="../usuario/index.php" class="links__a">Inicio</a>
+        <a href="../usuario/cotizacion.php" class="links__a">Paquetes</a>
+        <a href="#" class="links__a">Cotizaciones</a>
         <a href="#" class="links__a">Reservas</a>
         <a href="#" class="links__a">FAQ</a>
 

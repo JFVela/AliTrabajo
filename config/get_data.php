@@ -11,7 +11,7 @@ try {
 
     // Obteniendo la tabla solicitada
     $table = isset($_GET['table']) ? $_GET['table'] : '';
-    $allowedTables = ["clientes", "productos", "reservas", "ventas"];
+    $allowedTables = ["clientes", "productos", "reservas", "cotizaciones"];
 
     // Validar si la tabla solicitada está permitida
     if (in_array($table, $allowedTables)) {

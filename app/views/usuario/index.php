@@ -22,7 +22,7 @@
     </div>
     <div id="servicios">
         <div class="card">
-            <div class="card2" style="background-image: url('/img/diseño1.jpeg');">
+            <div class="card2" style="background-image: url('../../../public/img/diseño1.jpeg');">
                 <div class="overlay">
                     <p><a class="link_Index" href="">Cotizar Aquí</a></p>
                 </div>
@@ -31,7 +31,7 @@
         </div>
 
         <div class="card">
-            <div class="card2" style="background-image: url('/img/diseño2.jpeg');">
+            <div class="card2" style="background-image: url('../../../public/img/diseño2.jpeg');">
                 <div class="overlay">
                     <p><a class="link_Index" href="">Cotizar Aquí</a></p>
                 </div>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="card">
-            <div class="card2" style="background-image: url('/img/diseño3.jpeg');">
+            <div class="card2" style="background-image: url('../../../public/img/diseño3.jpeg');">
                 <div class="overlay">
                     <p><a class="link_Index" href="">Cotizar Aquí</a></p>
                 </div>
@@ -49,7 +49,7 @@
         </div>
 
         <div class="card">
-            <div class="card2" style="background-image: url('/img/diseño4.jpeg');">
+            <div class="card2" style="background-image: url('../../../public/img/diseño4.jpeg');">
                 <div class="overlay">
                     <p><a class="link_Index" href="">Cotizar Aquí</a></p>
                 </div>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="card">
-            <div class="card2" style="background-image: url('/img/diseño5.jpeg');">
+            <div class="card2" style="background-image: url('../../../public/img/diseño5.jpeg');">
                 <div class="overlay">
                     <p><a class="link_Index" href="">Cotizar Aquí</a></p>
                 </div>

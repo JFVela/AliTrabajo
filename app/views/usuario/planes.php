@@ -1,8 +1,5 @@
 <?php
-    session_start();
-    if (isset($_SESSION['emailcliente'])) {
-        echo '<h3 class="links__a">Hola ' . $_SESSION['emailcliente'] . '!</h3>';
-    }
+include '../../../includes/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +14,8 @@
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             margin: 0;
-            padding: 20px;
+            margin-top: 100px;
+            padding: 0;
         }
 
         .container {
@@ -105,6 +103,69 @@
             display: none;
         }
     </style>
+    <style>
+        .mensaje-sesion {
+            background-color: #f9f9f9;
+            /* Color de fondo suave */
+            border: 1px solid #ccc;
+            /* Borde gris */
+            border-radius: 8px;
+            /* Bordes redondeados */
+            padding: 20px;
+            /* Espaciado interno */
+            text-align: center;
+            /* Centrar texto */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Sombra */
+            margin: 20px auto;
+            /* Margen automático */
+            max-width: 400px;
+            /* Ancho máximo */
+        }
+
+        .mensaje-sesion h2 {
+            color: #333;
+            /* Color del título */
+            margin-bottom: 15px;
+            /* Espacio debajo del título */
+        }
+
+        .mensaje-sesion p {
+            color: #666;
+            /* Color del texto */
+            margin-bottom: 20px;
+            /* Espacio debajo del texto */
+        }
+
+        .boton-iniciar,
+        .boton-crear {
+            background-color: #007BFF;
+            /* Color de fondo del botón */
+            color: white;
+            /* Color del texto */
+            padding: 10px 15px;
+            /* Espaciado interno */
+            border: none;
+            /* Sin borde */
+            border-radius: 5px;
+            /* Bordes redondeados */
+            text-decoration: none;
+            /* Sin subrayado */
+            margin: 5px;
+            /* Margen entre botones */
+            transition: background-color 0.3s;
+            /* Transición suave */
+            display: inline-block;
+            /* Mostrar como bloque en línea */
+        }
+
+        .boton-iniciar:hover,
+        .boton-crear:hover {
+            background-color: #0056b3;
+            /* Color de fondo al pasar el mouse */
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/usuario/includes.css">
     <script>
         let ArrayID = [];
         let IDCantidad = [];
@@ -150,6 +211,18 @@
 <body>
 
     <?php
+
+    if (!isset($_SESSION['emailcliente'])) { ?>
+        <div class="mensaje-sesion">
+            <h2>Iniciar Sesión Requerido</h2>
+            <p>Para continuar con la cotización, por favor inicie sesión en su cuenta.</p>
+            <a href="loginCliente.php" class="boton-iniciar">Iniciar Sesión</a>
+            <a href="createUser.php" class="boton-crear">Crear Cuenta</a>
+        </div>
+    <?php
+        include '../../../includes/footer.php';
+        return;
+    }
     include '../../../config/conexionDatos.php';
 
     $id_categoria = isset($_GET['id_categoria']) ? intval($_GET['id_categoria']) : 0;
@@ -193,12 +266,17 @@
 
     </div>
 
+
+
     <script>
         // Hacer visible el formulario cuando se hace clic en "Finalizar"
         document.querySelector('.btn-agregar.cotizar').onclick = function() {
             document.querySelector('form').submit();
         }
     </script>
+    <?php
+    include '../../../includes/footer.php';
+    ?>
 </body>
 
 </html>

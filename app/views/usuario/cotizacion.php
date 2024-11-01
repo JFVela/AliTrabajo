@@ -10,12 +10,14 @@
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
+            margin-top: 100px;
+            padding: 0;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding-bottom: 100px;
         }
 
         h2 {
@@ -97,6 +99,7 @@
             background-color: #218838;
         }
     </style>
+        <link rel="stylesheet" href="/public/css/usuario/includes.css">
     <script>
         function mostrarSiguiente(idCategoria) {
             // Redirigir a Planes.php con el ID de la categoría
@@ -108,6 +111,7 @@
 <body>
 
     <?php
+    include '../../../includes/header.php';
     include '../../../config/conexionDatos.php';
 
     // Consulta para obtener las categorías
@@ -142,7 +146,9 @@
     // Cierre de la conexión
     $conn->close();
     ?>
-
+    <?php
+    include '../../../includes/footer.php';
+    ?>
 </body>
 
 </html>
