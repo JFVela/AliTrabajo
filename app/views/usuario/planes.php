@@ -166,6 +166,8 @@ include '../../../includes/header.php';
         }
     </style>
     <link rel="stylesheet" href="/public/css/usuario/includes.css">
+    <link rel="stylesheet" href="/public/css/usuario/Reservas.css">
+    <link rel="stylesheet" href="/public/css/usuario/metodoPago.css">
 
 </head>
 
@@ -250,16 +252,99 @@ include '../../../includes/header.php';
         }
     </style>
 
+    <section class="sectionReserva">
+        <form class="formularioReserva" action="/submit-reservation" method="post">
+            <label for="fecha">Fecha del servicio:</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <label for="hora">Hora del servicio:</label>
+            <div class="hora-servicio">
+                <input type="number" id="hora" name="hora" min="1" max="12" placeholder="12hr" required>
+                <label for="am">AM</label>
+                <input type="radio" id="am" name="ampm" value="AM" required>
+                <label for="pm">PM</label>
+                <input type="radio" id="pm" name="ampm" value="PM" required>
+            </div>
+
+            <label for="duracion">Duración del alquiler (horas):</label>
+            <input type="number" id="duracion" name="duracion" min="1" max="10" required>
+
+            <label for="departamento">Departamento:</label>
+            <select id="departamento" name="departamento" required>
+                <option value="">Seleccione un departamento</option>
+            </select>
+
+            <label for="provincia">Provincia:</label>
+            <select id="provincia" name="provincia" required>
+                <option value="">Seleccione una provincia</option>
+            </select>
+
+            <label for="distrito">Distrito:</label>
+            <select id="distrito" name="distrito" required>
+                <option value="">Seleccione un distrito</option>
+            </select>
+
+            <label for="ubicacion">Dirección:</label>
+            <input type="text" id="ubicacion" name="ubicacion" placeholder="Utiliza referencias" required>
+
+            <label for="telefono">Teléfono de contacto:</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" pattern="9[0-9]{8}"
+                required>
+
+            <input id="abrirModal" type="submit" value="Reservar">
+        </form>
+    </section>
+    <p id="contador-dias"></p>
+
+
+    <div id="idModal" class="modalPago">
+        <section class="metodoDePago">
+            <button id="cerrarModal">X</button>
+            <form action="resultados.php" method="POST" method="post" enctype="multipart/form-data">
+
+                <!-- Almacenamos valores ocultos para el segundo formulario -->
+                <input type="hidden" id="fechaReservaOculto" name="fechaReservaOculto" value="">
+                <input type="hidden" id="horaReservaOculto" name="horaReservaOculto" value="">
+                <input type="hidden" id="ampmReservaOculto" name="ampmReservaOculto" value="">
+                <input type="hidden" id="duracionReservaOculto" name="duracionReservaOculto" value="">
+                <input type="hidden" id="distritoReservaOculto" name="distritoReservaOculto" value="">
+                <input type="hidden" id="ubicacionReservaOculto" name="ubicacionReservaOculto" value="">
+                <input type="hidden" id="telefonoReservaOculto" name="telefonoReservaOculto" value="">
+                <!-- Fin de almacenamiento oculto -->
+
+                <h1 class="titulo">Método de Pago</h1>
+                <p class="descripcion">Selecciona su metodo de pago y sube tu comprobante.</p>
+                <br>
+                <div class="metodoDePago__lista"></div> <!-- Aquí se cargarán los métodos de pago -->
+                <br>
+                <div class="subirComprobante">
+                    <label for="comprobante">Subir Comprobante de Pago</label>
+                    <div class="inputGroup">
+                        <input type="file" id="comprobante" name="comprobante" accept=".jpg, .jpeg, .png" required
+                            style="display: none;">
+                        <span id="nombreArchivo">Seleccionar archivo</span>
+                        <button type="button" id="subirBtn">
+                            <i class="bi bi-upload"></i> Subir
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <input type="submit" class="enviarBtn" value="Enviar" id="enviarBtn">
+            </form>
+        </section>
+    </div>
+
     <?php
     include '../../../includes/footer.php';
     ?>
-
+    <!-- Hace visible al formulario -->
     <script>
         // Hacer visible el formulario cuando se hace clic en "Finalizar"
         document.querySelector('.btn-agregar.cotizar').onclick = function() {
             document.querySelector('form').submit();
         }
     </script>
+    <!-- Metdos , funciones y calculos con el servicio -->
     <script>
         // Arrays para almacenar los detalles de los productos agregados
         let ArrayID = [];
@@ -345,6 +430,250 @@ include '../../../includes/header.php';
                 document.getElementById('costoTotalServicio').innerHTML = '<strong>Por favor, ingresa una cantidad válida de horas.</strong>';
             }
         }
+    </script>
+    <!-- Validar subida -->
+    <script>
+        document.getElementById('subirBtn').addEventListener('click', function() {
+            document.getElementById('comprobante').click(); // Activa el campo de carga de archivo al hacer clic en el botón
+        });
+
+        document.getElementById('comprobante').addEventListener('change', function() {
+            const archivo = this.files[0]; // Obtiene el archivo seleccionado
+            const nombreArchivo = document.getElementById('nombreArchivo');
+            nombreArchivo.textContent = archivo ? archivo.name : 'Seleccionar archivo';
+            // No se muestra mensaje de error aquí
+        });
+
+        // Validación antes de enviar el formulario
+        document.getElementById('enviarBtn').addEventListener('click', function(event) {
+            const archivo = document.getElementById('comprobante').files[0];
+            if (!archivo) {
+                event.preventDefault(); // Evita el envío del formulario
+                alert('Por favor, llene todo los datos.'); // Muestra un alerta si no se ha seleccionado un archivo
+                return;
+            }
+
+            //Valor guradado se manda al campo oculto
+            document.getElementById("fechaReservaOculto").value = fechaReserva;
+            document.getElementById("horaReservaOculto").value = horaReserva;
+            document.getElementById("ampmReservaOculto").value = ampm;
+            document.getElementById("duracionReservaOculto").value = duracionReserva;
+            document.getElementById("distritoReservaOculto").value = distritoReserva;
+            document.getElementById("ubicacionReservaOculto").value = ubicacionReserva;
+            document.getElementById("telefonoReservaOculto").value = telefonoReserva;
+
+        });
+    </script>
+    <!-- Validaciones -->
+    <script>
+        document.getElementById('fecha').setAttribute('min', new Date().toISOString().split('T')[0]);
+
+        document.getElementById('fecha').addEventListener('change', function() {
+            const fechaSeleccionada = new Date(this.value);
+            const fechaActual = new Date();
+            const diferenciaTiempo = fechaSeleccionada - fechaActual;
+            const diferenciaDias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
+            let mensaje = '';
+
+            if (diferenciaDias === 0) {
+                mensaje = "El evento será mañana.";
+            } else if (diferenciaDias < 7) {
+                const diasSemana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+                mensaje = `Este ${diasSemana[fechaSeleccionada.getDay()]} se reservará el evento.`;
+            } else if (diferenciaDias < 14) {
+                const diasSemana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+                mensaje = `El ${diasSemana[fechaSeleccionada.getDay()]} de la siguiente semana será la reserva.`;
+            } else {
+                mensaje = `Faltan ${diferenciaDias} días para el evento.`;
+            }
+
+            document.getElementById('contador-dias').textContent = mensaje;
+        });
+
+        document.getElementById('duracion').addEventListener('input', function() {
+            if (this.value > 10) {
+                this.value = 10;
+            }
+        });
+    </script>
+    <!-- Obtener datos Geograficos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('get_departamentos.php')
+                .then(response => response.json())
+                .then(data => {
+                    const departamentoSelect = document.getElementById('departamento');
+                    data.forEach(departamento => {
+                        const option = document.createElement('option');
+                        option.value = departamento.idDepa;
+                        option.textContent = departamento.Departamento;
+                        departamentoSelect.appendChild(option);
+                    });
+                });
+
+            document.getElementById('departamento').addEventListener('change', function() {
+                const departamentoId = this.value;
+                fetch(`get_provincias.php?idDepa=${departamentoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const provinciaSelect = document.getElementById('provincia');
+                        provinciaSelect.innerHTML = '<option value="">Seleccione una provincia</option>';
+                        data.forEach(provincia => {
+                            const option = document.createElement('option');
+                            option.value = provincia.idProv;
+                            option.textContent = provincia.Provincia;
+                            provinciaSelect.appendChild(option);
+                        });
+                    });
+            });
+
+            document.getElementById('provincia').addEventListener('change', function() {
+                const provinciaId = this.value;
+                fetch(`get_distritos.php?idProv=${provinciaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const distritoSelect = document.getElementById('distrito');
+                        distritoSelect.innerHTML = '<option value="">Seleccione un distrito</option>';
+                        data.forEach(distrito => {
+                            const option = document.createElement('option');
+                            option.value = distrito.idDist;
+                            option.textContent = distrito.Distrito;
+                            distritoSelect.appendChild(option);
+                        });
+                    });
+            });
+
+            // Evento para imprimir el id del distrito seleccionado
+            document.getElementById('distrito').addEventListener('change', function() {
+                const distritoId = this.value;
+                console.log("ID del distrito seleccionado:", distritoId);
+            });
+        });
+    </script>
+    <!-- modal -->
+    <script>
+        // Obtener elementos
+        const formulario = document.querySelector('.formularioReserva'); // Seleccionamos el formulario
+        const abrirModal = document.getElementById('abrirModal');
+        const modal = document.getElementById('idModal');
+        const cerrarModal = document.getElementById('cerrarModal');
+
+        //Variables que almacenan el name del primer fomrulario.
+        let fechaReserva;
+        let horaReserva;
+        let ampm;
+        let duracionReserva;
+        let distritoReserva;
+        let ubicacionReserva;
+        let telefonoReserva;
+
+        // Validación del formulario
+        formulario.addEventListener('submit', function(e) {
+            e.preventDefault(); // Evitar que el formulario se envíe inmediatamente
+
+            // Validaciones personalizadas (puedes agregar más si lo necesitas)
+            const fecha = document.getElementById('fecha');
+            const hora = document.getElementById('hora');
+            const duracion = document.getElementById('duracion');
+            const departamento = document.getElementById('departamento');
+            const provincia = document.getElementById('provincia');
+            const distrito = document.getElementById('distrito');
+            const ubicacion = document.getElementById('ubicacion');
+            const telefono = document.getElementById('telefono');
+
+            // Comprobamos si los campos requeridos están vacíos
+            if (!fecha.value || !hora.value || !duracion.value || !departamento.value || !provincia.value || !distrito.value || !ubicacion.value || !telefono.value) {
+                alert("Por favor, complete todos los campos.");
+                return;
+            }
+
+            //Almacena el name del primer formaulario
+            fechaReserva = fecha.value;
+            horaReserva = hora.value;
+            ampm = document.querySelector('input[name="ampm"]:checked').value;
+            duracionReserva = duracion.value;
+            distritoReserva = distrito.value;
+            ubicacionReserva = ubicacion.value;
+            telefonoReserva = telefono.value;
+
+            // Si todo está bien, mostramos el modal
+            modal.style.display = 'flex'; // Mostrar el modal
+        });
+
+        // Cerrar el modal
+        cerrarModal.addEventListener('click', function() {
+            modal.style.display = 'none'; // Ocultar el modal
+        });
+    </script>
+    <!-- Metodo Pago -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar métodos de pago desde la base de datos
+            fetch('get_metodos_pago.php')
+                .then(response => response.json())
+                .then(data => {
+                    const listaMetodos = document.querySelector('.metodoDePago__lista');
+
+                    data.forEach(metodo => {
+                        // Crear el elemento de cada método de pago
+                        const metodoDiv = document.createElement('div');
+                        metodoDiv.classList.add('metodoDePago__item'); // Cambio para cada método
+
+                        // Input radio
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.name = 'metodoPago';
+                        input.classList.add('ui-checkbox');
+                        input.value = metodo.idPago; // Ajuste de nombre
+                        input.required = true;
+
+                        // Imagen del ícono
+                        const img = document.createElement('img');
+                        img.classList.add('iconoPago');
+                        img.src = metodo.iconoPago; // Ajuste de nombre
+                        img.alt = `icono de ${metodo.descripcionPago}`;
+
+                        // Nombre y descripción
+                        const nombre = document.createElement('h3');
+                        nombre.classList.add('metodoDePago__texto');
+                        nombre.textContent = metodo.metodoPago;
+
+                        const descripcion = document.createElement('p');
+                        descripcion.classList.add('descripcionMetodo');
+                        descripcion.textContent = metodo.descripcionPago;
+
+                        // Agregar elementos al div
+                        metodoDiv.appendChild(input);
+                        metodoDiv.appendChild(img);
+                        metodoDiv.appendChild(nombre);
+                        metodoDiv.appendChild(descripcion);
+
+                        // Agregar el método de pago al contenedor
+                        listaMetodos.appendChild(metodoDiv);
+
+                        // Añadir el evento 'change' al input radio
+                        input.addEventListener('change', function() {
+                            // Ocultar todos los textos de los otros métodos de pago
+                            const allTextElements = document.querySelectorAll('.metodoDePago__texto');
+                            allTextElements.forEach(text => {
+                                text.style.visibility = 'hidden'; // Ocultar todos los textos
+                            });
+
+                            // Mostrar el texto del método seleccionado
+                            if (input.checked) {
+                                nombre.style.visibility = 'visible'; // Mostrar el nombre cuando esté marcado
+
+                                // Variable para obtener el ID del radio marcado
+                                const ObtnerId = input.value; // Obtener el ID del método de pago
+
+                                // Mostrar el ID en la consola
+                                console.log('ID del método de pago seleccionado:', ObtnerId);
+                            }
+                        });
+                    });
+                })
+                .catch(error => console.error('Error al cargar métodos de pago:', error));
+        });
     </script>
 </body>
 

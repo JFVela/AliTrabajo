@@ -1,0 +1,82 @@
+/* Estilos principales */
+.sectionReserva {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f7f7f7;
+  font-family: Arial, sans-serif;
+}
+
+.formularioReserva {
+  width: 60%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para las etiquetas y entradas */
+.formularioReserva label {
+  display: flex;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.formularioReserva input[type="text"],
+.formularioReserva input[type="tel"],
+.formularioReserva input[type="date"],
+.formularioReserva input[type="number"],
+.formularioReserva select {
+  width: auto;
+  padding: 8px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Estilo para la hora y los radio buttons en la misma fila */
+.hora-servicio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hora-servicio input[type="number"] {
+  width: 50px;
+}
+
+.hora-servicio input[type="radio"] {
+  margin-left: 5px;
+}
+
+/* Ajustes de las columnas */
+.formularioReserva p,
+.formularioReserva input[type="submit"] {
+  grid-column: span 2;
+}
+
+/* Botón de enviar */
+.formularioReserva input[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.formularioReserva input[type="submit"]:hover {
+  background-color: #45a049;
+}
