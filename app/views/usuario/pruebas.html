@@ -113,6 +113,9 @@
         }
 
         .metodoDePago {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
             width: 400px;
             padding: 15px;
             background-color: white;
@@ -302,6 +305,20 @@
             justify-content: center;
             align-items: center;
         }
+
+        #cerrarModal {
+            color: #333;
+            background-color: rgb(255, 159, 159);
+            font-weight: 900;
+            font-size: 20px;
+            justify-items: end;
+            width: 35px;
+            border-radius: 35px;
+        }
+
+        #cerrarModal:hover {
+            background-color: rgb(255, 0, 0);
+        }
     </style>
 </head>
 
@@ -354,6 +371,7 @@
 
     <div id="idModal" class="modalPago">
         <section class="metodoDePago">
+            <button id="cerrarModal">X</button>
             <form action="insert_data.php" method="POST" enctype="multipart/form-data">
                 <h1 class="titulo">Método de Pago</h1>
                 <p class="descipcion">Selecciona su metodo de pago y sube tu comprobante.</p>
@@ -389,7 +407,6 @@
                 <br>
                 <input type="submit" class="enviarBtn" value="Enviar" id="enviarBtn">
             </form>
-            <button id="cerrarModal">Cerrar</button>
         </section>
     </div>
 
@@ -415,7 +432,6 @@
             }
         });
     </script>
-
     <!-- Validaciones -->
     <script>
         document.getElementById('fecha').setAttribute('min', new Date().toISOString().split('T')[0]);
