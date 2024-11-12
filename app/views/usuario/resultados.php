@@ -1,6 +1,7 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    //Obteneer el name del primer formulario de reservas
     $fechaReserva = $_POST['fechaReservaOculto'];
     $horaReserva = $_POST['horaReservaOculto'];
     $ampm = $_POST['ampmReservaOculto'];
@@ -9,8 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ubicacionReserva = $_POST['ubicacionReservaOculto'];
     $telefonoReserva = $_POST['telefonoReservaOculto'];
 
-    $metodoPagoId = $_POST['metodoPago']; // ID del método de pago
-
+    // ID del método de pago
+    $metodoPagoId = $_POST['metodoPago']; 
     // Obtener nombre del archivo subido (comprobante de pago)
     if (isset($_FILES['comprobante']) && $_FILES['comprobante']['error'] == 0) {
         $nombreArchivo = $_FILES['comprobante']['name'];

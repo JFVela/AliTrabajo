@@ -166,46 +166,7 @@ include '../../../includes/header.php';
         }
     </style>
     <link rel="stylesheet" href="/public/css/usuario/includes.css">
-    <script>
-        let ArrayID = [];
-        let IDCantidad = [];
-        let PrecioTotal = [];
 
-        function agregarProducto(id, cantidad, precio) {
-            ArrayID.push(id);
-            IDCantidad.push(cantidad);
-            PrecioTotal.push(precio * cantidad);
-
-            let output = '';
-            let totalFinal = 0;
-
-            for (let i = 0; i < ArrayID.length; i++) {
-                output += 'ID Producto: ' + ArrayID[i] + ', Cantidad: ' + IDCantidad[i] + ', Subtotal: $' + PrecioTotal[i].toFixed(2) + '<br>';
-                totalFinal += PrecioTotal[i];
-            }
-
-            output += '<strong>Total Final: $' + totalFinal.toFixed(2) + '</strong>';
-            document.getElementById('resultado').innerHTML = output;
-
-            // Establecer el total en el campo oculto
-            document.getElementById('total').value = totalFinal.toFixed(2);
-
-            // Mostrar u ocultar el formulario dependiendo del total
-            const formFinalizar = document.getElementById('form-finalizar');
-            if (totalFinal > 0) {
-                formFinalizar.classList.remove('hidden'); // Mostrar el formulario
-            } else {
-                formFinalizar.classList.add('hidden'); // Ocultar el formulario
-            }
-
-            // Guardar detalles de los productos en un formato que se puede enviar
-            document.getElementById('productos').value = JSON.stringify(ArrayID.map((id, index) => ({
-                id_producto: id,
-                cantidad: IDCantidad[index],
-                subtotal: PrecioTotal[index]
-            })));
-        }
-    </script>
 </head>
 
 <body>
@@ -262,12 +223,34 @@ include '../../../includes/header.php';
             <input type="hidden" name="productos" id="productos" value=''>
             <input type="hidden" name="email" value="<?php echo $_SESSION['emailcliente']; ?>">
             <br>
-            <button type="submit" class="btn-agregar">Finalizar</button>
-        </form>
 
+            <!-- Nuevo input para seleccionar horas -->
+            <input type="number" class="horasAlquiladas" min="1" max="10" value="1" placeholder="Horas de alquiler" id="HorasAlquiladas">
+
+            <!-- Botón Calcular que solo calcula el costo sin enviar el formulario -->
+            <button type="button" class="btn-agregar calcular" onclick="calcularCosto()">Calcular</button>
+
+            <br>
+            <!-- Div para mostrar el Costo Total del Servicio -->
+            <div id="costoTotalServicio"></div>
+
+            <br>
+            <!-- Botón Siguiente para enviar el formulario -->
+            <button type="submit" class="btn-agregar">Siguiente</button>
+        </form>
     </div>
 
+    <style>
+        .horasAlquiladas {
+            border-radius: 5px;
+            height: 36px;
+            width: 100px;
+        }
+    </style>
 
+    <?php
+    include '../../../includes/footer.php';
+    ?>
 
     <script>
         // Hacer visible el formulario cuando se hace clic en "Finalizar"
@@ -275,9 +258,62 @@ include '../../../includes/header.php';
             document.querySelector('form').submit();
         }
     </script>
-    <?php
-    include '../../../includes/footer.php';
-    ?>
+    <script>
+        let ArrayID = [];
+        let IDCantidad = [];
+        let PrecioTotal = [];
+        let totalFinal = 0;
+
+        function agregarProducto(id, cantidad, precio) {
+            ArrayID.push(id);
+            IDCantidad.push(cantidad);
+            PrecioTotal.push(precio * cantidad);
+
+            let output = '';
+            totalFinal = 0;
+
+            for (let i = 0; i < ArrayID.length; i++) {
+                output += 'ID Producto: ' + ArrayID[i] + ', Cantidad: ' + IDCantidad[i] + ', Subtotal: $' + PrecioTotal[i].toFixed(2) + '<br>';
+                totalFinal += PrecioTotal[i];
+            }
+
+            output += '<strong>Costo Total por Hora: $' + totalFinal.toFixed(2) + '</strong>';
+            document.getElementById('resultado').innerHTML = output;
+
+            // Establecer el total en el campo oculto
+            document.getElementById('total').value = totalFinal.toFixed(2);
+
+            // Mostrar u ocultar el formulario dependiendo del total
+            const formFinalizar = document.getElementById('form-finalizar');
+            if (totalFinal > 0) {
+                formFinalizar.classList.remove('hidden'); // Mostrar el formulario
+            } else {
+                formFinalizar.classList.add('hidden'); // Ocultar el formulario
+            }
+
+            // Guardar detalles de los productos en un formato que se puede enviar
+            document.getElementById('productos').value = JSON.stringify(ArrayID.map((id, index) => ({
+                id_producto: id,
+                cantidad: IDCantidad[index],
+                subtotal: PrecioTotal[index]
+            })));
+        }
+
+        // Función para calcular el Costo Total del Servicio con base en las horas seleccionadas
+        function calcularCosto() {
+            // Obtener el número de horas desde el input
+            const horasAlquiladas = parseInt(document.getElementById('HorasAlquiladas').value);
+
+            if (horasAlquiladas > 0) {
+                const costoTotalServicio = totalFinal * horasAlquiladas;
+                // Mostrar el costo total del servicio en el div
+                document.getElementById('costoTotalServicio').innerHTML = '<strong>Costo Total del Servicio: $' + costoTotalServicio.toFixed(2) + '</strong>';
+            } else {
+                document.getElementById('costoTotalServicio').innerHTML = '<strong>Por favor, ingresa una cantidad válida de horas.</strong>';
+            }
+        }
+    </script>
 </body>
+
 
 </html>
