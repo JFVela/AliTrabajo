@@ -411,7 +411,7 @@
             const archivo = document.getElementById('comprobante').files[0];
             if (!archivo) {
                 event.preventDefault(); // Evita el envío del formulario
-                alert('Por favor, sube el comprobante de pago.'); // Muestra un alerta si no se ha seleccionado un archivo
+                alert('Por favor, llene todo los datos.'); // Muestra un alerta si no se ha seleccionado un archivo
             }
         });
     </script>
@@ -505,21 +505,42 @@
     <!-- modal -->
     <script>
         // Obtener elementos
+        const formulario = document.querySelector('.formularioReserva'); // Seleccionamos el formulario
         const abrirModal = document.getElementById('abrirModal');
         const modal = document.getElementById('idModal');
         const cerrarModal = document.getElementById('cerrarModal');
-    
-        // Abrir el modal
-        abrirModal.addEventListener('click', function () {
+
+        // Validación del formulario
+        formulario.addEventListener('submit', function (e) {
+            e.preventDefault(); // Evitar que el formulario se envíe inmediatamente
+
+            // Validaciones personalizadas (puedes agregar más si lo necesitas)
+            const fecha = document.getElementById('fecha');
+            const hora = document.getElementById('hora');
+            const duracion = document.getElementById('duracion');
+            const departamento = document.getElementById('departamento');
+            const provincia = document.getElementById('provincia');
+            const distrito = document.getElementById('distrito');
+            const ubicacion = document.getElementById('ubicacion');
+            const telefono = document.getElementById('telefono');
+
+            // Comprobamos si los campos requeridos están vacíos
+            if (!fecha.value || !hora.value || !duracion.value || !departamento.value || !provincia.value || !distrito.value || !ubicacion.value || !telefono.value) {
+                alert("Por favor, complete todos los campos.");
+                return;
+            }
+
+            // Si todo está bien, mostramos el modal
             modal.style.display = 'flex'; // Mostrar el modal
         });
-    
+
         // Cerrar el modal
         cerrarModal.addEventListener('click', function () {
             modal.style.display = 'none'; // Ocultar el modal
         });
+
     </script>
-    
+
 </body>
 
 </html>
