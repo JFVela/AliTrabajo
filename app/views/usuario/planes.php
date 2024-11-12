@@ -224,27 +224,34 @@ include '../../../includes/header.php';
             <input type="hidden" name="email" value="<?php echo $_SESSION['emailcliente']; ?>">
             <br>
 
+            <p class="mensajePequeño">*Por favor ingrese cuantas horas de servicio requiere para poder continuar</p>
+            <p class="mensajePequeño">*No debe exceder mas de 10 hrs su evento</p>
+            <label for="">Número de Horas:</label>
             <!-- Nuevo input para seleccionar horas -->
             <input type="number" class="horasAlquiladas" min="1" max="10" value="1" placeholder="Horas de alquiler" id="HorasAlquiladas">
 
             <!-- Botón Calcular que solo calcula el costo sin enviar el formulario -->
             <button type="button" class="btn-agregar calcular" onclick="calcularCosto()">Calcular</button>
 
-            <br>
+            <br><br>
             <!-- Div para mostrar el Costo Total del Servicio -->
             <div id="costoTotalServicio"></div>
 
             <br>
-            <!-- Botón Siguiente para enviar el formulario -->
-            <button type="submit" class="btn-agregar">Siguiente</button>
+            <!-- Botón Siguiente para enviar el formulario, inicialmente oculto -->
+            <button type="submit" class="btn-agregar" id="botonSiguiente" style="display: none;">Siguiente</button>
         </form>
     </div>
+
 
     <style>
         .horasAlquiladas {
             border-radius: 5px;
             height: 36px;
             width: 100px;
+        }
+        .mensajePequeño{
+            color: red;
         }
     </style>
 
@@ -308,6 +315,9 @@ include '../../../includes/header.php';
                 const costoTotalServicio = totalFinal * horasAlquiladas;
                 // Mostrar el costo total del servicio en el div
                 document.getElementById('costoTotalServicio').innerHTML = '<strong>Costo Total del Servicio: $' + costoTotalServicio.toFixed(2) + '</strong>';
+
+                // Habilitar el botón "Siguiente" después de calcular el costo
+                document.getElementById('botonSiguiente').style.display = 'inline-block';
             } else {
                 document.getElementById('costoTotalServicio').innerHTML = '<strong>Por favor, ingresa una cantidad válida de horas.</strong>';
             }
