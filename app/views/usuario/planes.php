@@ -200,7 +200,7 @@ include '../../../includes/header.php';
             echo '<div class="card-body">';
             echo '<h5 class="card-title">' . htmlspecialchars($producto['nombre']) . '</h5>';
             echo '<p class="card-text">Precio: $' . htmlspecialchars($producto['precio_hr']) . '</p>';
-            echo '<input type="number" class="input-cantidad" min="1" value="1" placeholder="Cantidad" id="cantidad_' . $producto['id_producto'] . '">';
+            echo '<input type="number" class="input-cantidad" min="1"  max="5" value="1" placeholder="Cantidad" id="cantidad_' . $producto['id_producto'] . '">';
             echo '<button class="btn-agregar" onclick="agregarProducto(' . $producto['id_producto'] . ', document.getElementById(\'cantidad_' . $producto['id_producto'] . '\').value, ' . htmlspecialchars($producto['precio_hr']) . ')">Agregar</button>';
             echo '</div>';
             echo '</div>';
@@ -227,18 +227,12 @@ include '../../../includes/header.php';
             <p class="mensajePequeño">*Por favor ingrese cuantas horas de servicio requiere para poder continuar</p>
             <p class="mensajePequeño">*No debe exceder mas de 10 hrs su evento</p>
             <label for="">Número de Horas:</label>
-            <!-- Nuevo input para seleccionar horas -->
             <input type="number" class="horasAlquiladas" min="1" max="10" value="1" placeholder="Horas de alquiler" id="HorasAlquiladas">
 
-            <!-- Botón Calcular que solo calcula el costo sin enviar el formulario -->
             <button type="button" class="btn-agregar calcular" onclick="calcularCosto()">Calcular</button>
-
             <br><br>
-            <!-- Div para mostrar el Costo Total del Servicio -->
             <div id="costoTotalServicio"></div>
-
             <br>
-            <!-- Botón Siguiente para enviar el formulario, inicialmente oculto -->
             <button type="submit" class="btn-agregar" id="botonSiguiente" style="display: none;">Siguiente</button>
         </form>
     </div>
@@ -250,7 +244,8 @@ include '../../../includes/header.php';
             height: 36px;
             width: 100px;
         }
-        .mensajePequeño{
+
+        .mensajePequeño {
             color: red;
         }
     </style>
@@ -266,16 +261,45 @@ include '../../../includes/header.php';
         }
     </script>
     <script>
+        // Arrays para almacenar los detalles de los productos agregados
         let ArrayID = [];
         let IDCantidad = [];
         let PrecioTotal = [];
         let totalFinal = 0;
 
         function agregarProducto(id, cantidad, precio) {
-            ArrayID.push(id);
-            IDCantidad.push(cantidad);
-            PrecioTotal.push(precio * cantidad);
+            // Validar que la cantidad esté entre 1 y 5
+            cantidad = parseInt(cantidad);
+            if (cantidad < 1) cantidad = 0;
+            if (cantidad > 5) cantidad = 5;
 
+            // Verificar si el producto ya existe en la lista
+            const index = ArrayID.indexOf(id);
+
+            if (index !== -1) {
+                // Producto ya existe
+                if (cantidad === 0) {
+                    // Si la cantidad es 0, eliminar el producto de la lista
+                    ArrayID.splice(index, 1);
+                    IDCantidad.splice(index, 1);
+                    PrecioTotal.splice(index, 1);
+                } else {
+                    // Actualizar la cantidad y subtotal si el producto ya existe
+                    IDCantidad[index] = cantidad;
+                    PrecioTotal[index] = precio * cantidad;
+                }
+            } else if (cantidad > 0) {
+                // Agregar nuevo producto si no existe y la cantidad es mayor a 0
+                ArrayID.push(id);
+                IDCantidad.push(cantidad);
+                PrecioTotal.push(precio * cantidad);
+            }
+
+            // Actualizar el total y mostrar la lista de productos
+            actualizarListaProductos();
+        }
+
+        function actualizarListaProductos() {
             let output = '';
             totalFinal = 0;
 
@@ -298,7 +322,7 @@ include '../../../includes/header.php';
                 formFinalizar.classList.add('hidden'); // Ocultar el formulario
             }
 
-            // Guardar detalles de los productos en un formato que se puede enviar
+            // Guardar detalles de los productos en formato JSON para enviar en el formulario
             document.getElementById('productos').value = JSON.stringify(ArrayID.map((id, index) => ({
                 id_producto: id,
                 cantidad: IDCantidad[index],
@@ -313,7 +337,6 @@ include '../../../includes/header.php';
 
             if (horasAlquiladas > 0) {
                 const costoTotalServicio = totalFinal * horasAlquiladas;
-                // Mostrar el costo total del servicio en el div
                 document.getElementById('costoTotalServicio').innerHTML = '<strong>Costo Total del Servicio: $' + costoTotalServicio.toFixed(2) + '</strong>';
 
                 // Habilitar el botón "Siguiente" después de calcular el costo
