@@ -108,6 +108,23 @@
             font-family: Arial, sans-serif;
         }
 
+        .metodoDePago__item {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .descripcionMetodo{
+            display: none;
+        }
+
+        .metodoDePago__texto {
+            visibility: hidden; /* Inicialmente oculto */
+        }
+
         .descipcion {
             color: #5b5b5b;
         }
@@ -118,15 +135,15 @@
             align-items: flex-end;
             width: 400px;
             padding: 15px;
-            background-color: white;
+            background-color: #F0F3FF;
             border-radius: 0px 25px 0px 25px;
             border: 5px solid var(--color-uno);
         }
 
         .metodoDePago__lista {
             display: flex;
-            flex-direction: row;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
             gap: 15px;
             margin-left: 50px;
         }
@@ -374,23 +391,9 @@
             <button id="cerrarModal">X</button>
             <form action="insert_data.php" method="POST" enctype="multipart/form-data">
                 <h1 class="titulo">Método de Pago</h1>
-                <p class="descipcion">Selecciona su metodo de pago y sube tu comprobante.</p>
+                <p class="descripcion">Selecciona su metodo de pago y sube tu comprobante.</p>
                 <br>
-                <div class="metodoDePago__lista">
-                    <input type="radio" name="metodoPago" class="ui-checkbox" required>
-                    <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
-                    <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
-                </div>
-                <div class="metodoDePago__lista">
-                    <input type="radio" name="metodoPago" class="ui-checkbox" required>
-                    <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
-                    <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
-                </div>
-                <div class="metodoDePago__lista">
-                    <input type="radio" name="metodoPago" class="ui-checkbox" required>
-                    <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
-                    <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
-                </div>
+                <div class="metodoDePago__lista"></div> <!-- Aquí se cargarán los métodos de pago -->
                 <br>
                 <div class="subirComprobante">
                     <label for="comprobante">Subir Comprobante de Pago</label>
@@ -399,8 +402,7 @@
                             style="display: none;">
                         <span id="nombreArchivo">Seleccionar archivo</span>
                         <button type="button" id="subirBtn">
-                            <i class="bi bi-upload"></i>
-                            Subir
+                            <i class="bi bi-upload"></i> Subir
                         </button>
                     </div>
                 </div>
@@ -409,6 +411,8 @@
             </form>
         </section>
     </div>
+
+
 
     <!-- Validar subida -->
     <script>
@@ -556,7 +560,77 @@
         });
 
     </script>
-
+    <!-- Metodo Pago -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cargar métodos de pago desde la base de datos
+            fetch('get_metodos_pago.php')
+                .then(response => response.json())
+                .then(data => {
+                    const listaMetodos = document.querySelector('.metodoDePago__lista');
+    
+                    data.forEach(metodo => {
+                        // Crear el elemento de cada método de pago
+                        const metodoDiv = document.createElement('div');
+                        metodoDiv.classList.add('metodoDePago__item'); // Cambio para cada método
+    
+                        // Input radio
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.name = 'metodoPago';
+                        input.classList.add('ui-checkbox');
+                        input.value = metodo.idPago; // Ajuste de nombre
+                        input.required = true;
+    
+                        // Imagen del ícono
+                        const img = document.createElement('img');
+                        img.classList.add('iconoPago');
+                        img.src = metodo.iconoPago; // Ajuste de nombre
+                        img.alt = `icono de ${metodo.descripcionPago}`;
+    
+                        // Nombre y descripción
+                        const nombre = document.createElement('h3');
+                        nombre.classList.add('metodoDePago__texto');
+                        nombre.textContent = metodo.metodoPago;
+    
+                        const descripcion = document.createElement('p');
+                        descripcion.classList.add('descripcionMetodo');
+                        descripcion.textContent = metodo.descripcionPago;
+    
+                        // Agregar elementos al div
+                        metodoDiv.appendChild(input);
+                        metodoDiv.appendChild(img);
+                        metodoDiv.appendChild(nombre);
+                        metodoDiv.appendChild(descripcion);
+    
+                        // Agregar el método de pago al contenedor
+                        listaMetodos.appendChild(metodoDiv);
+    
+                        // Añadir el evento 'change' al input radio
+                        input.addEventListener('change', function() {
+                            // Ocultar todos los textos de los otros métodos de pago
+                            const allTextElements = document.querySelectorAll('.metodoDePago__texto');
+                            allTextElements.forEach(text => {
+                                text.style.visibility = 'hidden'; // Ocultar todos los textos
+                            });
+    
+                            // Mostrar el texto del método seleccionado
+                            if (input.checked) {
+                                nombre.style.visibility = 'visible'; // Mostrar el nombre cuando esté marcado
+    
+                                // Variable para obtener el ID del radio marcado
+                                const ObtnerId = input.value; // Obtener el ID del método de pago
+    
+                                // Mostrar el ID en la consola
+                                console.log('ID del método de pago seleccionado:', ObtnerId);
+                            }
+                        });
+                    });
+                })
+                .catch(error => console.error('Error al cargar métodos de pago:', error));
+        });
+    </script>
+       
 </body>
 
 </html>
