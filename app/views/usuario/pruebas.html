@@ -290,6 +290,18 @@
             background-color: var(--color-uno);
             color: white;
         }
+
+        .modalPago {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -334,49 +346,52 @@
             <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" pattern="9[0-9]{8}"
                 required>
 
-            <input type="submit" value="Reservar">
+            <input id="abrirModal" type="submit" value="Reservar">
         </form>
     </section>
     <p id="contador-dias"></p>
 
-    <section class="metodoDePago">
-        <form action="insert_data.php" method="POST" enctype="multipart/form-data">
-            <h1 class="titulo">Método de Pago</h1>
-            <p class="descipcion">Selecciona su metodo de pago y sube tu comprobante.</p>
-            <br>
-            <div class="metodoDePago__lista">
-                <input type="radio" name="metodoPago" class="ui-checkbox" required>
-                <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
-                <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
-            </div>
-            <div class="metodoDePago__lista">
-                <input type="radio" name="metodoPago" class="ui-checkbox" required>
-                <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
-                <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
-            </div>
-            <div class="metodoDePago__lista">
-                <input type="radio" name="metodoPago" class="ui-checkbox" required>
-                <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
-                <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
-            </div>
-            <br>
-            <div class="subirComprobante">
-                <label for="comprobante">Subir Comprobante de Pago</label>
-                <div class="inputGroup">
-                    <input type="file" id="comprobante" name="comprobante" accept=".jpg, .jpeg, .png" required
-                        style="display: none;">
-                    <span id="nombreArchivo">Seleccionar archivo</span>
-                    <button type="button" id="subirBtn">
-                        <i class="bi bi-upload"></i>
-                        Subir
-                    </button>
-                </div>
-            </div>
-            <br>
-            <input type="submit" class="enviarBtn" value="Enviar" id="enviarBtn">
-        </form>
-    </section>
 
+    <div id="idModal" class="modalPago">
+        <section class="metodoDePago">
+            <form action="insert_data.php" method="POST" enctype="multipart/form-data">
+                <h1 class="titulo">Método de Pago</h1>
+                <p class="descipcion">Selecciona su metodo de pago y sube tu comprobante.</p>
+                <br>
+                <div class="metodoDePago__lista">
+                    <input type="radio" name="metodoPago" class="ui-checkbox" required>
+                    <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
+                    <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
+                </div>
+                <div class="metodoDePago__lista">
+                    <input type="radio" name="metodoPago" class="ui-checkbox" required>
+                    <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
+                    <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
+                </div>
+                <div class="metodoDePago__lista">
+                    <input type="radio" name="metodoPago" class="ui-checkbox" required>
+                    <img class="iconoPago" src="/public/img/iconos/yape.png" alt="icono de yape">
+                    <h3 class="metodoDePago__lista__texto">numero telefonico</h3>
+                </div>
+                <br>
+                <div class="subirComprobante">
+                    <label for="comprobante">Subir Comprobante de Pago</label>
+                    <div class="inputGroup">
+                        <input type="file" id="comprobante" name="comprobante" accept=".jpg, .jpeg, .png" required
+                            style="display: none;">
+                        <span id="nombreArchivo">Seleccionar archivo</span>
+                        <button type="button" id="subirBtn">
+                            <i class="bi bi-upload"></i>
+                            Subir
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <input type="submit" class="enviarBtn" value="Enviar" id="enviarBtn">
+            </form>
+            <button id="cerrarModal">Cerrar</button>
+        </section>
+    </div>
 
     <!-- Validar subida -->
     <script>
@@ -487,6 +502,24 @@
             });
         });
     </script>
+    <!-- modal -->
+    <script>
+        // Obtener elementos
+        const abrirModal = document.getElementById('abrirModal');
+        const modal = document.getElementById('idModal');
+        const cerrarModal = document.getElementById('cerrarModal');
+    
+        // Abrir el modal
+        abrirModal.addEventListener('click', function () {
+            modal.style.display = 'flex'; // Mostrar el modal
+        });
+    
+        // Cerrar el modal
+        cerrarModal.addEventListener('click', function () {
+            modal.style.display = 'none'; // Ocultar el modal
+        });
+    </script>
+    
 </body>
 
 </html>
