@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 $host = "localhost";
 $dbname = "audio_system"; // Nombre de tu base de datos
 $username = "root"; // Usuario de la base de datos
-$password = ""; // Contraseña de la base de datos
+$password = ""; // Contraseña de la base de datoss
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

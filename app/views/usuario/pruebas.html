@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Reserva</title>
+    <style>
+        /* Estilos principales */
+        .sectionReserva {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+        }
+
+        .formularioReserva {
+            width: 60%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos para las etiquetas y entradas */
+        .formularioReserva label {
+            display: flex;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .formularioReserva input[type="text"],
+        .formularioReserva input[type="tel"],
+        .formularioReserva input[type="date"],
+        .formularioReserva input[type="number"],
+        .formularioReserva select {
+            width: auto;
+            padding: 8px;
+            font-size: 14px;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Estilo para la hora y los radio buttons en la misma fila */
+        .hora-servicio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hora-servicio input[type="number"] {
+            width: 50px;
+        }
+
+        .hora-servicio input[type="radio"] {
+            margin-left: 5px;
+        }
+
+        /* Ajustes de las columnas */
+        .formularioReserva p,
+        .formularioReserva input[type="submit"] {
+            grid-column: span 2;
+        }
+
+        /* Botón de enviar */
+        .formularioReserva input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .formularioReserva input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="sectionReserva">
+        <form class="formularioReserva" action="/submit-reservation" method="post">
+            <label for="fecha">Fecha del servicio:</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <label for="hora">Hora del servicio:</label>
+            <div class="hora-servicio">
+                <input type="number" id="hora" name="hora" min="1" max="12" placeholder="12hr" required>
+                <label for="am">AM</label>
+                <input type="radio" id="am" name="ampm" value="AM" required>
+                <label for="pm">PM</label>
+                <input type="radio" id="pm" name="ampm" value="PM" required>
+            </div>
+
+            <label for="duracion">Duración del alquiler (horas):</label>
+            <input type="number" id="duracion" name="duracion" min="1" max="10" required>
+
+            <label for="departamento">Departamento:</label>
+            <select id="departamento" name="departamento" required>
+                <option value="">Seleccione un departamento</option>
+            </select>
+
+            <label for="provincia">Provincia:</label>
+            <select id="provincia" name="provincia" required>
+                <option value="">Seleccione una provincia</option>
+            </select>
+
+            <label for="distrito">Distrito:</label>
+            <select id="distrito" name="distrito" required>
+                <option value="">Seleccione un distrito</option>
+            </select>
+
+            <label for="ubicacion">Dirección:</label>
+            <input type="text" id="ubicacion" name="ubicacion" placeholder="Utiliza referencias" required>
+
+            <label for="telefono">Teléfono de contacto:</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" pattern="9[0-9]{8}"
+                required>
+
+            <input type="submit" value="Reservar">
+        </form>
+    </section>
+    <p id="contador-dias"></p>
+
+
+    <!-- Validaciones -->
+    <script>
+        document.getElementById('fecha').setAttribute('min', new Date().toISOString().split('T')[0]);
+
+        document.getElementById('fecha').addEventListener('change', function () {
+            const fechaSeleccionada = new Date(this.value);
+            const fechaActual = new Date();
+            const diferenciaTiempo = fechaSeleccionada - fechaActual;
+            const diferenciaDias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
+            let mensaje = '';
+
+            if (diferenciaDias === 0) {
+                mensaje = "El evento será mañana.";
+            } else if (diferenciaDias < 7) {
+                const diasSemana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+                mensaje = `Este ${diasSemana[fechaSeleccionada.getDay()]} se reservará el evento.`;
+            } else if (diferenciaDias < 14) {
+                const diasSemana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+                mensaje = `El ${diasSemana[fechaSeleccionada.getDay()]} de la siguiente semana será la reserva.`;
+            } else {
+                mensaje = `Faltan ${diferenciaDias} días para el evento.`;
+            }
+
+            document.getElementById('contador-dias').textContent = mensaje;
+        });
+
+        document.getElementById('duracion').addEventListener('input', function () {
+            if (this.value > 10) {
+                this.value = 10;
+            }
+        });
+    </script>
+    <!-- Obtener datos Geograficos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('get_departamentos.php')
+                .then(response => response.json())
+                .then(data => {
+                    const departamentoSelect = document.getElementById('departamento');
+                    data.forEach(departamento => {
+                        const option = document.createElement('option');
+                        option.value = departamento.idDepa;
+                        option.textContent = departamento.Departamento;
+                        departamentoSelect.appendChild(option);
+                    });
+                });
+
+            document.getElementById('departamento').addEventListener('change', function () {
+                const departamentoId = this.value;
+                fetch(`get_provincias.php?idDepa=${departamentoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const provinciaSelect = document.getElementById('provincia');
+                        provinciaSelect.innerHTML = '<option value="">Seleccione una provincia</option>';
+                        data.forEach(provincia => {
+                            const option = document.createElement('option');
+                            option.value = provincia.idProv;
+                            option.textContent = provincia.Provincia;
+                            provinciaSelect.appendChild(option);
+                        });
+                    });
+            });
+
+            document.getElementById('provincia').addEventListener('change', function () {
+                const provinciaId = this.value;
+                fetch(`get_distritos.php?idProv=${provinciaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const distritoSelect = document.getElementById('distrito');
+                        distritoSelect.innerHTML = '<option value="">Seleccione un distrito</option>';
+                        data.forEach(distrito => {
+                            const option = document.createElement('option');
+                            option.value = distrito.idDist;
+                            option.textContent = distrito.Distrito;
+                            distritoSelect.appendChild(option);
+                        });
+                    });
+            });
+
+            // Evento para imprimir el id del distrito seleccionado
+            document.getElementById('distrito').addEventListener('change', function () {
+                const distritoId = this.value;
+                console.log("ID del distrito seleccionado:", distritoId);
+            });
+        });
+    </script>
+</body>
+
+</html>
