@@ -235,7 +235,7 @@ include '../../../includes/header.php';
             <br><br>
             <div id="costoTotalServicio"></div>
             <br>
-            <button type="submit" class="btn-agregar" id="botonSiguiente" style="display: none;">Siguiente</button>
+            <button type="button" class="btn-agregar" id="botonSiguiente" style="display: none;">Siguiente</button>
         </form>
     </div>
 
@@ -250,52 +250,58 @@ include '../../../includes/header.php';
         .mensajePequeño {
             color: red;
         }
+
+        .reservaOculta {
+            display: none;
+        }
     </style>
 
-    <section class="sectionReserva">
-        <form class="formularioReserva" action="/submit-reservation" method="post">
-            <label for="fecha">Fecha del servicio:</label>
-            <input type="date" id="fecha" name="fecha" required>
 
-            <label for="hora">Hora del servicio:</label>
-            <div class="hora-servicio">
-                <input type="number" id="hora" name="hora" min="1" max="12" placeholder="12hr" required>
-                <label for="am">AM</label>
-                <input type="radio" id="am" name="ampm" value="AM" required>
-                <label for="pm">PM</label>
-                <input type="radio" id="pm" name="ampm" value="PM" required>
-            </div>
+    <div class="reservaOculta" id="reservaOculta">
+        <section class="sectionReserva">
+            <form class="formularioReserva" action="/submit-reservation" method="post">
+                <label for="fecha">Fecha del servicio:</label>
+                <input type="date" id="fecha" name="fecha" required>
 
-            <label for="duracion">Duración del alquiler (horas):</label>
-            <input type="number" id="duracion" name="duracion" min="1" max="10" required>
+                <label for="hora">Hora del servicio:</label>
+                <div class="hora-servicio">
+                    <input type="number" id="hora" name="hora" min="1" max="12" placeholder="12hr" required>
+                    <label for="am">AM</label>
+                    <input type="radio" id="am" name="ampm" value="AM" required>
+                    <label for="pm">PM</label>
+                    <input type="radio" id="pm" name="ampm" value="PM" required>
+                </div>
 
-            <label for="departamento">Departamento:</label>
-            <select id="departamento" name="departamento" required>
-                <option value="">Seleccione un departamento</option>
-            </select>
+                <label for="duracion">Duración del alquiler (horas):</label>
+                <input type="number" id="duracion" name="duracion" min="1" max="10" required>
 
-            <label for="provincia">Provincia:</label>
-            <select id="provincia" name="provincia" required>
-                <option value="">Seleccione una provincia</option>
-            </select>
+                <label for="departamento">Departamento:</label>
+                <select id="departamento" name="departamento" required>
+                    <option value="">Seleccione un departamento</option>
+                </select>
 
-            <label for="distrito">Distrito:</label>
-            <select id="distrito" name="distrito" required>
-                <option value="">Seleccione un distrito</option>
-            </select>
+                <label for="provincia">Provincia:</label>
+                <select id="provincia" name="provincia" required>
+                    <option value="">Seleccione una provincia</option>
+                </select>
 
-            <label for="ubicacion">Dirección:</label>
-            <input type="text" id="ubicacion" name="ubicacion" placeholder="Utiliza referencias" required>
+                <label for="distrito">Distrito:</label>
+                <select id="distrito" name="distrito" required>
+                    <option value="">Seleccione un distrito</option>
+                </select>
 
-            <label for="telefono">Teléfono de contacto:</label>
-            <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" pattern="9[0-9]{8}"
-                required>
+                <label for="ubicacion">Dirección:</label>
+                <input type="text" id="ubicacion" name="ubicacion" placeholder="Utiliza referencias" required>
 
-            <input id="abrirModal" type="submit" value="Reservar">
-        </form>
-    </section>
-    <p id="contador-dias"></p>
+                <label for="telefono">Teléfono de contacto:</label>
+                <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" pattern="9[0-9]{8}"
+                    required>
 
+                <input id="abrirModal" type="submit" value="Reservar">
+            </form>
+        </section>
+        <p id="contador-dias"></p>
+    </div>
 
     <div id="idModal" class="modalPago">
         <section class="metodoDePago">
@@ -396,10 +402,13 @@ include '../../../includes/header.php';
             output += '<strong>Costo Total por Hora: $' + totalFinal.toFixed(2) + '</strong>';
             document.getElementById('resultado').innerHTML = output;
 
-            // Establecer el total en el campo oculto
+            // Log arrays to console for debugging
+            console.log("ArrayID:", ArrayID);
+            console.log("IDCantidad:", IDCantidad);
+            console.log("PrecioTotal:", PrecioTotal);
+
             document.getElementById('total').value = totalFinal.toFixed(2);
 
-            // Mostrar u ocultar el formulario dependiendo del total
             const formFinalizar = document.getElementById('form-finalizar');
             if (totalFinal > 0) {
                 formFinalizar.classList.remove('hidden'); // Mostrar el formulario
@@ -407,7 +416,6 @@ include '../../../includes/header.php';
                 formFinalizar.classList.add('hidden'); // Ocultar el formulario
             }
 
-            // Guardar detalles de los productos en formato JSON para enviar en el formulario
             document.getElementById('productos').value = JSON.stringify(ArrayID.map((id, index) => ({
                 id_producto: id,
                 cantidad: IDCantidad[index],
@@ -430,6 +438,17 @@ include '../../../includes/header.php';
                 document.getElementById('costoTotalServicio').innerHTML = '<strong>Por favor, ingresa una cantidad válida de horas.</strong>';
             }
         }
+
+        document.getElementById('botonSiguiente').onclick = function() {
+            // Mostrar el div reservaOculta y hacer scroll
+            const reservaOculta = document.getElementById('reservaOculta');
+            reservaOculta.style.display = 'block';
+
+            // Desplazarse hasta el div reservaOculta
+            reservaOculta.scrollIntoView({
+                behavior: 'smooth'
+            });
+        };
     </script>
     <!-- Validar subida -->
     <script>
