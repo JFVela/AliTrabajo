@@ -261,6 +261,7 @@ include '../../../includes/header.php';
             <input type="hidden" name="total" id="total" value="0">
             <input type="hidden" name="productos" id="productos" value=''>
             <input type="hidden" name="email" value="<?php echo $_SESSION['emailcliente']; ?>">
+            <br>
             <button type="submit" class="btn-agregar">Finalizar</button>
         </form>
 

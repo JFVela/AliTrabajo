@@ -391,6 +391,17 @@
         <section class="metodoDePago">
             <button id="cerrarModal">X</button>
             <form action="resultados.php" method="POST" method="post" enctype="multipart/form-data">
+
+                <!-- Almacenamos valores ocultos para el segundo formulario -->
+                <input type="hidden" id="fechaReservaOculto" name="fechaReservaOculto" value="">
+                <input type="hidden" id="horaReservaOculto" name="horaReservaOculto" value="">
+                <input type="hidden" id="ampmReservaOculto" name="ampmReservaOculto" value="">
+                <input type="hidden" id="duracionReservaOculto" name="duracionReservaOculto" value="">
+                <input type="hidden" id="distritoReservaOculto" name="distritoReservaOculto" value="">
+                <input type="hidden" id="ubicacionReservaOculto" name="ubicacionReservaOculto" value="">
+                <input type="hidden" id="telefonoReservaOculto" name="telefonoReservaOculto" value="">
+                <!-- Fin de almacenamiento oculto -->
+
                 <h1 class="titulo">Método de Pago</h1>
                 <p class="descripcion">Selecciona su metodo de pago y sube tu comprobante.</p>
                 <br>
@@ -432,7 +443,18 @@
             if (!archivo) {
                 event.preventDefault(); // Evita el envío del formulario
                 alert('Por favor, llene todo los datos.'); // Muestra un alerta si no se ha seleccionado un archivo
+                return;
             }
+
+            //Valor guradado se manda al campo oculto
+            document.getElementById("fechaReservaOculto").value = fechaReserva;
+            document.getElementById("horaReservaOculto").value = horaReserva;
+            document.getElementById("ampmReservaOculto").value = ampm;
+            document.getElementById("duracionReservaOculto").value = duracionReserva;
+            document.getElementById("distritoReservaOculto").value = distritoReserva;
+            document.getElementById("ubicacionReservaOculto").value = ubicacionReserva;
+            document.getElementById("telefonoReservaOculto").value = telefonoReserva;
+
         });
     </script>
     <!-- Validaciones -->
@@ -529,6 +551,15 @@
         const modal = document.getElementById('idModal');
         const cerrarModal = document.getElementById('cerrarModal');
 
+        //Variables que almacenan el name del primer fomrulario.
+        let fechaReserva;
+        let horaReserva;
+        let ampm;
+        let duracionReserva;
+        let distritoReserva;
+        let ubicacionReserva;
+        let telefonoReserva;
+
         // Validación del formulario
         formulario.addEventListener('submit', function (e) {
             e.preventDefault(); // Evitar que el formulario se envíe inmediatamente
@@ -548,6 +579,15 @@
                 alert("Por favor, complete todos los campos.");
                 return;
             }
+
+            //Almacena el name del primer formaulario
+            fechaReserva = fecha.value;
+            horaReserva = hora.value;
+            ampm = document.querySelector('input[name="ampm"]:checked').value;
+            duracionReserva = duracion.value;
+            distritoReserva = distrito.value;
+            ubicacionReserva = ubicacion.value;
+            telefonoReserva = telefono.value;
 
             // Si todo está bien, mostramos el modal
             modal.style.display = 'flex'; // Mostrar el modal
@@ -629,25 +669,7 @@
                 .catch(error => console.error('Error al cargar métodos de pago:', error));
         });
     </script>
-    <SCript>
-        document.getElementById('enviarBtn').addEventListener('click', function (event) {
-            // Obtener el ID del método de pago seleccionado
-            const metodoPagoSeleccionado = document.querySelector('input[name="metodoPago"]:checked');
-            if (metodoPagoSeleccionado) {
-                const metodoPagoId = metodoPagoSeleccionado.value;
-                // Añadir el ID del método de pago al formulario antes de enviarlo
-                const metodoPagoInput = document.createElement('input');
-                metodoPagoInput.type = 'hidden';
-                metodoPagoInput.name = 'metodoPago';
-                metodoPagoInput.value = metodoPagoId;
-                document.querySelector('.formularioReserva').appendChild(metodoPagoInput);
-            } else {
-                alert('Por favor, seleccione un método de pago.');
-                event.preventDefault(); // Evitar el envío si no se ha seleccionado un método
-            }
-        });
-        
-    </SCript>
+
 
 </body>
 

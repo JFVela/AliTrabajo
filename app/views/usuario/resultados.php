@@ -1,13 +1,14 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener los datos del formulario
-    $fecha = $_POST['fecha'];
-    $hora = $_POST['hora'];
-    $ampm = $_POST['ampm'];
-    $duracion = $_POST['duracion'];
-    $distritoId = $_POST['distrito']; // ID del distrito
-    $ubicacion = $_POST['ubicacion'];
-    $telefono = $_POST['telefono'];
+
+    $fechaReserva = $_POST['fechaReservaOculto'];
+    $horaReserva = $_POST['horaReservaOculto'];
+    $ampm = $_POST['ampmReservaOculto'];
+    $duracionReserva = $_POST['duracionReservaOculto'];
+    $distritoReserva = $_POST['distritoReservaOculto'];
+    $ubicacionReserva = $_POST['ubicacionReservaOculto'];
+    $telefonoReserva = $_POST['telefonoReservaOculto'];
+
     $metodoPagoId = $_POST['metodoPago']; // ID del método de pago
 
     // Obtener nombre del archivo subido (comprobante de pago)
@@ -17,15 +18,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nombreArchivo = "No se subió archivo.";
     }
 
+
+    // Mostrar los valores (o realizar la acción que necesites con ellos)
+    echo "Fecha de reserva: " . htmlspecialchars($fechaReserva) . "<br>";
+    echo "Hora de reserva: " . htmlspecialchars($horaReserva) . " " . htmlspecialchars($ampm) . "<br>";
+    echo "Duración de reserva: " . htmlspecialchars($duracionReserva) . "<br>";
+    echo "Distrito de reserva: " . htmlspecialchars($distritoReserva) . "<br>";
+    echo "Ubicación de reserva: " . htmlspecialchars($ubicacionReserva) . "<br>";
+    echo "Teléfono de reserva: " . htmlspecialchars($telefonoReserva) . "<br>";
     // Mostrar los resultados
-    echo "<h2>Detalles de la Reserva</h2>";
-    echo "<p><strong>Fecha del servicio:</strong> $fecha</p>";
-    echo "<p><strong>Hora de asistencia:</strong> $hora $ampm</p>";
-    echo "<p><strong>Duración del servicio:</strong> $duracion horas</p>";
-    echo "<p><strong>ID del distrito:</strong> $distritoId</p>";
-    echo "<p><strong>Dirección:</strong> $ubicacion</p>";
-    echo "<p><strong>Teléfono de contacto:</strong> $telefono</p>";
     echo "<p><strong>ID del método de pago:</strong> $metodoPagoId</p>";
     echo "<p><strong>Nombre del archivo subido:</strong> $nombreArchivo</p>";
 }
-?>
