@@ -331,8 +331,20 @@ include '../../../includes/header.php';
             document.getElementById("distritoReservaOculto").value = distritoReserva;
             document.getElementById("ubicacionReservaOculto").value = ubicacionReserva;
             document.getElementById("telefonoReservaOculto").value = telefonoReserva;
+            limpiarInputs();
+        })
 
-        });
+        function limpiarInputs() {
+            document.getElementById("HorasAlquiladas").value = "";
+            document.getElementById("fecha").value = "";
+            document.getElementById("hora").value = "";
+            document.getElementById("am").value = "";
+            document.getElementById("pm").value = "";
+            document.getElementById("duracion").value = "";
+            document.getElementById("ubicacion").value = "";
+            document.getElementById("telefono").value = "";
+            document.querySelectorAll(".input-cantidad").forEach(input => input.value = "");
+        };
     </script>
     <!-- Validaciones -->
     <script>

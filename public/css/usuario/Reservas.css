@@ -51,7 +51,7 @@
 }
 
 .hora-servicio input[type="number"] {
-  width: 50px;
+  width: 100px;
 }
 
 .hora-servicio input[type="radio"] {
