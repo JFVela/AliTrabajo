@@ -65,12 +65,8 @@ include '../../../includes/header.php';
     <div class="resultado-container">
         <h4>Productos Agregados:</h4>
         <div id="resultado"></div>
-        <form method="post" action="../../controllers/insert_cotizacion.php" class="hidden" id="form-finalizar">
-            <input type="hidden" name="total" id="total" value="0">
-            <input type="hidden" name="productos" id="productos" value=''>
-            <input type="hidden" name="email" value="<?php echo $_SESSION['emailcliente']; ?>">
+        <form class="hidden" id="form-finalizar">
             <br>
-
             <p class="mensajePequeño">*Por favor ingrese cuantas horas de servicio requiere para poder continuar</p>
             <p class="mensajePequeño">*No debe exceder mas de 10 hrs su evento</p>
             <label for="">Número de Horas:</label>
@@ -80,7 +76,7 @@ include '../../../includes/header.php';
             <br><br>
             <div id="costoTotalServicio"></div>
             <br>
-            <button type="button" class="btn-agregar" id="botonSiguiente" style="display: none;">Siguiente</button>        
+            <button type="button" class="btn-agregar" id="botonSiguiente" style="display: none;">Siguiente</button>
         </form>
     </div>
 
@@ -118,7 +114,7 @@ include '../../../includes/header.php';
                 </div>
 
                 <label for="duracion">Duración del alquiler (horas):</label>
-                <input type="number" id="duracion" name="duracion" min="1" max="10" required>
+                <input type="number" id="duracion" name="duracion" min="1" max="10" readonly>
 
                 <label for="departamento">Departamento:</label>
                 <select id="departamento" name="departamento" required>
@@ -151,7 +147,11 @@ include '../../../includes/header.php';
     <div id="idModal" class="modalPago">
         <section class="metodoDePago">
             <button id="cerrarModal">X</button>
-            <form action="resultados.php" method="POST" method="post" enctype="multipart/form-data">
+            <form action="../../controllers/insert_cotizacion.php" method="POST" method="post" enctype="multipart/form-data">
+                <!-- Obtenido del primer formulario -->
+                <input type="hidden" name="total" id="total" value="0">
+                <input type="hidden" name="productos" id="productos" value=''>
+                <input type="hidden" name="email" value="<?php echo $_SESSION['emailcliente']; ?>">
 
                 <!-- Almacenamos valores ocultos para el segundo formulario -->
                 <input type="hidden" id="fechaReservaOculto" name="fechaReservaOculto" value="">
@@ -162,6 +162,7 @@ include '../../../includes/header.php';
                 <input type="hidden" id="ubicacionReservaOculto" name="ubicacionReservaOculto" value="">
                 <input type="hidden" id="telefonoReservaOculto" name="telefonoReservaOculto" value="">
                 <!-- Fin de almacenamiento oculto -->
+
 
                 <h1 class="titulo">Método de Pago</h1>
                 <p class="descripcion">Selecciona su metodo de pago y sube tu comprobante.</p>
@@ -198,10 +199,10 @@ include '../../../includes/header.php';
     <!-- Metdos , funciones y calculos con el servicio -->
     <script>
         // Arrays para almacenar los detalles de los productos agregados
-        let ArrayID = [];
-        let IDCantidad = [];
-        let PrecioTotal = [];
-        let totalFinal = 0;
+        var ArrayID = [];
+        var IDCantidad = [];
+        var PrecioTotal = [];
+        var totalFinal = 0;
 
         function agregarProducto(id, cantidad, precio) {
             // Validar que la cantidad esté entre 1 y 5
@@ -273,6 +274,8 @@ include '../../../includes/header.php';
             // Obtener el número de horas desde el input
             const horasAlquiladas = parseInt(document.getElementById('HorasAlquiladas').value);
 
+            // Insertar ese valor en el input del segundo formulario
+            document.getElementById('duracion').value = horasAlquiladas;
             if (horasAlquiladas > 0) {
                 const costoTotalServicio = totalFinal * horasAlquiladas;
                 document.getElementById('costoTotalServicio').innerHTML = '<strong>Costo Total del Servicio: $' + costoTotalServicio.toFixed(2) + '</strong>';
@@ -311,12 +314,15 @@ include '../../../includes/header.php';
         // Validación antes de enviar el formulario
         document.getElementById('enviarBtn').addEventListener('click', function(event) {
             const archivo = document.getElementById('comprobante').files[0];
+
+            var cantidaServicios = ArrayID.length;
+            console.log(cantidaServicios)
+
             if (!archivo) {
                 event.preventDefault(); // Evita el envío del formulario
                 alert('Por favor, llene todo los datos.'); // Muestra un alerta si no se ha seleccionado un archivo
                 return;
             }
-
             //Valor guradado se manda al campo oculto
             document.getElementById("fechaReservaOculto").value = fechaReserva;
             document.getElementById("horaReservaOculto").value = horaReserva;
