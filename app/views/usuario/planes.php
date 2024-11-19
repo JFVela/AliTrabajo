@@ -13,7 +13,6 @@ include '../../../includes/header.php';
     <link rel="stylesheet" href="/public/css/usuario/includes.css">
     <link rel="stylesheet" href="/public/css/usuario/Reservas.css">
     <link rel="stylesheet" href="/public/css/usuario/metodoPago.css">
-
 </head>
 
 <body>
@@ -79,24 +78,6 @@ include '../../../includes/header.php';
             <button type="button" class="btn-agregar" id="botonSiguiente" style="display: none;">Siguiente</button>
         </form>
     </div>
-
-
-    <style>
-        .horasAlquiladas {
-            border-radius: 5px;
-            height: 36px;
-            width: 100px;
-        }
-
-        .mensajePequeño {
-            color: red;
-        }
-
-        .reservaOculta {
-            display: none;
-        }
-    </style>
-
 
     <div class="reservaOculta" id="reservaOculta">
         <section class="sectionReserva">
@@ -335,7 +316,7 @@ include '../../../includes/header.php';
         })
 
         function limpiarInputs() {
-            document.getElementById("HorasAlquiladas").value = "";
+            document.getElementById("HorasAlquiladas").value = "1";
             document.getElementById("fecha").value = "";
             document.getElementById("hora").value = "";
             document.getElementById("am").value = "";
@@ -343,7 +324,7 @@ include '../../../includes/header.php';
             document.getElementById("duracion").value = "";
             document.getElementById("ubicacion").value = "";
             document.getElementById("telefono").value = "";
-            document.querySelectorAll(".input-cantidad").forEach(input => input.value = "");
+            document.querySelectorAll(".input-cantidad").forEach(input => input.value = "1");
         };
     </script>
     <!-- Validaciones -->

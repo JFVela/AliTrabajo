@@ -11,8 +11,8 @@ class UsuarioController
         // Obtener el puerto actual
         $this->puerto = $_SERVER['SERVER_PORT'];
     }
-
-    public function crearUsuario($nombre, $telefono, $direccion, $email, $dni, $password)
+    
+    public function crearUsuario($nombre, $telefono, $email, $direccion, $dni, $password)
     {
         $usuarioModel = new Usuario();
 
@@ -41,10 +41,10 @@ class UsuarioController
             header("Location: http://localhost:{$this->puerto}/app/views/usuario/createUser.php");
             return;
         }
-
+ 
         // Crear usuario
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        if ($usuarioModel->crearUsuario($nombre, $telefono, $direccion, $email, $dni, $passwordHash)) {
+        if ($usuarioModel->crearUsuario($nombre, $telefono, $email, $direccion, $dni, $passwordHash)) {
             $_SESSION['tituloMensaje'] = "Usuario creado!";
             $_SESSION['mensaje'] = "Bienvenido, $nombre";
             $_SESSION['icono'] = "success";
@@ -71,5 +71,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['user_password'];
 
     $controller = new UsuarioController();
-    $controller->crearUsuario($nombre, $telefono, $direccion, $email, $dni, $password);
+    $controller->crearUsuario($nombre, $telefono, $email, $direccion, $dni, $password);
 }

@@ -151,3 +151,17 @@ body {
   background-color: #0056b3;
   /* Color de fondo al pasar el mouse */
 }
+
+.horasAlquiladas {
+  border-radius: 5px;
+  height: 36px;
+  width: 100px;
+}
+
+.mensajePequeño {
+  color: red;
+}
+
+.reservaOculta {
+  display: none;
+}
