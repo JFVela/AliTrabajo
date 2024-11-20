@@ -17,10 +17,7 @@
 <body>
     <div class="container mt-5">
         <h2>Gestión de Clientes</h2>
-        <button type="button" class="btn btn-success">
-            Agregar
-            <i class="bi bi-box-arrow-in-up-right"></i>
-        </button>
+        <button type="button" id="btnNuevoCliente" class="btn btn-success"> Agregar <i class="bi bi-box-arrow-in-up-right"></i> </button>
         <br>
         <br>
         <div class="contenedorTabla table-responsive">
@@ -155,14 +152,25 @@
             $('#clientesTable').on('click', '.eliminar', function() {
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
+
+                // Confirmar eliminación
                 if (confirm(`¿Está seguro de eliminar al cliente ${nombre}?`)) {
                     $.post('crudClientes.php?action=eliminarCliente', {
                         id
-                    }, function() { // Ruta ajustada
-                        table.ajax.reload();
+                    }, function(response) {
+                        // Manejar la respuesta del servidor
+                        const result = JSON.parse(response);
+                        if (result.success) {
+                            // Si la eliminación fue exitosa, recargar la tabla
+                            table.ajax.reload();
+                        } else {
+                            // Si hubo un error, mostrar un mensaje de error
+                            alert(result.error || "Ocurrió un error al eliminar al cliente.");
+                        }
                     });
                 }
             });
+
 
             // Editar cliente
             $('#clientesTable').on('click', '.editar', function() {
@@ -173,7 +181,6 @@
                 const direccion = $(this).data('direccion');
                 const dni = $(this).data('dni');
                 const password = "";
-                console.log(id);
 
                 // Rellenar los campos del modal
                 $('#editarId').val(id);
@@ -186,10 +193,11 @@
 
                 // Mostrar el modal
                 $('#modalEditar').modal('show');
+                // limpiamos el id para poder agregar
             });
 
 
-            // Actualizar cliente
+            // Actualizar o Agregar cliente
             $('#btnActualizar').click(function() {
                 const id = $('#editarId').val();
                 const nombre = $('#editarNombre').val();
@@ -199,30 +207,52 @@
                 const dni = $('#editarDni').val();
                 const password = $('#editarPassword').val();
 
-                $.post('crudClientes.php?action=actualizarCliente', {
-                    id,
+                const action = id == 0 ? 'crearCliente' : 'actualizarCliente'; // Determina la acción según el id
+
+                // Datos del cliente
+                const datosCliente = {
                     nombre,
                     telefono,
                     email,
                     direccion,
                     dni,
                     password
-                }, function() {
+                };
+
+                // Si es un id 0, agregamos el id al objeto para crear un cliente
+                if (id != 0) {
+                    datosCliente.id = id;
+                }
+
+                // Llamada al servidor
+                $.post(`crudClientes.php?action=${action}`, datosCliente, function() {
                     $('#modalEditar').modal('hide');
                     table.ajax.reload();
                 });
             });
 
+
+            // Agregar cliente
+            $('#btnNuevoCliente').click(function() {
+                limpiarDatos();
+                //Para nuevos usuarios definiremos id = 0
+                const id = 0;
+                $('#editarId').val(id);
+                // Mostrar el modal
+                $('#modalEditar').modal('show');
+            });
+
+
             function limpiarDatos() {
-                // Limpiar los valores de los campos de un formulario
-                document.getElementById('editarId').value = "";
-                document.getElementById('editarNombre').value = "";
-                document.getElementById('editarTelefono').value = "";
-                document.getElementById('editarEmail').value = "";
-                document.getElementById('editarDireccion').value = "";
-                document.getElementById('editarDni').value = "";
-                document.getElementById('editarPassword').value = "";
+                $('#editarId').val("");
+                $('#editarNombre').val("");
+                $('#editarTelefono').val("");
+                $('#editarEmail').val("");
+                $('#editarDireccion').val("");
+                $('#editarDni').val("");
+                $('#editarPassword').val("");
             }
+
         });
     </script>
 
