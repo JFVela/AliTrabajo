@@ -64,7 +64,7 @@
                             <input type="text" id="editarDni" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label for="editarPassword" class="form-label">Password</label>
+                            <label for="editarPassword" class="form-label">Crea nueva contraseña</label>
                             <input type="password" id="editarPassword" class="form-control">
                         </div>
                         <button type="button" id="btnActualizar" class="btn btn-success">Actualizar</button>
@@ -80,7 +80,7 @@
         $(document).ready(function() {
             // Inicializar DataTable
             const table = $('#clientesTable').DataTable({
-                "ajax": "getClientes.php?action=llamarLista", // Ruta ajustada
+                "ajax": "crudClientes.php?action=llamarLista", // Ruta ajustada
                 "columns": [{
                         "data": "id_cliente"
                     },
@@ -116,7 +116,7 @@
                                     data-telefono="${row.telefono}" 
                                     data-email="${row.email}" 
                                     data-direccion="${row.direccion}" 
-                                    data-dni="${row.dni}" 
+                                    data-dni="${row.dni}">
                                     data-password="${row.password}">
                                     Editar
                                 </button>
@@ -135,7 +135,7 @@
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
                 if (confirm(`¿Está seguro de eliminar al cliente ${nombre}?`)) {
-                    $.post('getClientes.php?action=eliminarCliente', {
+                    $.post('crudClientes.php?action=eliminarCliente', {
                         id
                     }, function() { // Ruta ajustada
                         table.ajax.reload();
@@ -151,7 +151,7 @@
                 const email = $(this).data('email');
                 const direccion = $(this).data('direccion');
                 const dni = $(this).data('dni');
-                const password = $(this).data('password');
+                const password = "";
 
                 // Rellenar los campos del modal
                 $('#editarId').val(id);
@@ -177,7 +177,7 @@
                 const dni = $('#editarDni').val();
                 const password = $('#editarPassword').val();
 
-                $.post('getClientes.php?action=actualizarCliente', {
+                $.post('crudClientes.php?action=actualizarCliente', {
                     id,
                     nombre,
                     telefono,
@@ -191,10 +191,8 @@
                 });
             });
 
-
         });
     </script>
-
 
 </body>
 

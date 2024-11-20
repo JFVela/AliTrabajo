@@ -89,16 +89,31 @@ function actualizarCliente($conn)
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
     $dni = $_POST['dni'];
+    $password = $_POST['password'];
 
+    // Hashear la contraseña si es nueva
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Usar prepared statement para mayor seguridad
     $query = "UPDATE clientes 
-              SET nombre_cliente = '$nombre', direccion = '$direccion', telefono = '$telefono', email = '$email', dni = '$dni'
-              WHERE id_cliente = $id";
+              SET nombre_cliente = ?, direccion = ?, telefono = ?, email = ?, dni = ?, password = ? 
+              WHERE id_cliente = ?";
 
-    if ($conn->query($query)) {
-        echo json_encode(["success" => "Cliente actualizado correctamente"]);
+    $stmt = $conn->prepare($query);
+    if ($stmt) {
+        $stmt->bind_param("ssssssi", $nombre, $direccion, $telefono, $email, $dni, $passwordHash, $id);
+
+        if ($stmt->execute()) {
+            echo json_encode(["success" => "Cliente actualizado correctamente"]);
+        } else {
+            echo json_encode(["error" => "Error al actualizar cliente: " . $stmt->error]);
+        }
+
+        $stmt->close();
     } else {
-        echo json_encode(["error" => "Error al actualizar cliente: " . $conn->error]);
+        echo json_encode(["error" => "Error al preparar la consulta: " . $conn->error]);
     }
 }
+
 
 $conn->close();
