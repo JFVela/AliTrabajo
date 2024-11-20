@@ -17,19 +17,27 @@
 <body>
     <div class="container mt-5">
         <h2>Gestión de Clientes</h2>
-        <table id="clientesTable" class="display table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre Completo</th>
-                    <th>Telf</th>
-                    <th>Email</th>
-                    <th>Detalle</th>
-                    <th>Imprimir</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-        </table>
+        <button type="button" class="btn btn-success">
+            Agregar
+            <i class="bi bi-box-arrow-in-up-right"></i>
+        </button>
+        <br>
+        <br>
+        <div class="contenedorTabla table-responsive">
+            <table id="clientesTable" class="display table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre Completo</th>
+                        <th>Telf</th>
+                        <th>Email</th>
+                        <th>Detalle</th>
+                        <th>Imprimir</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 
     <!-- Modal para Editar Cliente -->
@@ -96,13 +104,21 @@
                     {
                         "data": null,
                         "render": function(data, type, row) {
-                            return `<a href="detalle.php?id=${row.id_cliente}" class="btn btn-info btn-sm"><i class="bi bi-list-check"></i></a>`;
+                            return `
+                            <a href="detalle.php?id=${row.id_cliente}" 
+                                class="btn btn-info btn-sm">
+                                <i class="bi bi-list-check"></i>
+                            </a>`;
                         }
                     },
                     {
                         "data": null,
                         "render": function(data, type, row) {
-                            return `<a href="imprimir.php?id=${row.id_cliente}" class="btn btn-primary btn-sm"><i class="bi bi-file-earmark-pdf-fill"></i></a>`;
+                            return `
+                            <a href="imprimir.php?id=${row.id_cliente}" 
+                                class="btn btn-dark btn-sm">
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                            </a>`;
                         }
                     },
                     {
@@ -116,11 +132,16 @@
                                     data-telefono="${row.telefono}" 
                                     data-email="${row.email}" 
                                     data-direccion="${row.direccion}" 
-                                    data-dni="${row.dni}">
+                                    data-dni="${row.dni}"
                                     data-password="${row.password}">
-                                    Editar
+                                    <i class="bi bi-pencil-square"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm eliminar" data-id="${row.id_cliente}" data-nombre="${row.nombre_cliente}">Eliminar</button>
+                                <button 
+                                    class="btn btn-danger btn-sm eliminar" 
+                                    data-id="${row.id_cliente}" 
+                                    data-nombre="${row.nombre_cliente}">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
                             `;
                         }
                     }
