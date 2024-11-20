@@ -148,7 +148,7 @@
         // Contador de caracteres para el campo "Nombre"
         $('#editarNombre').on('input', function() {
             const length = $(this).val().length;
-            $('#nombreCounter').text(`${length}/100`); 
+            $('#nombreCounter').text(`${length}/100`);
         });
 
         // Contador de caracteres para el campo "Dirección"
@@ -203,7 +203,7 @@
                         "data": null,
                         "render": function(data, type, row) {
                             return `
-                            <a href="imprimir.php?id=${row.id_cliente}" 
+                            <a href="imprimir.php?accion=imprimirCliente&id=${row.id_cliente}" target="_blank" 
                                 class="btn btn-dark btn-sm">
                                 <i class="bi bi-file-earmark-pdf-fill"></i>
                             </a>`;
