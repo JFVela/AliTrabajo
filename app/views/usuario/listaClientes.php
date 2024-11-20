@@ -173,6 +173,7 @@
                 const direccion = $(this).data('direccion');
                 const dni = $(this).data('dni');
                 const password = "";
+                console.log(id);
 
                 // Rellenar los campos del modal
                 $('#editarId').val(id);
@@ -212,6 +213,16 @@
                 });
             });
 
+            function limpiarDatos() {
+                // Limpiar los valores de los campos de un formulario
+                document.getElementById('editarId').value = "";
+                document.getElementById('editarNombre').value = "";
+                document.getElementById('editarTelefono').value = "";
+                document.getElementById('editarEmail').value = "";
+                document.getElementById('editarDireccion').value = "";
+                document.getElementById('editarDni').value = "";
+                document.getElementById('editarPassword').value = "";
+            }
         });
     </script>
 
