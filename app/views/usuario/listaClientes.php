@@ -15,38 +15,132 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --colorUno: #4335A7;
-            --colorDos: #80C4E9;
-            --colorTres: #F3F3E0;
-            --colorCuatro: #133E87;
+            --color-primario: #4335A7;
+            --color-secundario: #80C4E9;
+            --color-fondo: #F3F3E0;
+            --color-acento: #133E87;
+            --color-texto: #333333;
         }
 
-        .modal-header {
-            background-color: var(--colorTres);
+        body {
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            font-family: 'Arial', sans-serif;
         }
 
-        .botonModal {
+        .gestion-clientes-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .gestion-clientes-titulo {
+            color: var(--color-primario);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .gestion-clientes-boton-agregar {
+            background-color: var(--color-acento);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .gestion-clientes-boton-agregar:hover {
+            background-color: var(--color-primario);
+        }
+
+        .gestion-clientes-tabla {
+            border-collapse: separate;
+            border-spacing: 0;
             width: 100%;
-            background-color: var(--colorCuatro);
-            color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .botonModal:hover {
+        .gestion-clientes-tabla th,
+        .gestion-clientes-tabla td {
+            border: none;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .gestion-clientes-tabla thead {
+            background-color: var(--color-secundario);
+            color: var(--color-acento);
+        }
+
+        .gestion-clientes-tabla tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .gestion-clientes-tabla tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .gestion-clientes-modal-header {
+            background-color: var(--color-primario);
             color: white;
-            background-color: var(--colorUno);
+            border-bottom: none;
+        }
+
+        .gestion-clientes-modal-titulo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .gestion-clientes-form-label {
+            color: var(--color-acento);
+            font-weight: bold;
+        }
+
+        .gestion-clientes-form-input {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 0.5rem;
+        }
+
+        .gestion-clientes-form-input:focus {
+            border-color: var(--color-secundario);
+            box-shadow: 0 0 0 0.2rem rgba(128, 196, 233, 0.25);
+        }
+
+        .gestion-clientes-boton-modal {
+            width: 100%;
+            background-color: var(--color-acento);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .gestion-clientes-boton-modal:hover {
+            background-color: var(--color-primario);
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container mt-5">
-        <h2>Gestión de Clientes</h2>
-        <button type="button" id="btnNuevoCliente" class="btn btn-success"> Agregar <i class="bi bi-box-arrow-in-up-right"></i> </button>
+    <div class="container gestion-clientes-container">
+        <h2 class="gestion-clientes-titulo">Gestión de Clientes</h2>
+        <button type="button" id="btnNuevoCliente" class="gestion-clientes-boton-agregar">
+            Agregar <i class="bi bi-box-arrow-in-up-right"></i>
+        </button>
         <br>
         <br>
-        <div class="contenedorTabla table-responsive">
-            <table id="clientesTable" class="display table table-striped">
+        <div class="table-responsive">
+            <table id="clientesTable" class="gestion-clientes-tabla">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -58,6 +152,9 @@
                         <th>Acción</th>
                     </tr>
                 </thead>
+                <tbody>
+                    <!-- Aquí se insertarán las filas de datos dinámicamente -->
+                </tbody>
             </table>
         </div>
     </div>
@@ -66,17 +163,17 @@
     <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><span id="tituloModal"></span></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header gestion-clientes-modal-header">
+                    <h5 class="modal-title gestion-clientes-modal-titulo"><span id="tituloModal"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formEditar">
                         <input type="hidden" id="editarId">
                         <!-- Nombre -->
                         <div class="mb-3">
-                            <label for="editarNombre" class="form-label">Nombre</label>
-                            <input type="text" id="editarNombre" class="form-control" required
+                            <label for="editarNombre" class="form-label gestion-clientes-form-label">Nombre</label>
+                            <input type="text" id="editarNombre" class="form-control gestion-clientes-form-input" required
                                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
                                 title="El nombre no puede contener números ni caracteres especiales"
                                 maxlength="100">
@@ -88,22 +185,22 @@
 
                         <!-- Teléfono -->
                         <div class="mb-3">
-                            <label for="editarTelefono" class="form-label">Teléfono</label>
-                            <input type="text" id="editarTelefono" class="form-control" required
+                            <label for="editarTelefono" class="form-label gestion-clientes-form-label">Teléfono</label>
+                            <input type="text" id="editarTelefono" class="form-control gestion-clientes-form-input" required
                                 pattern="^9\d{8}$"
                                 title="El teléfono debe comenzar con 9 y tener 9 dígitos">
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
-                            <label for="editarEmail" class="form-label">Email</label>
-                            <input type="email" id="editarEmail" class="form-control" required>
+                            <label for="editarEmail" class="form-label gestion-clientes-form-label">Email</label>
+                            <input type="email" id="editarEmail" class="form-control gestion-clientes-form-input" required>
                         </div>
 
                         <!-- Dirección -->
                         <div class="mb-3">
-                            <label for="editarDireccion" class="form-label">Dirección</label>
-                            <input type="text" id="editarDireccion" class="form-control" required
+                            <label for="editarDireccion" class="form-label gestion-clientes-form-label">Dirección</label>
+                            <input type="text" id="editarDireccion" class="form-control gestion-clientes-form-input" required
                                 maxlength="255">
                             <small class="form-text text-muted">
                                 Máximo 255 caracteres.
@@ -113,17 +210,17 @@
 
                         <!-- DNI -->
                         <div class="mb-3">
-                            <label for="editarDni" class="form-label">DNI</label>
-                            <input type="text" id="editarDni" class="form-control" required
+                            <label for="editarDni" class="form-label gestion-clientes-form-label">DNI</label>
+                            <input type="text" id="editarDni" class="form-control gestion-clientes-form-input" required
                                 pattern="^\d{8}$"
                                 title="El DNI debe ser un número de 8 dígitos">
                         </div>
 
                         <!-- Contraseña -->
                         <div class="mb-3 position-relative">
-                            <label for="editarPassword" class="form-label">Crea nueva contraseña</label>
+                            <label for="editarPassword" class="form-label gestion-clientes-form-label">Crea nueva contraseña</label>
                             <div class="input-group">
-                                <input type="password" id="editarPassword" class="form-control">
+                                <input type="password" id="editarPassword" class="form-control gestion-clientes-form-input">
                                 <button type="button" id="togglePassword" class="btn btn-outline-secondary">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -131,7 +228,7 @@
                         </div>
 
                         <!-- Botón Actualizar -->
-                        <button type="submit" class="botonModal btn"><span id="textoDinamico"></span></button>
+                        <button type="submit" class="gestion-clientes-boton-modal"><span id="textoDinamico"></span></button>
                     </form>
                 </div>
             </div>
@@ -193,7 +290,7 @@
                         "data": null,
                         "render": function(data, type, row) {
                             return `
-                            <a href="detalle.php?id=${row.id_cliente}" 
+                            <a href="detalleCliente.php?id=${row.id_cliente}" 
                                 class="btn btn-info btn-sm">
                                 <i class="bi bi-list-check"></i>
                             </a>`;
@@ -350,6 +447,17 @@
                 const direccion = $('#editarDireccion').val();
                 const dni = $('#editarDni').val();
                 const password = $('#editarPassword').val();
+
+                // Validar contraseña solo si es un nuevo usuario
+                if (id == 0 && (!password || password.trim().length < 8)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Advertencia',
+                        text: 'Debe ingresar una contraseña de al menos 8 caracteres para un nuevo usuario.',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    return; // Detiene la ejecución si no hay contraseña válida
+                }
 
                 // Determinar acción según el ID
                 const action = id == 0 ? 'crearCliente' : 'actualizarCliente';
