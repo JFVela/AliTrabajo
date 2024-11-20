@@ -12,6 +12,30 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --colorUno: #4335A7;
+            --colorDos: #80C4E9;
+            --colorTres: #F3F3E0;
+            --colorCuatro: #133E87;
+        }
+
+        .modal-header {
+            background-color: var(--colorTres);
+        }
+
+        .botonModal {
+            width: 100%;
+            background-color: var(--colorCuatro);
+            color: white;
+        }
+
+        .botonModal:hover {
+            color: white;
+            background-color: var(--colorUno);
+        }
+    </style>
 </head>
 
 <body>
@@ -43,37 +67,71 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Editar Cliente</h5>
+                    <h5 class="modal-title"><span id="tituloModal"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formEditar">
                         <input type="hidden" id="editarId">
+                        <!-- Nombre -->
                         <div class="mb-3">
                             <label for="editarNombre" class="form-label">Nombre</label>
-                            <input type="text" id="editarNombre" class="form-control">
+                            <input type="text" id="editarNombre" class="form-control" required
+                                pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El nombre no puede contener números ni caracteres especiales"
+                                maxlength="100">
+                            <small class="form-text text-muted">
+                                Máximo 100 caracteres.
+                                <span id="nombreCounter">0/100</span>
+                            </small>
                         </div>
+
+                        <!-- Teléfono -->
                         <div class="mb-3">
                             <label for="editarTelefono" class="form-label">Teléfono</label>
-                            <input type="text" id="editarTelefono" class="form-control">
+                            <input type="text" id="editarTelefono" class="form-control" required
+                                pattern="^9\d{8}$"
+                                title="El teléfono debe comenzar con 9 y tener 9 dígitos">
                         </div>
+
+                        <!-- Email -->
                         <div class="mb-3">
                             <label for="editarEmail" class="form-label">Email</label>
-                            <input type="email" id="editarEmail" class="form-control">
+                            <input type="email" id="editarEmail" class="form-control" required>
                         </div>
+
+                        <!-- Dirección -->
                         <div class="mb-3">
                             <label for="editarDireccion" class="form-label">Dirección</label>
-                            <input type="text" id="editarDireccion" class="form-control">
+                            <input type="text" id="editarDireccion" class="form-control" required
+                                maxlength="255">
+                            <small class="form-text text-muted">
+                                Máximo 255 caracteres.
+                                <span id="direccionCounter">0/255</span>
+                            </small>
                         </div>
+
+                        <!-- DNI -->
                         <div class="mb-3">
                             <label for="editarDni" class="form-label">DNI</label>
-                            <input type="text" id="editarDni" class="form-control">
+                            <input type="text" id="editarDni" class="form-control" required
+                                pattern="^\d{8}$"
+                                title="El DNI debe ser un número de 8 dígitos">
                         </div>
-                        <div class="mb-3">
+
+                        <!-- Contraseña -->
+                        <div class="mb-3 position-relative">
                             <label for="editarPassword" class="form-label">Crea nueva contraseña</label>
-                            <input type="password" id="editarPassword" class="form-control">
+                            <div class="input-group">
+                                <input type="password" id="editarPassword" class="form-control">
+                                <button type="button" id="togglePassword" class="btn btn-outline-secondary">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
-                        <button type="button" id="btnActualizar" class="btn btn-success">Actualizar</button>
+
+                        <!-- Botón Actualizar -->
+                        <button type="submit" class="botonModal btn"><span id="textoDinamico"></span></button>
                     </form>
                 </div>
             </div>
@@ -83,6 +141,38 @@
 
     <!-- Scripts -->
     <script>
+        //Variables globales
+        let textoModal = document.getElementById("textoDinamico");
+        let tituloModal = document.getElementById("tituloModal");
+
+        // Contador de caracteres para el campo "Nombre"
+        $('#editarNombre').on('input', function() {
+            const length = $(this).val().length;
+            $('#nombreCounter').text(`${length}/100`); 
+        });
+
+        // Contador de caracteres para el campo "Dirección"
+        $('#editarDireccion').on('input', function() {
+            const length = $(this).val().length;
+            $('#direccionCounter').text(`${length}/255`);
+        });
+
+        // Restablecer contadores cuando se cierra o abre el modal
+        $('#modalEditar').on('hidden.bs.modal shown.bs.modal', function() {
+            $('#nombreCounter').text('0/100'); // Restablecer contador del nombre
+            $('#direccionCounter').text('0/255'); // Restablecer contador de la dirección
+
+        });
+
+        // Mostrar/ocultar contraseña
+        $('#togglePassword').click(function() {
+            const passwordInput = $('#editarPassword');
+            const isPassword = passwordInput.attr('type') === 'password';
+            passwordInput.attr('type', isPassword ? 'text' : 'password');
+            $(this).html(`<i class="fas fa-${isPassword ? 'eye-slash' : 'eye'}"></i>`);
+        });
+
+        //Tabla Ajax
         $(document).ready(function() {
             // Inicializar DataTable
             const table = $('#clientesTable').DataTable({
@@ -217,6 +307,8 @@
 
             // Editar cliente
             $('#clientesTable').on('click', '.editar', function() {
+                tituloModal.textContent = "Editar Cliente";
+                textoModal.textContent = "Editar";
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
                 const telefono = $(this).data('telefono');
@@ -241,7 +333,16 @@
 
 
             // Actualizar o Agregar cliente
-            $('#btnActualizar').click(function() {
+            $('#formEditar').submit(function(event) {
+                // Prevenir el comportamiento predeterminado del formulario
+                event.preventDefault();
+
+                // Validar formulario
+                if (!this.checkValidity()) {
+                    return; // Si el formulario no es válido, no continúa
+                }
+
+                // Obtener valores del formulario
                 const id = $('#editarId').val();
                 const nombre = $('#editarNombre').val();
                 const telefono = $('#editarTelefono').val();
@@ -250,9 +351,10 @@
                 const dni = $('#editarDni').val();
                 const password = $('#editarPassword').val();
 
-                const action = id == 0 ? 'crearCliente' : 'actualizarCliente'; // Determina la acción según el id
+                // Determinar acción según el ID
+                const action = id == 0 ? 'crearCliente' : 'actualizarCliente';
 
-                // Datos del cliente
+                // Crear objeto de datos
                 const datosCliente = {
                     nombre,
                     telefono,
@@ -262,26 +364,53 @@
                     password
                 };
 
-                // Si es un id 0, agregamos el id al objeto para crear un cliente
+                // Si no es un nuevo cliente, incluir el ID
                 if (id != 0) {
                     datosCliente.id = id;
                 }
 
-                // Llamada al servidor
-                $.post(`crudClientes.php?action=${action}`, datosCliente, function() {
-                    $('#modalEditar').modal('hide');
-                    table.ajax.reload();
+                // Enviar datos al servidor
+                $.post(`crudClientes.php?action=${action}`, datosCliente, function(response) {
+                    // Manejar la respuesta del servidor
+                    const result = JSON.parse(response);
+
+                    if (result.success) {
+                        // Ocultar el modal y recargar la tabla primero
+                        $('#modalEditar').modal('hide');
+                        table.ajax.reload();
+                        // Mostrar mensaje de éxito después
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: 'Operación realizada correctamente.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    } else {
+                        // Mostrar mensaje de error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: result.error,
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                }).fail(function() {
+                    // Manejo de errores en la solicitud AJAX
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Ocurrió un error en la comunicación con el servidor.',
+                        confirmButtonText: 'Aceptar'
+                    });
                 });
             });
 
-
-            // Agregar cliente
+            // Limpiar datos para nuevo cliente
             $('#btnNuevoCliente').click(function() {
+                tituloModal.textContent = "Nuevo Cliente";
+                textoModal.textContent = "Agregar Cliente";
                 limpiarDatos();
-                //Para nuevos usuarios definiremos id = 0
-                const id = 0;
-                $('#editarId').val(id);
-                // Mostrar el modal
+                $('#editarId').val(0);
                 $('#modalEditar').modal('show');
             });
 
