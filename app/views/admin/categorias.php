@@ -57,7 +57,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="formEditar" enctype="multipart/form-data">
-                        <input type="" id="editarId">
+                        <input type="hidden" id="editarId">
 
                         <!-- Nombre -->
                         <div class="mb-3">
@@ -80,7 +80,7 @@
                         </div>
 
                         <!-- Foto existente -->
-                        <input type="" id="fotoExistente">
+                        <input type="hidden" id="fotoExistente">
 
                         <!-- Foto (nueva) -->
                         <div class="mb-3">
@@ -275,14 +275,31 @@
                 formData.append('descripcion', descripcion);
                 formData.append('fotoExistente', fotoExistente);
 
+                // Verificar si el id es 0, significa que es una nueva categoría
+                if (id == 0) {
+                    // Si el id es 0 y no se ha subido una nueva foto
+                    if (!fotoNueva) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Advertencia',
+                            text: 'Debe ingresar una imagen para una nueva categoría.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                        return; // Detiene la ejecución si no hay imagen
+                    }
+                }
+
                 // Adjuntar foto nueva solo si existe
                 if (fotoNueva) {
                     formData.append('foto', fotoNueva);
                 }
 
+                // Determinar acción según el ID
+                const action = id == 0 ? 'crearCategoria' : 'actualizarCategoria';
+
                 // Enviar datos al servidor
                 $.ajax({
-                    url: `crudCategorias.php?action=actualizarCategoria`,
+                    url: `crudCategorias.php?action=${action}`,
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -296,7 +313,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: '¡Éxito!',
-                                text: 'Categoría actualizada correctamente.',
+                                text: 'Operación realizada correctamente.',
                                 confirmButtonText: 'Aceptar'
                             });
                         } else {
