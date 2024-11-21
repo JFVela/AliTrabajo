@@ -54,7 +54,7 @@ if ($accion == 'imprimirCliente') {
         function Header()
         {
             // Logo de la empresa (ajusta la ruta según corresponda)
-            $this->Image('lego.png', 180, 5, 20, 20, 'png');
+            $this->Image('logo.png', 180, 5, 20, 20, 'png');
             $this->SetFont('Arial', 'B', 16);
             $this->Cell(0, 10, utf8_decode('Información del Cliente'), 0, 1, 'C');
             $this->Ln(5);

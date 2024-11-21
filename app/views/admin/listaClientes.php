@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Clientes - Sistema Audio</title>
+    <title>Gestión de Clientes</title>
     <!-- CSS de DataTables y jQuery -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -13,121 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --color-primario: #4335A7;
-            --color-secundario: #80C4E9;
-            --color-fondo: #F3F3E0;
-            --color-acento: #133E87;
-            --color-texto: #333333;
-        }
-
-        body {
-            background-color: var(--color-fondo);
-            color: var(--color-texto);
-            font-family: 'Arial', sans-serif;
-        }
-
-        .gestion-clientes-container {
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-top: 2rem;
-        }
-
-        .gestion-clientes-titulo {
-            color: var(--color-primario);
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .gestion-clientes-boton-agregar {
-            background-color: var(--color-acento);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .gestion-clientes-boton-agregar:hover {
-            background-color: var(--color-primario);
-        }
-
-        .gestion-clientes-tabla {
-            border-collapse: separate;
-            border-spacing: 0;
-            width: 100%;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .gestion-clientes-tabla th,
-        .gestion-clientes-tabla td {
-            border: none;
-            padding: 1rem;
-            text-align: left;
-        }
-
-        .gestion-clientes-tabla thead {
-            background-color: var(--color-secundario);
-            color: var(--color-acento);
-        }
-
-        .gestion-clientes-tabla tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        .gestion-clientes-tabla tbody tr:hover {
-            background-color: #e9ecef;
-        }
-
-        .gestion-clientes-modal-header {
-            background-color: var(--color-primario);
-            color: white;
-            border-bottom: none;
-        }
-
-        .gestion-clientes-modal-titulo {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .gestion-clientes-form-label {
-            color: var(--color-acento);
-            font-weight: bold;
-        }
-
-        .gestion-clientes-form-input {
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            padding: 0.5rem;
-        }
-
-        .gestion-clientes-form-input:focus {
-            border-color: var(--color-secundario);
-            box-shadow: 0 0 0 0.2rem rgba(128, 196, 233, 0.25);
-        }
-
-        .gestion-clientes-boton-modal {
-            width: 100%;
-            background-color: var(--color-acento);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .gestion-clientes-boton-modal:hover {
-            background-color: var(--color-primario);
-        }
-    </style>
+    <link rel="stylesheet" href="/public/css/admin/estilos.css">
 </head>
 
 <body>
@@ -235,7 +121,6 @@
         </div>
     </div>
 
-
     <!-- Scripts -->
     <script>
         //Variables globales
@@ -300,7 +185,7 @@
                         "data": null,
                         "render": function(data, type, row) {
                             return `
-                            <a href="imprimir.php?accion=imprimirCliente&id=${row.id_cliente}" target="_blank" 
+                            <a href="../fpdp/imprimir.php?accion=imprimirCliente&id=${row.id_cliente}" target="_blank" 
                                 class="btn btn-dark btn-sm">
                                 <i class="bi bi-file-earmark-pdf-fill"></i>
                             </a>`;
