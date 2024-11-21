@@ -106,15 +106,23 @@ function actualizarCategoria($conn)
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         $uploadDir = '../../../uploads/categorias/';
 
+        // Generar el nuevo nombre de la foto
         $foto = uniqid() . '_' . basename($_FILES['foto']['name']);
         $uploadFile = $uploadDir . $foto;
 
+        // Eliminar la foto existente si es diferente de la predeterminada (por ejemplo, "default.png")
+        if ($fotoExistente !== 'default.png' && file_exists($uploadDir . $fotoExistente)) {
+            unlink($uploadDir . $fotoExistente);
+        }
+
+        // Mover la nueva foto al directorio
         if (!move_uploaded_file($_FILES['foto']['tmp_name'], $uploadFile)) {
             echo json_encode(["error" => "Error al subir la foto."]);
             return;
         }
     }
 
+    // Actualizar la base de datos con el nuevo nombre de la foto
     $query = "UPDATE categorias SET 
               nombre_categoria = '$nombre',
               descripcion_categoria = '$descripcion',
@@ -127,5 +135,6 @@ function actualizarCategoria($conn)
         echo json_encode(["error" => "Error al actualizar categoría: " . $conn->error]);
     }
 }
+
 
 $conn->close();
