@@ -79,8 +79,6 @@ function crearCategoria($conn)
     }
 }
 
-
-
 // Función para eliminar una categoría
 function eliminarCategoria($conn)
 {
@@ -100,23 +98,33 @@ function actualizarCategoria($conn)
     $id = $_POST['id'];
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
-    $foto = $_POST['foto'];
+    $fotoExistente = $_POST['fotoExistente'];
 
-    $query = "UPDATE categorias 
-              SET nombre_categoria = ?, descripcion_categoria = ?, foto_categoria = ? 
-              WHERE id_categoria = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssi", $nombre, $descripcion, $foto, $id);
+    $foto = $fotoExistente; // Por defecto, usa la foto existente
 
-    if ($stmt) {
-        if ($stmt->execute()) {
-            echo json_encode(["success" => "Categoría actualizada correctamente"]);
-        } else {
-            echo json_encode(["error" => "Error al actualizar categoría: " . $stmt->error]);
+    // Procesar nueva foto si se envió
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+        $uploadDir = '../../../uploads/categorias/';
+
+        $foto = uniqid() . '_' . basename($_FILES['foto']['name']);
+        $uploadFile = $uploadDir . $foto;
+
+        if (!move_uploaded_file($_FILES['foto']['tmp_name'], $uploadFile)) {
+            echo json_encode(["error" => "Error al subir la foto."]);
+            return;
         }
-        $stmt->close();
+    }
+
+    $query = "UPDATE categorias SET 
+              nombre_categoria = '$nombre',
+              descripcion_categoria = '$descripcion',
+              foto_categoria = '$foto'
+              WHERE id_categoria = $id";
+
+    if ($conn->query($query)) {
+        echo json_encode(["success" => "Categoría actualizada correctamente"]);
     } else {
-        echo json_encode(["error" => "Error al preparar la consulta: " . $conn->error]);
+        echo json_encode(["error" => "Error al actualizar categoría: " . $conn->error]);
     }
 }
 

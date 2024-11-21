@@ -57,7 +57,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="formEditar" enctype="multipart/form-data">
-                        <input type="hidden" id="editarId">
+                        <input type="" id="editarId">
 
                         <!-- Nombre -->
                         <div class="mb-3">
@@ -79,7 +79,10 @@
                                 title="Agregue una descripción"></textarea>
                         </div>
 
-                        <!-- Foto -->
+                        <!-- Foto existente -->
+                        <input type="" id="fotoExistente">
+
+                        <!-- Foto (nueva) -->
                         <div class="mb-3">
                             <label for="editarImagen" class="form-label gestion-form-label">Foto</label>
                             <input type="file" id="editarImagen" class="form-control gestion-form-input"
@@ -120,7 +123,7 @@
                         "data": "foto_categoria",
                         "render": function(data, type, row) {
                             return `
-                        <img src="../../../uploads/categorias/${data}" alt="Imagen" class="img-thumbnail" width="500px">
+                        <img src="../../../uploads/categorias/${data}" alt="${data}" class="img-thumbnail" width="500px">
                     `;
                         }
                     },
@@ -242,13 +245,13 @@
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
                 const descripcion = $(this).data('descripcion');
-                const imagen = $(this).data('imagen');
+                const imagen = $(this).data('foto'); // Ruta o nombre de la imagen
 
                 // Rellenar los campos del modal
                 $('#editarId').val(id);
                 $('#editarNombre').val(nombre);
                 $('#editarDescripcion').val(descripcion);
-                $('#editarImagen').val(imagen);
+                $('#fotoExistente').val(imagen); // Guardar la ruta/nombre de la imagen actual
 
                 // Mostrar el modal
                 $('#modalEditar').modal('show');
@@ -256,37 +259,34 @@
 
             // Actualizar o Agregar categoría
             $('#formEditar').submit(function(event) {
-                event.preventDefault(); // Prevenir comportamiento predeterminado
+                event.preventDefault();
 
-                // Validar formulario
-                if (!this.checkValidity()) {
-                    return;
-                }
-
+                // Obtener valores del formulario
                 const id = $('#editarId').val();
                 const nombre = $('#editarNombre').val();
                 const descripcion = $('#editarDescripcion').val();
-                const imagen = $('#editarImagen')[0].files[0]; // Obtener el archivo
+                const fotoNueva = $('#editarImagen')[0].files[0]; // Obtener archivo si se subió
+                const fotoExistente = $('#fotoExistente').val(); // Ruta de la foto actual
 
-                const action = id == 0 ? 'crearCategoria' : 'actualizarCategoria';
-
-                // Crear objeto FormData
+                // Crear objeto FormData para enviar datos
                 const formData = new FormData();
+                formData.append('id', id);
                 formData.append('nombre', nombre);
                 formData.append('descripcion', descripcion);
-                formData.append('foto', imagen); // Agregar archivo
+                formData.append('fotoExistente', fotoExistente);
 
-                if (id != 0) {
-                    formData.append('id', id);
+                // Adjuntar foto nueva solo si existe
+                if (fotoNueva) {
+                    formData.append('foto', fotoNueva);
                 }
 
-                // Enviar datos al servidor con AJAX
+                // Enviar datos al servidor
                 $.ajax({
-                    url: `crudCategorias.php?action=${action}`,
-                    type: 'POST',
+                    url: `crudCategorias.php?action=actualizarCategoria`,
+                    method: 'POST',
                     data: formData,
-                    processData: false, // Necesario para enviar archivos
-                    contentType: false, // Necesario para enviar archivos
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
                         const result = JSON.parse(response);
 
@@ -296,7 +296,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: '¡Éxito!',
-                                text: 'Operación realizada correctamente.',
+                                text: 'Categoría actualizada correctamente.',
                                 confirmButtonText: 'Aceptar'
                             });
                         } else {
@@ -319,7 +319,6 @@
                 });
             });
 
-
             // Limpiar datos para nueva categoría
             $('#btnNuevoCliente').click(function() {
                 tituloModal.textContent = "Nueva Categoría";
@@ -333,7 +332,7 @@
                 $('#editarId').val("");
                 $('#editarNombre').val("");
                 $('#editarDescripcion').val("");
-                $('#editarImagen').val("");
+                $('#fotoExistente').val("");
             }
 
         });
