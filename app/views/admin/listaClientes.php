@@ -18,6 +18,7 @@
 
 <body>
 
+    <!-- Tabla en html -->
     <div class="container gestion-clientes-container">
         <h2 class="gestion-clientes-titulo">Gestión de Clientes</h2>
         <button type="button" id="btnNuevoCliente" class="gestion-clientes-boton-agregar">
