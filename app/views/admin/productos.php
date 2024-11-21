@@ -97,6 +97,7 @@
                             <label for="proveedorProducto" class="form-label gestion-form-label">Proveedor</label>
                             <select id="proveedorProducto" class="form-control gestion-form-input" required>
                                 <!-- Aquí se llenarán las opciones con un AJAX o de forma estática -->
+                                <option value="" disabled selected>Seleccione una proveedor</option>
                             </select>
                         </div>
 
@@ -158,6 +159,29 @@
             }
         });
 
+        $.ajax({
+            url: 'crudProveedor.php?action=listarProveedor', // Ruta para obtener las categorías
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                let proveedorHtml = '';
+                // Asegurarse de acceder a la propiedad 'data' dentro de la respuesta
+                response.data.forEach(function(proveedor) {
+                    proveedorHtml += `<option value="${proveedor.id_proveedor}">${proveedor.nomb_empresa}</option>`;
+                });
+
+                // Agregar las opciones de categorías después de la opción predeterminada
+                $('#proveedorProducto').append(proveedorHtml);
+            }
+        });
+
+        $('#categoriaProducto').on('change', function() {
+            $('#idCategoria').val($(this).val());
+        });
+
+        $('#proveedorProducto').on('change', function() {
+            $('#idProveedor').val($(this).val());
+        });
 
         // Tabla Ajax
         $(document).ready(function() {
@@ -416,7 +440,7 @@
                         const result = JSON.parse(response);
 
                         if (result.success) {
-                            $('#modalProducto').modal('hide');
+                            $('#modalEditar').modal('hide');
                             table.ajax.reload();
                             Swal.fire({
                                 icon: 'success',
@@ -445,19 +469,24 @@
             });
 
             // Limpiar datos para nueva categoría
-            $('#btnNuevoCliente').click(function() {
+            $('#btnProductoNuevo').click(function() {
                 tituloModal.textContent = "Nueva Categoría";
                 textoModal.textContent = "Agregar Categoría";
                 limpiarDatos();
-                $('#editarId').val(0);
+                $('#idProducto').val(0);
+                $('#idCategoria').val(0);
+                $('#idProveedor').val(0);
                 $('#modalEditar').modal('show');
             });
 
             function limpiarDatos() {
-                $('#editarId').val("");
-                $('#editarNombre').val("");
-                $('#editarDescripcion').val("");
-                $('#fotoExistente').val("");
+                $('#idProducto').val("");
+                $('#nombreProducto').val("");
+                $('#descripcionProducto').val("");
+                $('#precioProducto').val("");
+                $('#stockProducto').val("");
+                $('#idCategoria').val("");
+                $('#idProveedor').val("");
             }
 
         });

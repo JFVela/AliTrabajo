@@ -124,7 +124,7 @@ function eliminarProducto($conn)
     }
 }
 
-//funcion actualizar producto
+// Función actualizar producto
 function actualizarProducto($conn)
 {
     $id = $_POST['id'];
@@ -141,10 +141,12 @@ function actualizarProducto($conn)
     // Procesar nueva foto si se envió
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         $uploadDir = '../../../uploads/productos/';
+
+        // Generar el nuevo nombre de la foto
         $foto = uniqid() . '_' . basename($_FILES['foto']['name']);
         $uploadFile = $uploadDir . $foto;
 
-        // Eliminar la foto existente si no es la predeterminada
+        // Eliminar la foto existente si es diferente de la predeterminada (por ejemplo, "default.png")
         if ($fotoExistente !== 'default.png' && file_exists($uploadDir . $fotoExistente)) {
             unlink($uploadDir . $fotoExistente);
         }
@@ -156,6 +158,7 @@ function actualizarProducto($conn)
         }
     }
 
+    // Actualizar en la base de datos
     $query = "UPDATE productos SET 
               id_categoria = '$id_categoria',
               id_proveedor = '$id_proveedor',
