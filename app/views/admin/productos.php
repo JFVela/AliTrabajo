@@ -48,13 +48,119 @@
         </div>
     </div>
 
+    <!-- Modal para Editar PRODUCTOS -->
+    <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header gestion-modal-header">
+                    <h5 class="modal-title gestion-modal-titulo"><span id="tituloModal"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNuevoProducto" enctype="multipart/form-data">
+                    <input type="" id="idProducto">
+                    <input type="" id="idCategoria">
+                    <input type="" id="idProveedor">
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombreProducto" class="form-label gestion-form-label">Nombre</label>
+                            <input type="text" id="nombreProducto" class="form-control gestion-form-input" required
+                                pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El nombre puede contener letras, números y espacios"
+                                maxlength="100">
+                            <small class="form-text text-muted">
+                                Máximo 100 caracteres.
+                                <span id="nombreProductoCounter">0/100</span>
+                            </small>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label for="descripcionProducto" class="form-label gestion-form-label">Descripción</label>
+                            <textarea id="descripcionProducto" class="form-control gestion-form-input" rows="3"
+                                title="Agregue una descripción" maxlength="2500"></textarea>
+                            <small class="form-text text-muted">Máximo 500 palabras.</small>
+                        </div>
+
+                        <!-- Categoría (Select) -->
+                        <div class="mb-3">
+                            <label for="categoriaProducto" class="form-label gestion-form-label">Categoría</label>
+                            <select id="categoriaProducto" class="form-control gestion-form-input" required>
+                                <!-- Opción predeterminada (esto se mantendrá) -->
+                                <option value="" disabled selected>Seleccione una categoría</option>
+                            </select>
+                        </div>
+
+                        <!-- Proveedor (Select) -->
+                        <div class="mb-3">
+                            <label for="proveedorProducto" class="form-label gestion-form-label">Proveedor</label>
+                            <select id="proveedorProducto" class="form-control gestion-form-input" required>
+                                <!-- Aquí se llenarán las opciones con un AJAX o de forma estática -->
+                            </select>
+                        </div>
+
+                        <!-- Precio por hora -->
+                        <div class="mb-3">
+                            <label for="precioProducto" class="form-label gestion-form-label">Precio por hora</label>
+                            <input type="number" id="precioProducto" class="form-control gestion-form-input" required
+                                step="0.01" min="0" max="999.99" title="Precio por hora, máximo 3 cifras">
+                        </div>
+
+                        <!-- Stock -->
+                        <div class="mb-3">
+                            <label for="stockProducto" class="form-label gestion-form-label">Stock</label>
+                            <input type="number" id="stockProducto" class="form-control gestion-form-input" required
+                                min="1" max="100" title="Stock debe ser entre 1 y 100">
+                        </div>
+
+                        <!-- Foto existente -->
+                        <input type="hidden" id="fotoExistente">
+
+                        <!-- Foto (Nueva) -->
+                        <div class="mb-3">
+                            <label for="imagenProducto" class="form-label gestion-form-label">Foto</label>
+                            <input type="file" id="imagenProducto" class="form-control gestion-form-input"
+                                accept="image/*"
+                                title="Seleccione una imagen">
+                            <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF.</small>
+                        </div>
+
+                        <!-- Botón para crear producto -->
+                        <button type="submit" class="gestion-boton-modal">
+                            <span id="textoDinamico"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         //Variables globales
         let textoModal = document.getElementById("textoDinamico");
         let tituloModal = document.getElementById("tituloModal");
+
+        // Cargar Categorías
+        $.ajax({
+            url: 'crudCategorias.php?action=llamarCategorias', // Ruta para obtener las categorías
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                let categoriasHtml = '';
+                // Asegurarse de acceder a la propiedad 'data' dentro de la respuesta
+                response.data.forEach(function(categoria) {
+                    categoriasHtml += `<option value="${categoria.id_categoria}">${categoria.nombre_categoria}</option>`;
+                });
+
+                // Agregar las opciones de categorías después de la opción predeterminada
+                $('#categoriaProducto').append(categoriasHtml);
+            }
+        });
+
+
         // Tabla Ajax
         $(document).ready(function() {
-            // Inicializar DataTable
             // Inicializar DataTable
             const table = $('#productoTable').DataTable({
                 "ajax": "crudProductos.php?action=listarProductos", // Ruta ajustada para obtener productos
@@ -108,7 +214,17 @@
                         "data": null, // Acción (editar/eliminar)
                         "render": function(data, type, row) {
                             return `
-                        <button class="btn btn-warning btn-sm editar" data-id="${row.id_producto}" data-nombre="${row.nombre}" data-precio="${row.precio_hr}" data-stock="${row.stock}" data-foto="${row.foto}">
+                        <button class="btn btn-warning btn-sm editar" 
+                            data-id="${row.id_producto}" 
+                            data-idproveedor="${row.id_proveedor}"
+                            data-idcategoria="${row.id_categoria}"
+                            data-nombre="${row.nombre}"
+                            data-descripcion="${row.desc}"
+                            data-precio="${row.precio_hr}"
+                            data-stock="${row.stock}"
+                            data-foto="${row.foto}"
+                            data-nombrecategoria="${row.nombre_categoria}"
+                            data-nombreproveedor="${row.nomb_empresa}">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                         <button class="btn btn-danger btn-sm eliminar" data-id="${row.id_producto}" data-nombre="${row.nombre}">
@@ -187,22 +303,31 @@
                 });
             });
 
-            // Editar categoría
-            $('#categoriasTable').on('click', '.editar', function() {
-                tituloModal.textContent = "Editar Categoría";
+            // Editar Producto
+            $('#productoTable').on('click', '.editar', function() {
+                tituloModal.textContent = "Editar Producto";
                 textoModal.textContent = "Editar";
+
+                // Obtener los datos del producto seleccionado
+                // En el boton editar se creo un data-* ... uses lo que sigue para ponerlo en data(...)
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
                 const descripcion = $(this).data('descripcion');
-                const imagen = $(this).data('foto'); // Ruta o nombre de la imagen
+                const precio = $(this).data('precio_hr');
+                const stock = $(this).data('stock');
+                const categoriaId = $(this).data('idcategoria');
+                const proveedorId = $(this).data('idproveedor');
 
-                // Rellenar los campos del modal
-                $('#editarId').val(id);
-                $('#editarNombre').val(nombre);
-                $('#editarDescripcion').val(descripcion);
-                $('#fotoExistente').val(imagen); // Guardar la ruta/nombre de la imagen actual
+                // Rellenar los campos del formulario con los datos del producto
+                $('#idProducto').val(id);
+                $('#nombreProducto').val(nombre);
+                $('#descripcionProducto').val(descripcion);
+                $('#precioProducto').val(precio);
+                $('#stockProducto').val(stock);
+                $('#idCategoria').val(categoriaId); // Rellenar el select de categoría
+                $('#idProveedor').val(proveedorId); // Rellenar el select de proveedor
 
-                // Mostrar el modal
+                // Mostrar el modal con los datos cargados
                 $('#modalEditar').modal('show');
             });
 
