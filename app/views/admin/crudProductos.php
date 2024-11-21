@@ -19,19 +19,52 @@ switch ($action) {
         listarProductos($conn); // Función para listar los productos
         break;
     case 'crearProducto':
-        //crearProducto($conn); // Función para crear un nuevo producto
+        crearProducto($conn); // Función para crear un nuevo producto
         break;
     case 'eliminarProducto':
         eliminarProducto($conn); // Función para eliminar un producto
         break;
     case 'actualizarProducto':
-        //actualizarProducto($conn); // Función para actualizar un producto
+        actualizarProducto($conn); // Función para actualizar un producto
         break;
     default:
         echo json_encode(["error" => "Acción no válida"]);
         break;
 }
 
+//Funcion crear productos
+function crearProducto($conn)
+{
+    $id_categoria = $_POST['id_categoria'];
+    $id_proveedor = $_POST['id_proveedor'];
+    $nombre = $_POST['nombre'];
+    $descripcion = $_POST['descripcion'];
+    $precio_hr = $_POST['precio_hr'];
+    $stock = $_POST['stock'];
+
+    // Procesar la foto
+    $foto = '';
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+        $uploadDir = '../../../uploads/productos/';
+        $foto = uniqid() . '_' . basename($_FILES['foto']['name']);
+        $uploadFile = $uploadDir . $foto;
+
+        // Mover el archivo al servidor
+        if (!move_uploaded_file($_FILES['foto']['tmp_name'], $uploadFile)) {
+            echo json_encode(["error" => "Error al subir la foto."]);
+            return;
+        }
+    }
+
+    $query = "INSERT INTO productos (id_categoria, id_proveedor, nombre, `desc`, precio_hr, stock, foto) VALUES 
+              ('$id_categoria', '$id_proveedor', '$nombre', '$descripcion', '$precio_hr', '$stock', '$foto')";
+
+    if ($conn->query($query)) {
+        echo json_encode(["success" => "Producto creado correctamente"]);
+    } else {
+        echo json_encode(["error" => "Error al crear producto: " . $conn->error]);
+    }
+}
 
 // Función para listar productos
 function listarProductos($conn)
@@ -91,5 +124,53 @@ function eliminarProducto($conn)
     }
 }
 
+//funcion actualizar producto
+function actualizarProducto($conn)
+{
+    $id = $_POST['id'];
+    $id_categoria = $_POST['id_categoria'];
+    $id_proveedor = $_POST['id_proveedor'];
+    $nombre = $_POST['nombre'];
+    $descripcion = $_POST['descripcion'];
+    $precio_hr = $_POST['precio_hr'];
+    $stock = $_POST['stock'];
+    $fotoExistente = $_POST['fotoExistente'];
+
+    $foto = $fotoExistente; // Por defecto, usa la foto existente
+
+    // Procesar nueva foto si se envió
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+        $uploadDir = '../../../uploads/productos/';
+        $foto = uniqid() . '_' . basename($_FILES['foto']['name']);
+        $uploadFile = $uploadDir . $foto;
+
+        // Eliminar la foto existente si no es la predeterminada
+        if ($fotoExistente !== 'default.png' && file_exists($uploadDir . $fotoExistente)) {
+            unlink($uploadDir . $fotoExistente);
+        }
+
+        // Mover la nueva foto al servidor
+        if (!move_uploaded_file($_FILES['foto']['tmp_name'], $uploadFile)) {
+            echo json_encode(["error" => "Error al subir la foto."]);
+            return;
+        }
+    }
+
+    $query = "UPDATE productos SET 
+              id_categoria = '$id_categoria',
+              id_proveedor = '$id_proveedor',
+              nombre = '$nombre',
+              `desc` = '$descripcion',
+              precio_hr = '$precio_hr',
+              stock = '$stock',
+              foto = '$foto'
+              WHERE id_producto = $id";
+
+    if ($conn->query($query)) {
+        echo json_encode(["success" => "Producto actualizado correctamente"]);
+    } else {
+        echo json_encode(["error" => "Error al actualizar producto: " . $conn->error]);
+    }
+}
 
 $conn->close();

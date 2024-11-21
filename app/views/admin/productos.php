@@ -58,9 +58,9 @@
                 </div>
                 <div class="modal-body">
                     <form id="formNuevoProducto" enctype="multipart/form-data">
-                    <input type="" id="idProducto">
-                    <input type="" id="idCategoria">
-                    <input type="" id="idProveedor">
+                        <input type="" id="idProducto">
+                        <input type="" id="idCategoria">
+                        <input type="" id="idProveedor">
 
                         <!-- Nombre -->
                         <div class="mb-3">
@@ -309,14 +309,13 @@
                 textoModal.textContent = "Editar";
 
                 // Obtener los datos del producto seleccionado
-                // En el boton editar se creo un data-* ... uses lo que sigue para ponerlo en data(...)
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
                 const descripcion = $(this).data('descripcion');
-                const precio = $(this).data('precio_hr');
+                const precio = $(this).data('precio');
                 const stock = $(this).data('stock');
-                const categoriaId = $(this).data('idcategoria');
-                const proveedorId = $(this).data('idproveedor');
+                const categoriaId = $(this).data('idcategoria'); // ID de la categoría
+                const proveedorId = $(this).data('idproveedor'); // ID del proveedor
 
                 // Rellenar los campos del formulario con los datos del producto
                 $('#idProducto').val(id);
@@ -324,40 +323,75 @@
                 $('#descripcionProducto').val(descripcion);
                 $('#precioProducto').val(precio);
                 $('#stockProducto').val(stock);
-                $('#idCategoria').val(categoriaId); // Rellenar el select de categoría
-                $('#idProveedor').val(proveedorId); // Rellenar el select de proveedor
+                $('#idCategoria').val(categoriaId);
+                $('#idProveedor').val(proveedorId);
 
-                // Mostrar el modal con los datos cargados
+                // Cargar las categorías y seleccionar la categoría correcta
+                $.ajax({
+                    url: 'crudCategorias.php?action=llamarCategorias', // Ruta para obtener las categorías
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        let categoriasHtml = '';
+                        response.data.forEach(function(categoria) {
+                            categoriasHtml += `<option value="${categoria.id_categoria}" ${categoria.id_categoria == categoriaId ? 'selected' : ''}>${categoria.nombre_categoria}</option>`;
+                        });
+                        $('#categoriaProducto').html('<option value="" disabled selected>Seleccione una categoría</option>' + categoriasHtml);
+                    }
+                });
+
+                // Cargar los proveedores y seleccionar el proveedor correcto
+                $.ajax({
+                    url: 'crudProveedor.php?action=listarProveedor', // Ruta para obtener los proveedores
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        let proveedoresHtml = '';
+                        response.data.forEach(function(proveedor) {
+                            proveedoresHtml += `<option value="${proveedor.id_proveedor}" ${proveedor.id_proveedor == proveedorId ? 'selected' : ''}>${proveedor.nomb_empresa}</option>`;
+                        });
+                        $('#proveedorProducto').html('<option value="" disabled selected>Seleccione un proveedor</option>' + proveedoresHtml);
+                    }
+                });
+
+                // Finalmente, mostrar el modal
                 $('#modalEditar').modal('show');
             });
 
-            // Actualizar o Agregar categoría
-            $('#formEditar').submit(function(event) {
+            // Actualizar o Agregar Producto
+            $('#formNuevoProducto').submit(function(event) {
                 event.preventDefault();
 
                 // Obtener valores del formulario
-                const id = $('#editarId').val();
-                const nombre = $('#editarNombre').val();
-                const descripcion = $('#editarDescripcion').val();
-                const fotoNueva = $('#editarImagen')[0].files[0]; // Obtener archivo si se subió
+                const id = $('#idProducto').val();
+                const idCategoria = $('#idCategoria').val();
+                const idProveedor = $('#idProveedor').val();
+                const nombre = $('#nombreProducto').val();
+                const descripcion = $('#descripcionProducto').val();
+                const precio = $('#precioProducto').val();
+                const stock = $('#stockProducto').val();
+                const fotoNueva = $('#imagenProducto')[0].files[0]; // Obtener archivo si se subió
                 const fotoExistente = $('#fotoExistente').val(); // Ruta de la foto actual
 
                 // Crear objeto FormData para enviar datos
                 const formData = new FormData();
                 formData.append('id', id);
+                formData.append('id_categoria', idCategoria);
+                formData.append('id_proveedor', idProveedor);
                 formData.append('nombre', nombre);
                 formData.append('descripcion', descripcion);
+                formData.append('precio_hr', precio);
+                formData.append('stock', stock);
                 formData.append('fotoExistente', fotoExistente);
 
-                // Verificar si el id es 0, significa que es una nueva categoría
+                // Verificar si el id es 0, significa que es un nuevo producto
                 if (id == 0) {
-                    // Si el id es 0 y no se ha subido una nueva foto
                     if (!fotoNueva) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Advertencia',
-                            text: 'Debe ingresar una imagen para una nueva categoría.',
-                            confirmButtonText: 'Aceptar'
+                            text: 'Debe ingresar una imagen para un nuevo producto.',
+                            confirmButtonText: 'Aceptar',
                         });
                         return; // Detiene la ejecución si no hay imagen
                     }
@@ -369,11 +403,11 @@
                 }
 
                 // Determinar acción según el ID
-                const action = id == 0 ? 'crearCategoria' : 'actualizarCategoria';
+                const action = id == 0 ? 'crearProducto' : 'actualizarProducto';
 
                 // Enviar datos al servidor
                 $.ajax({
-                    url: `crudCategorias.php?action=${action}`,
+                    url: `crudProductos.php?action=${action}`,
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -382,20 +416,20 @@
                         const result = JSON.parse(response);
 
                         if (result.success) {
-                            $('#modalEditar').modal('hide');
+                            $('#modalProducto').modal('hide');
                             table.ajax.reload();
                             Swal.fire({
                                 icon: 'success',
                                 title: '¡Éxito!',
                                 text: 'Operación realizada correctamente.',
-                                confirmButtonText: 'Aceptar'
+                                confirmButtonText: 'Aceptar',
                             });
                         } else {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
                                 text: result.error,
-                                confirmButtonText: 'Aceptar'
+                                confirmButtonText: 'Aceptar',
                             });
                         }
                     },
@@ -404,9 +438,9 @@
                             icon: 'error',
                             title: 'Error',
                             text: 'Ocurrió un error en la comunicación con el servidor.',
-                            confirmButtonText: 'Aceptar'
+                            confirmButtonText: 'Aceptar',
                         });
-                    }
+                    },
                 });
             });
 
