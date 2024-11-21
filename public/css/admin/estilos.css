@@ -111,3 +111,7 @@ body {
 .gestion-boton-modal:hover {
   background-color: var(--color-primario);
 }
+
+.gestionImagen{
+  width : 1000px;
+}
