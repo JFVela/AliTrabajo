@@ -12,7 +12,7 @@ body {
   font-family: "Arial", sans-serif;
 }
 
-.gestion-clientes-container {
+.gestion-container {
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -20,14 +20,14 @@ body {
   margin-top: 2rem;
 }
 
-.gestion-clientes-titulo {
+.gestion-titulo {
   color: var(--color-primario);
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
-.gestion-clientes-boton-agregar {
+.gestion-boton-agregar {
   background-color: var(--color-acento);
   color: white;
   border: none;
@@ -37,11 +37,11 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.gestion-clientes-boton-agregar:hover {
+.gestion-boton-agregar:hover {
   background-color: var(--color-primario);
 }
 
-.gestion-clientes-tabla {
+.gestion-tabla {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
@@ -50,54 +50,54 @@ body {
   overflow: hidden;
 }
 
-.gestion-clientes-tabla th,
-.gestion-clientes-tabla td {
+.gestion-tabla th,
+.gestion-tabla td {
   border: none;
   padding: 1rem;
   text-align: left;
 }
 
-.gestion-clientes-tabla thead {
+.gestion-tabla thead {
   background-color: var(--color-secundario);
   color: var(--color-acento);
 }
 
-.gestion-clientes-tabla tbody tr:nth-child(even) {
+.gestion-tabla tbody tr:nth-child(even) {
   background-color: #f8f9fa;
 }
 
-.gestion-clientes-tabla tbody tr:hover {
+.gestion-tabla tbody tr:hover {
   background-color: #e9ecef;
 }
 
-.gestion-clientes-modal-header {
+.gestion-modal-header {
   background-color: var(--color-primario);
   color: white;
   border-bottom: none;
 }
 
-.gestion-clientes-modal-titulo {
+.gestion-modal-titulo {
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.gestion-clientes-form-label {
+.gestion-form-label {
   color: var(--color-acento);
   font-weight: bold;
 }
 
-.gestion-clientes-form-input {
+.gestion-form-input {
   border: 1px solid #ced4da;
   border-radius: 5px;
   padding: 0.5rem;
 }
 
-.gestion-clientes-form-input:focus {
+.gestion-form-input:focus {
   border-color: var(--color-secundario);
   box-shadow: 0 0 0 0.2rem rgba(128, 196, 233, 0.25);
 }
 
-.gestion-clientes-boton-modal {
+.gestion-boton-modal {
   width: 100%;
   background-color: var(--color-acento);
   color: white;
@@ -108,6 +108,6 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.gestion-clientes-boton-modal:hover {
+.gestion-boton-modal:hover {
   background-color: var(--color-primario);
 }

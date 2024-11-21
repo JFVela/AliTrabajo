@@ -15,19 +15,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/public/css/admin/estilos.css">
 </head>
-
 <body>
 
     <!-- Tabla en html -->
-    <div class="container gestion-clientes-container">
-        <h2 class="gestion-clientes-titulo">Gestión de Clientes</h2>
-        <button type="button" id="btnNuevoCliente" class="gestion-clientes-boton-agregar">
+    <div class="container gestion-container">
+        <h2 class="gestion-titulo">Gestión de Clientes</h2>
+        <button type="button" id="btnNuevoCliente" class="gestion-boton-agregar">
             Agregar <i class="bi bi-box-arrow-in-up-right"></i>
         </button>
         <br>
         <br>
         <div class="table-responsive">
-            <table id="clientesTable" class="gestion-clientes-tabla">
+            <table id="clientesTable" class="gestion-tabla">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -50,8 +49,8 @@
     <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header gestion-clientes-modal-header">
-                    <h5 class="modal-title gestion-clientes-modal-titulo"><span id="tituloModal"></span></h5>
+                <div class="modal-header gestion-modal-header">
+                    <h5 class="modal-title gestion-modal-titulo"><span id="tituloModal"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -59,8 +58,8 @@
                         <input type="hidden" id="editarId">
                         <!-- Nombre -->
                         <div class="mb-3">
-                            <label for="editarNombre" class="form-label gestion-clientes-form-label">Nombre</label>
-                            <input type="text" id="editarNombre" class="form-control gestion-clientes-form-input" required
+                            <label for="editarNombre" class="form-label gestion-form-label">Nombre</label>
+                            <input type="text" id="editarNombre" class="form-control gestion-form-input" required
                                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
                                 title="El nombre no puede contener números ni caracteres especiales"
                                 maxlength="100">
@@ -72,22 +71,22 @@
 
                         <!-- Teléfono -->
                         <div class="mb-3">
-                            <label for="editarTelefono" class="form-label gestion-clientes-form-label">Teléfono</label>
-                            <input type="text" id="editarTelefono" class="form-control gestion-clientes-form-input" required
+                            <label for="editarTelefono" class="form-label gestion-form-label">Teléfono</label>
+                            <input type="text" id="editarTelefono" class="form-control gestion-form-input" required
                                 pattern="^9\d{8}$"
                                 title="El teléfono debe comenzar con 9 y tener 9 dígitos">
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
-                            <label for="editarEmail" class="form-label gestion-clientes-form-label">Email</label>
-                            <input type="email" id="editarEmail" class="form-control gestion-clientes-form-input" required>
+                            <label for="editarEmail" class="form-label gestion-form-label">Email</label>
+                            <input type="email" id="editarEmail" class="form-control gestion-form-input" required>
                         </div>
 
                         <!-- Dirección -->
                         <div class="mb-3">
-                            <label for="editarDireccion" class="form-label gestion-clientes-form-label">Dirección</label>
-                            <input type="text" id="editarDireccion" class="form-control gestion-clientes-form-input" required
+                            <label for="editarDireccion" class="form-label gestion-form-label">Dirección</label>
+                            <input type="text" id="editarDireccion" class="form-control gestion-form-input" required
                                 maxlength="255">
                             <small class="form-text text-muted">
                                 Máximo 255 caracteres.
@@ -97,17 +96,17 @@
 
                         <!-- DNI -->
                         <div class="mb-3">
-                            <label for="editarDni" class="form-label gestion-clientes-form-label">DNI</label>
-                            <input type="text" id="editarDni" class="form-control gestion-clientes-form-input" required
+                            <label for="editarDni" class="form-label gestion-form-label">DNI</label>
+                            <input type="text" id="editarDni" class="form-control gestion-form-input" required
                                 pattern="^\d{8}$"
                                 title="El DNI debe ser un número de 8 dígitos">
                         </div>
 
                         <!-- Contraseña -->
                         <div class="mb-3 position-relative">
-                            <label for="editarPassword" class="form-label gestion-clientes-form-label">Crea nueva contraseña</label>
+                            <label for="editarPassword" class="form-label gestion-form-label">Crea nueva contraseña</label>
                             <div class="input-group">
-                                <input type="password" id="editarPassword" class="form-control gestion-clientes-form-input">
+                                <input type="password" id="editarPassword" class="form-control gestion-form-input">
                                 <button type="button" id="togglePassword" class="btn btn-outline-secondary">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -115,7 +114,7 @@
                         </div>
 
                         <!-- Botón Actualizar -->
-                        <button type="submit" class="gestion-clientes-boton-modal"><span id="textoDinamico"></span></button>
+                        <button type="submit" class="gestion-boton-modal"><span id="textoDinamico"></span></button>
                     </form>
                 </div>
             </div>

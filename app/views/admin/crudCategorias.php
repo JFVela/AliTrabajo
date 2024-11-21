@@ -52,7 +52,22 @@ function crearCategoria($conn)
 {
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
-    $foto = $_POST['foto'];
+
+    // Procesar la foto
+    $foto = '';
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+        //Cuando lo pongas en otra carpeta que termine en "/" 
+        $uploadDir = '../../../uploads/categorias/';
+
+        $foto = uniqid() . '_' . basename($_FILES['foto']['name']); // Evitar duplicados
+        $uploadFile = $uploadDir . $foto;
+
+        // Mover el archivo al servidor
+        if (!move_uploaded_file($_FILES['foto']['tmp_name'], $uploadFile)) {
+            echo json_encode(["error" => "Error al subir la foto."]);
+            return;
+        }
+    }
 
     $query = "INSERT INTO categorias (nombre_categoria, descripcion_categoria, foto_categoria) VALUES 
               ('$nombre', '$descripcion', '$foto')";
@@ -63,6 +78,8 @@ function crearCategoria($conn)
         echo json_encode(["error" => "Error al crear categoría: " . $conn->error]);
     }
 }
+
+
 
 // Función para eliminar una categoría
 function eliminarCategoria($conn)

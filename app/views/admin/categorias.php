@@ -19,15 +19,15 @@
 <body>
 
     <!-- Tabla en html -->
-    <div class="container gestion-clientes-container">
-        <h2 class="gestion-clientes-titulo">Gestión de Categorias</h2>
-        <button type="button" id="btnNuevoCliente" class="gestion-clientes-boton-agregar">
+    <div class="container gestion-container">
+        <h2 class="gestion-titulo">Gestión de Categorias</h2>
+        <button type="button" id="btnNuevoCliente" class="gestion-boton-agregar">
             Agregar <i class="bi bi-box-arrow-in-up-right"></i>
         </button>
         <br>
         <br>
         <div class="table-responsive">
-            <table id="categoriasTable" class="gestion-clientes-tabla">
+            <table id="categoriasTable" class="gestion-tabla">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -51,12 +51,12 @@
     <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header gestion-clientes-modal-header">
-                    <h5 class="modal-title gestion-clientes-modal-titulo"><span id="tituloModal"></span></h5>
+                <div class="modal-header gestion-modal-header">
+                    <h5 class="modal-title gestion-modal-titulo"><span id="tituloModal"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formEditar">
+                    <form id="formEditar" enctype="multipart/form-data">
                         <input type="hidden" id="editarId">
 
                         <!-- Nombre -->
@@ -88,14 +88,6 @@
                             <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF.</small>
                         </div>
 
-                        <!-- Vista previa de la imagen -->
-                        <div class="mb-3">
-                            <label class="form-label gestion-form-label">Vista previa de la imagen</label>
-                            <div id="imagePreviewContainer" style="display: flex; justify-content: flex-start; align-items: center;">
-                                <img id="imagePreview" src="" alt="Vista previa de la imagen" style="max-width: 200px; display: none; margin-left: 20px;" />
-                            </div>
-                        </div>
-
                         <!-- Botón Actualizar -->
                         <button type="submit" class="gestion-boton-modal">
                             <span id="textoDinamico"></span>
@@ -105,27 +97,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Mostrar vista previa de la imagen
-        document.getElementById('editarImagen').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const imagePreview = document.getElementById('imagePreview');
-
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block'; // Mostrar la imagen
-                };
-
-                reader.readAsDataURL(file);
-            } else {
-                imagePreview.style.display = 'none'; // Ocultar la imagen si no hay archivo
-            }
-        });
-    </script>
 
     <script>
         //Variables globales
@@ -149,7 +120,7 @@
                         "data": "foto_categoria",
                         "render": function(data, type, row) {
                             return `
-                        <img src="../uploads/categorias/${data}" alt="Imagen" class="img-thumbnail" width="100">
+                        <img src="../../../uploads/categorias/${data}" alt="Imagen" class="img-thumbnail" width="500px">
                     `;
                         }
                     },
@@ -285,70 +256,69 @@
 
             // Actualizar o Agregar categoría
             $('#formEditar').submit(function(event) {
-                // Prevenir el comportamiento predeterminado del formulario
-                event.preventDefault();
+                event.preventDefault(); // Prevenir comportamiento predeterminado
 
                 // Validar formulario
                 if (!this.checkValidity()) {
-                    return; // Si el formulario no es válido, no continúa
+                    return;
                 }
 
-                // Obtener valores del formulario
                 const id = $('#editarId').val();
                 const nombre = $('#editarNombre').val();
                 const descripcion = $('#editarDescripcion').val();
-                const imagen = $('#editarImagen').val();
+                const imagen = $('#editarImagen')[0].files[0]; // Obtener el archivo
 
-                // Determinar acción según el ID
                 const action = id == 0 ? 'crearCategoria' : 'actualizarCategoria';
 
-                // Crear objeto de datos
-                const datosCategoria = {
-                    nombre,
-                    descripcion,
-                    imagen
-                };
+                // Crear objeto FormData
+                const formData = new FormData();
+                formData.append('nombre', nombre);
+                formData.append('descripcion', descripcion);
+                formData.append('foto', imagen); // Agregar archivo
 
-                // Si no es una nueva categoría, incluir el ID
                 if (id != 0) {
-                    datosCategoria.id = id;
+                    formData.append('id', id);
                 }
 
-                // Enviar datos al servidor
-                $.post(`crudCategorias.php?action=${action}`, datosCategoria, function(response) {
-                    // Manejar la respuesta del servidor
-                    const result = JSON.parse(response);
+                // Enviar datos al servidor con AJAX
+                $.ajax({
+                    url: `crudCategorias.php?action=${action}`,
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // Necesario para enviar archivos
+                    contentType: false, // Necesario para enviar archivos
+                    success: function(response) {
+                        const result = JSON.parse(response);
 
-                    if (result.success) {
-                        // Ocultar el modal y recargar la tabla primero
-                        $('#modalEditar').modal('hide');
-                        table.ajax.reload();
-                        // Mostrar mensaje de éxito después
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Éxito!',
-                            text: 'Operación realizada correctamente.',
-                            confirmButtonText: 'Aceptar'
-                        });
-                    } else {
-                        // Mostrar mensaje de error
+                        if (result.success) {
+                            $('#modalEditar').modal('hide');
+                            table.ajax.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: 'Operación realizada correctamente.',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: result.error,
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    },
+                    error: function() {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: result.error,
+                            text: 'Ocurrió un error en la comunicación con el servidor.',
                             confirmButtonText: 'Aceptar'
                         });
                     }
-                }).fail(function() {
-                    // Manejo de errores en la solicitud AJAX
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Ocurrió un error en la comunicación con el servidor.',
-                        confirmButtonText: 'Aceptar'
-                    });
                 });
             });
+
 
             // Limpiar datos para nueva categoría
             $('#btnNuevoCliente').click(function() {
