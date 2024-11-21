@@ -132,13 +132,13 @@
             });
 
             // Eliminar categoría
-            $('#categoriasTable').on('click', '.eliminar', function() {
+            $('#productoTable').on('click', '.eliminar', function() {
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
 
-                // Confirmar eliminación
+                // Confirmar eliminación con SweetAlert
                 swalWithBootstrapButtons.fire({
-                    title: `¿Está seguro de eliminar la categoría ${nombre}?`,
+                    title: `¿Está seguro de eliminar el producto ${nombre}?`,
                     text: "Esta acción no se puede revertir.",
                     icon: "warning",
                     showCancelButton: true,
@@ -147,16 +147,16 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Llamada AJAX para eliminar la categoría
-                        $.post('crudCategorias.php?action=eliminarCategoria', {
-                            id
+                        // Llamada AJAX para eliminar el producto
+                        $.post('crudProductos.php?action=eliminarProducto', {
+                            id: id
                         }, function(response) {
                             const result = JSON.parse(response);
                             if (result.success) {
                                 // Mostrar mensaje de éxito
                                 swalWithBootstrapButtons.fire({
                                     title: "¡Eliminado!",
-                                    text: `La categoría ${nombre} ha sido eliminada con éxito.`,
+                                    text: `El producto ${nombre} ha sido eliminado con éxito.`,
                                     icon: "success"
                                 });
                                 table.ajax.reload(); // Recargar la tabla

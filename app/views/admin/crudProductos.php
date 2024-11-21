@@ -16,12 +16,22 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 switch ($action) {
     case 'listarProductos':
-        listarProductos($conn);
+        listarProductos($conn); // Función para listar los productos
+        break;
+    case 'crearProducto':
+        //crearProducto($conn); // Función para crear un nuevo producto
+        break;
+    case 'eliminarProducto':
+        eliminarProducto($conn); // Función para eliminar un producto
+        break;
+    case 'actualizarProducto':
+        //actualizarProducto($conn); // Función para actualizar un producto
         break;
     default:
         echo json_encode(["error" => "Acción no válida"]);
         break;
 }
+
 
 // Función para listar productos
 function listarProductos($conn)
@@ -66,5 +76,20 @@ function listarProductos($conn)
     }
 }
 
+// Función para eliminar un producto
+function eliminarProducto($conn)
+{
+    $id = $_POST['id'];
+
+    // Consulta SQL para eliminar el producto
+    $query = "DELETE FROM productos WHERE id_producto = $id";
+
+    if ($conn->query($query)) {
+        echo json_encode(["success" => "Producto eliminado correctamente"]);
+    } else {
+        echo json_encode(["error" => "Error al eliminar producto: " . $conn->error]);
+    }
+}
+
+
 $conn->close();
-?>
