@@ -82,14 +82,39 @@ function crearCategoria($conn)
 // Función para eliminar una categoría
 function eliminarCategoria($conn)
 {
-    $id = $_POST['id'];
-
-    $query = "DELETE FROM categorias WHERE id_categoria = $id";
-    if ($conn->query($query)) {
-        echo json_encode(["success" => "Categoría eliminada correctamente"]);
-    } else {
-        echo json_encode(["error" => "Error al eliminar categoría: " . $conn->error]);
+    // Validar los datos recibidos
+    if (!isset($_POST['id']) || !isset($_POST['foto'])) {
+        echo json_encode(["error" => "Datos incompletos"]);
+        return;
     }
+
+    $id = intval($_POST['id']);
+    $fotoExistente = $_POST['foto'];
+
+    $uploadDir = '../../../uploads/categorias/';
+
+    // Eliminar la foto existente si no es la predeterminada
+    if ($fotoExistente !== 'default.png') {
+        $fotoPath = realpath($uploadDir . $fotoExistente);
+        if ($fotoPath && strpos($fotoPath, realpath($uploadDir)) === 0 && file_exists($fotoPath)) {
+            unlink($fotoPath);
+        } else {
+            echo json_encode(["error" => "No se pudo encontrar o eliminar la foto."]);
+            return;
+        }
+    }
+
+    // Usar consultas preparadas para mayor seguridad
+    $stmt = $conn->prepare("DELETE FROM categorias WHERE id_categoria = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => "Categoria eliminado correctamente"]);
+    } else {
+        echo json_encode(["error" => "Error al eliminar categoria: " . $stmt->error]);
+    }
+
+    $stmt->close();
 }
 
 // Función para actualizar una categoría

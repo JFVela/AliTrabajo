@@ -162,7 +162,8 @@
                         <button 
                             class="btn btn-danger btn-sm eliminar" 
                             data-id="${row.id_categoria}" 
-                            data-nombre="${row.nombre_categoria}">
+                            data-nombre="${row.nombre_categoria}"
+                            data-foto="${row.foto_categoria}">
                             <i class="bi bi-trash-fill"></i>
                         </button>
                     `;
@@ -186,6 +187,7 @@
             $('#categoriasTable').on('click', '.eliminar', function() {
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
+                const foto = $(this).data('foto');
 
                 // Confirmar eliminación
                 swalWithBootstrapButtons.fire({
@@ -200,7 +202,8 @@
                     if (result.isConfirmed) {
                         // Llamada AJAX para eliminar la categoría
                         $.post('crudCategorias.php?action=eliminarCategoria', {
-                            id
+                            id,
+                            foto
                         }, function(response) {
                             const result = JSON.parse(response);
                             if (result.success) {

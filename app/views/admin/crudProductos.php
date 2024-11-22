@@ -112,17 +112,41 @@ function listarProductos($conn)
 // Función para eliminar un producto
 function eliminarProducto($conn)
 {
-    $id = $_POST['id'];
+    // Validar los datos recibidos
+    if (!isset($_POST['id']) || !isset($_POST['foto'])) {
+        echo json_encode(["error" => "Datos incompletos"]);
+        return;
+    }
 
-    // Consulta SQL para eliminar el producto
-    $query = "DELETE FROM productos WHERE id_producto = $id";
+    $id = intval($_POST['id']);
+    $fotoExistente = $_POST['foto'];
 
-    if ($conn->query($query)) {
+    $uploadDir = '../../../uploads/productos/';
+
+    // Eliminar la foto existente si no es la predeterminada
+    if ($fotoExistente !== 'default.png') {
+        $fotoPath = realpath($uploadDir . $fotoExistente);
+        if ($fotoPath && strpos($fotoPath, realpath($uploadDir)) === 0 && file_exists($fotoPath)) {
+            unlink($fotoPath);
+        } else {
+            echo json_encode(["error" => "No se pudo encontrar o eliminar la foto."]);
+            return;
+        }
+    }
+
+    // Usar consultas preparadas para mayor seguridad
+    $stmt = $conn->prepare("DELETE FROM productos WHERE id_producto = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
         echo json_encode(["success" => "Producto eliminado correctamente"]);
     } else {
-        echo json_encode(["error" => "Error al eliminar producto: " . $conn->error]);
+        echo json_encode(["error" => "Error al eliminar producto: " . $stmt->error]);
     }
+
+    $stmt->close();
 }
+
 
 // Función actualizar producto
 function actualizarProducto($conn)

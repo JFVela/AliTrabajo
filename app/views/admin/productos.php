@@ -58,9 +58,9 @@
                 </div>
                 <div class="modal-body">
                     <form id="formNuevoProducto" enctype="multipart/form-data">
-                        <input type="" id="idProducto">
-                        <input type="" id="idCategoria">
-                        <input type="" id="idProveedor">
+                        <input type="hidden" id="idProducto">
+                        <input type="hidden" id="idCategoria">
+                        <input type="hidden" id="idProveedor">
 
                         <!-- Nombre -->
                         <div class="mb-3">
@@ -79,7 +79,7 @@
                         <div class="mb-3">
                             <label for="descripcionProducto" class="form-label gestion-form-label">Descripción</label>
                             <textarea id="descripcionProducto" class="form-control gestion-form-input" rows="3"
-                                title="Agregue una descripción" maxlength="2500"></textarea>
+                                title="Agregue una descripción" maxlength="2500" required></textarea>
                             <small class="form-text text-muted">Máximo 500 palabras.</small>
                         </div>
 
@@ -97,7 +97,7 @@
                             <label for="proveedorProducto" class="form-label gestion-form-label">Proveedor</label>
                             <select id="proveedorProducto" class="form-control gestion-form-input" required>
                                 <!-- Aquí se llenarán las opciones con un AJAX o de forma estática -->
-                                <option value="" disabled selected>Seleccione una proveedor</option>
+                                <option value="" disabled selected>Seleccione un proveedor</option>
                             </select>
                         </div>
 
@@ -116,7 +116,7 @@
                         </div>
 
                         <!-- Foto existente -->
-                        <input type="" id="fotoExistente">
+                        <input type="hidden" id="fotoExistente">
 
                         <!-- Foto (Nueva) -->
                         <div class="mb-3">
@@ -141,11 +141,6 @@
         //Variables globales
         let textoModal = document.getElementById("textoDinamico");
         let tituloModal = document.getElementById("tituloModal");
-
-        // id_categoria
-        // nombre_categoria
-        // id_proveedor
-        // nomb_empresa
 
         // Función genérica para cargar opciones en un select
         function cargarOpciones(url, selectId, selectedId = null, placeholder = "Seleccione una opción") {
@@ -176,9 +171,6 @@
             });
         }
 
-        // Cargar Categorías y Proveedores al inicio
-        cargarOpciones('crudCategorias.php?action=llamarCategorias', '#categoriaProducto', null, 'Seleccione una categoría');
-        cargarOpciones('crudProveedor.php?action=listarProveedor', '#proveedorProducto', null, 'Seleccione un proveedor');
 
         $('#categoriaProducto').on('change', function() {
             $('#idCategoria').val($(this).val());
@@ -256,7 +248,10 @@
                             data-nombreproveedor="${row.nomb_empresa}">
                             <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm eliminar" data-id="${row.id_producto}" data-nombre="${row.nombre}">
+                        <button class="btn btn-danger btn-sm eliminar" 
+                            data-id="${row.id_producto}" 
+                            data-nombre="${row.nombre}" 
+                            data-foto="${row.foto}">
                             <i class="bi bi-trash-fill"></i>
                         </button>
                     `;
@@ -280,6 +275,7 @@
             $('#productoTable').on('click', '.eliminar', function() {
                 const id = $(this).data('id');
                 const nombre = $(this).data('nombre');
+                const foto = $(this).data('foto');
 
                 // Confirmar eliminación con SweetAlert
                 swalWithBootstrapButtons.fire({
@@ -294,7 +290,8 @@
                     if (result.isConfirmed) {
                         // Llamada AJAX para eliminar el producto
                         $.post('crudProductos.php?action=eliminarProducto', {
-                            id: id
+                            id: id,
+                            foto: foto
                         }, function(response) {
                             const result = JSON.parse(response);
                             if (result.success) {
@@ -449,6 +446,7 @@
                         });
                     },
                 });
+                limpiarDatos();
             });
 
             // Limpiar datos para nueva categoría
@@ -460,6 +458,11 @@
                 $('#idCategoria').val(0);
                 $('#idProveedor').val(0);
                 $('#modalEditar').modal('show');
+
+                // Cargar Categorías y Proveedores al inicio
+                //Asi evitamos que se quede pegado en editar
+                cargarOpciones('crudCategorias.php?action=llamarCategorias', '#categoriaProducto', null, 'Seleccione una categoría');
+                cargarOpciones('crudProveedor.php?action=listarProveedor', '#proveedorProducto', null, 'Seleccione un proveedor');
             });
 
             function limpiarDatos() {
