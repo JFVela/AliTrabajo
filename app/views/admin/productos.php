@@ -474,6 +474,7 @@
                 $('#idCategoria').val("");
                 $('#idProveedor').val("");
                 $('#fotoExistente').val("");
+                $('#imagenProducto').val('');
             }
 
         });
