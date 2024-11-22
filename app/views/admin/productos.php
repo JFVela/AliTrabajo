@@ -116,7 +116,7 @@
                         </div>
 
                         <!-- Foto existente -->
-                        <input type="hidden" id="fotoExistente">
+                        <input type="" id="fotoExistente">
 
                         <!-- Foto (Nueva) -->
                         <div class="mb-3">
@@ -158,7 +158,7 @@
                 $('#categoriaProducto').append(categoriasHtml);
             }
         });
-
+        //Cargar Proveedores
         $.ajax({
             url: 'crudProveedor.php?action=listarProveedor', // Ruta para obtener las categorías
             method: 'GET',
@@ -340,6 +340,7 @@
                 const stock = $(this).data('stock');
                 const categoriaId = $(this).data('idcategoria'); // ID de la categoría
                 const proveedorId = $(this).data('idproveedor'); // ID del proveedor
+                const imagen = $(this).data('foto'); // ID del proveedor
 
                 // Rellenar los campos del formulario con los datos del producto
                 $('#idProducto').val(id);
@@ -349,6 +350,7 @@
                 $('#stockProducto').val(stock);
                 $('#idCategoria').val(categoriaId);
                 $('#idProveedor').val(proveedorId);
+                $('#fotoExistente').val(imagen);
 
                 // Cargar las categorías y seleccionar la categoría correcta
                 $.ajax({
@@ -426,6 +428,9 @@
                     formData.append('foto', fotoNueva);
                 }
 
+                console.log(fotoNueva)
+                console.log(fotoExistente)
+
                 // Determinar acción según el ID
                 const action = id == 0 ? 'crearProducto' : 'actualizarProducto';
 
@@ -487,14 +492,13 @@
                 $('#stockProducto').val("");
                 $('#idCategoria').val("");
                 $('#idProveedor').val("");
+                $('#fotoExistente').val("");
             }
 
         });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-
 
 </body>
 
