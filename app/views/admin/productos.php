@@ -142,38 +142,43 @@
         let textoModal = document.getElementById("textoDinamico");
         let tituloModal = document.getElementById("tituloModal");
 
-        // Cargar Categorías
-        $.ajax({
-            url: 'crudCategorias.php?action=llamarCategorias', // Ruta para obtener las categorías
-            method: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                let categoriasHtml = '';
-                // Asegurarse de acceder a la propiedad 'data' dentro de la respuesta
-                response.data.forEach(function(categoria) {
-                    categoriasHtml += `<option value="${categoria.id_categoria}">${categoria.nombre_categoria}</option>`;
-                });
+        // id_categoria
+        // nombre_categoria
+        // id_proveedor
+        // nomb_empresa
 
-                // Agregar las opciones de categorías después de la opción predeterminada
-                $('#categoriaProducto').append(categoriasHtml);
-            }
-        });
-        //Cargar Proveedores
-        $.ajax({
-            url: 'crudProveedor.php?action=listarProveedor', // Ruta para obtener las categorías
-            method: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                let proveedorHtml = '';
-                // Asegurarse de acceder a la propiedad 'data' dentro de la respuesta
-                response.data.forEach(function(proveedor) {
-                    proveedorHtml += `<option value="${proveedor.id_proveedor}">${proveedor.nomb_empresa}</option>`;
-                });
+        // Función genérica para cargar opciones en un select
+        function cargarOpciones(url, selectId, selectedId = null, placeholder = "Seleccione una opción") {
+            // Definir las claves dinámicas para ID y Nombre según el selectId
+            let idKey, nameKey;
 
-                // Agregar las opciones de categorías después de la opción predeterminada
-                $('#proveedorProducto').append(proveedorHtml);
+            if (selectId === '#categoriaProducto') {
+                idKey = 'id_categoria';
+                nameKey = 'nombre_categoria';
+            } else if (selectId === '#proveedorProducto') {
+                idKey = 'id_proveedor';
+                nameKey = 'nomb_empresa';
             }
-        });
+
+            // Llamado AJAX para cargar las opciones
+            $.ajax({
+                url: url, // Ruta para obtener los datos
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    let opcionesHtml = `<option value="" disabled selected>${placeholder}</option>`;
+                    response.data.forEach(function(item) {
+                        // Usar las claves dinámicas para acceder a las propiedades
+                        opcionesHtml += `<option value="${item[idKey]}" ${item[idKey] == selectedId ? 'selected' : ''}>${item[nameKey]}</option>`;
+                    });
+                    $(selectId).html(opcionesHtml);
+                }
+            });
+        }
+
+        // Cargar Categorías y Proveedores al inicio
+        cargarOpciones('crudCategorias.php?action=llamarCategorias', '#categoriaProducto', null, 'Seleccione una categoría');
+        cargarOpciones('crudProveedor.php?action=listarProveedor', '#proveedorProducto', null, 'Seleccione un proveedor');
 
         $('#categoriaProducto').on('change', function() {
             $('#idCategoria').val($(this).val());
@@ -340,7 +345,7 @@
                 const stock = $(this).data('stock');
                 const categoriaId = $(this).data('idcategoria'); // ID de la categoría
                 const proveedorId = $(this).data('idproveedor'); // ID del proveedor
-                const imagen = $(this).data('foto'); // ID del proveedor
+                const imagen = $(this).data('foto');
 
                 // Rellenar los campos del formulario con los datos del producto
                 $('#idProducto').val(id);
@@ -352,35 +357,11 @@
                 $('#idProveedor').val(proveedorId);
                 $('#fotoExistente').val(imagen);
 
-                // Cargar las categorías y seleccionar la categoría correcta
-                $.ajax({
-                    url: 'crudCategorias.php?action=llamarCategorias', // Ruta para obtener las categorías
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        let categoriasHtml = '';
-                        response.data.forEach(function(categoria) {
-                            categoriasHtml += `<option value="${categoria.id_categoria}" ${categoria.id_categoria == categoriaId ? 'selected' : ''}>${categoria.nombre_categoria}</option>`;
-                        });
-                        $('#categoriaProducto').html('<option value="" disabled selected>Seleccione una categoría</option>' + categoriasHtml);
-                    }
-                });
+                // Cargar las categorías y los proveedores seleccionando la opción correcta
+                cargarOpciones('crudCategorias.php?action=llamarCategorias', '#categoriaProducto', categoriaId, 'Seleccione una categoría');
+                cargarOpciones('crudProveedor.php?action=listarProveedor', '#proveedorProducto', proveedorId, 'Seleccione un proveedor');
 
-                // Cargar los proveedores y seleccionar el proveedor correcto
-                $.ajax({
-                    url: 'crudProveedor.php?action=listarProveedor', // Ruta para obtener los proveedores
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        let proveedoresHtml = '';
-                        response.data.forEach(function(proveedor) {
-                            proveedoresHtml += `<option value="${proveedor.id_proveedor}" ${proveedor.id_proveedor == proveedorId ? 'selected' : ''}>${proveedor.nomb_empresa}</option>`;
-                        });
-                        $('#proveedorProducto').html('<option value="" disabled selected>Seleccione un proveedor</option>' + proveedoresHtml);
-                    }
-                });
-
-                // Finalmente, mostrar el modal
+                // Mostrar el modal
                 $('#modalEditar').modal('show');
             });
 
@@ -427,9 +408,6 @@
                 if (fotoNueva) {
                     formData.append('foto', fotoNueva);
                 }
-
-                console.log(fotoNueva)
-                console.log(fotoExistente)
 
                 // Determinar acción según el ID
                 const action = id == 0 ? 'crearProducto' : 'actualizarProducto';
