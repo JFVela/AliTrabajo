@@ -115,3 +115,7 @@ body {
 .gestionImagen{
   max-width: 200px;
 }
+
+.gestionImagenComprobante{
+  max-width: 100px;
+}
