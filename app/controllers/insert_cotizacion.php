@@ -20,8 +20,30 @@ if (isset($_POST['total']) && isset($_POST['email'])) {
 
     // Variables para el pago
     $metodoPagoId = $_POST['metodoPago'];
+
+    // Ruta donde se guardarán las imágenes subidas
+    $directorioSubida = "../../uploads/comprobantes/";
+
     if (isset($_FILES['comprobante']) && $_FILES['comprobante']['error'] == 0) {
-        $nombreArchivo = $_FILES['comprobante']['name'];
+        // Obtén la extensión del archivo
+        $extension = pathinfo($_FILES['comprobante']['name'], PATHINFO_EXTENSION);
+
+        // Genera un nombre único para el archivo
+        $nombreArchivo = uniqid("comprobante_") . "." . $extension;
+
+        // Mueve el archivo a la carpeta designada
+        if (!is_dir($directorioSubida)) {
+            mkdir($directorioSubida, 0777, true); // Crea el directorio si no existe
+        }
+
+        $rutaCompleta = $directorioSubida . $nombreArchivo;
+
+        if (move_uploaded_file($_FILES['comprobante']['tmp_name'], $rutaCompleta)) {
+            // Archivo subido correctamente
+        } else {
+            echo "Error al guardar el archivo en el servidor.";
+            exit;
+        }
     } else {
         $nombreArchivo = "No se subió archivo.";
     }
@@ -84,7 +106,6 @@ if (isset($_POST['total']) && isset($_POST['email'])) {
                 $_SESSION['icono'] = "success";
                 $_SESSION['posision'] = "top-end";
                 header("Location: http://localhost:" . $puerto . "/app/views/usuario/index.php");
-           
             } else {
                 echo "Error al guardar la reserva: " . $conn->error;
             }
