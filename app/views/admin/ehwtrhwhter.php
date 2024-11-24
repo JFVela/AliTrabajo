@@ -80,6 +80,8 @@
                             </table>
                         </div>
                     </div>
+                    <!-- Input para el array de objetos creados -->
+                    <input type="text" name="ArrayProductos" id="ArrayProductos" value="">
                     <!-- Total por hora -->
                     <div class="mb-3">
                         <label class="form-label gestion-form-label">Total * Hora</label>
@@ -97,7 +99,7 @@
                         <!-- Duración -->
                         <div class="col-md-6">
                             <label for="duracion" class="form-label gestion-form-label">Duración</label>
-                            <input type="number" id="duracion" class="form-control gestion-form-input" required>
+                            <input type="number" id="duracion" min="1" max="12" value="1" class="form-control gestion-form-input" required disabled>
                         </div>
 
                         <!-- Total Final Hora -->
@@ -112,13 +114,13 @@
                         <!-- Fecha -->
                         <div class="col-md-6">
                             <label for="fecha" class="form-label gestion-form-label">Fecha</label>
-                            <input type="date" id="fecha" class="form-control gestion-form-input" required>
+                            <input type="date" id="fecha" class="form-control gestion-form-input" required min="">
                         </div>
 
                         <!-- Hora -->
                         <div class="col-md-6">
                             <label for="hora" class="form-label gestion-form-label">Hora</label>
-                            <input type="number" id="hora" class="form-control gestion-form-input" required min="1" max="12">
+                            <input type="number" id="hora" class="form-control gestion-form-input" required min="1" max="12" value="1">
                             <div>
                                 <input type="radio" id="am" name="hora" value="am" required>
                                 <label for="am">AM</label>
@@ -131,8 +133,11 @@
                     <!-- Distrito -->
                     <div class="mb-3">
                         <label for="distrito" class="form-label gestion-form-label">Distrito</label>
-                        <input type="text" id="distrito" class="form-control gestion-form-input" required>
+                        <select id="distrito" class="form-control gestion-form-input" required>
+                            <option value="" disabled selected>Seleccione un distrito</option>
+                        </select>
                     </div>
+                    <input type="" id="idDistrito">
 
                     <!-- Dirección -->
                     <div class="mb-3">
@@ -143,26 +148,25 @@
                     <!-- Teléfono -->
                     <div class="mb-3">
                         <label for="telefono" class="form-label gestion-form-label">Teléfono</label>
-                        <input type="text" id="telefono" class="form-control gestion-form-input" required>
+                        <input type="text" id="telefono" class="form-control gestion-form-input" required pattern="9[0-9]{8}" title="Debe contener 9 dígitos y comenzar con 9.">
                     </div>
 
                     <!-- Método de pago -->
                     <div class="mb-3">
-                        <label class="form-label gestion-form-label">Método de pago</label>
-                        <div>
-                            <input type="radio" id="banco" name="pago" value="banco" required>
-                            <label for="banco">Banco</label>
-                            <input type="radio" id="plin" name="pago" value="plin" required>
-                            <label for="plin">Plin</label>
-                            <input type="radio" id="yape" name="pago" value="yape" required>
-                            <label for="yape">Yape</label>
-                        </div>
+                        <label for="metodoPago" class="form-label gestion-form-label">Método de Pago</label>
+                        <select id="metodoPago" class="form-control gestion-form-input" required>
+                            <option value="" disabled selected>Seleccione un método de pago</option>
+                        </select>
                     </div>
+                    <input type="" id="idMetodoPago"> <!-- Input oculto para guardar el ID seleccionado -->
 
                     <!-- Subir imagen -->
                     <div class="mb-3">
-                        <label for="imagenPago" class="form-label gestion-form-label">Subir Imagen</label>
-                        <input type="file" id="imagenPago" class="form-control gestion-form-input" accept="image/*">
+                        <label for="imagenPago" class="form-label gestion-form-label">Subir comprobante de pago</label>
+                        <input type="file" id="imagenPago" class="form-control gestion-form-input"
+                            accept="image/*"
+                            title="Seleccione una imagen" required>
+                        <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF.</small>
                     </div>
                 </div>
             </div>
@@ -175,48 +179,146 @@
         </div>
     </form>
 
-    <!-- Para el Select de buscar nombre -->
+
+    <!-- Validaciones dinamicas -->
     <script>
-        //Para el select del nombre de usuario el cual funciona como buscador
-        $('#nombreUsuario').select2({
-            placeholder: "Seleccione un usuario",
-            allowClear: true,
-            ajax: {
-                url: 'crudReservas.php?action=listarUsuarios',
-                dataType: 'json',
-                method: 'GET',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function(data) {
-                    return {
-                        results: data.data.map(function(cliente) {
-                            return {
-                                id: cliente.id_cliente,
-                                text: cliente.nombre_cliente
-                            };
-                        })
-                    };
-                },
-                cache: true
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Restringir la fecha al día de hoy en adelante
+            const fechaInput = document.getElementById('fecha');
+            const hoy = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            fechaInput.setAttribute('min', hoy);
+
+            // Validar el teléfono
+            const telefonoInput = document.getElementById('telefono');
+            telefonoInput.addEventListener('input', function() {
+                const valor = telefonoInput.value;
+                const esValido = /^[9][0-9]{8}$/.test(valor);
+
+                if (!esValido && valor.length > 0) {
+                    telefonoInput.setCustomValidity('El teléfono debe tener 9 dígitos y comenzar con 9.');
+                } else {
+                    telefonoInput.setCustomValidity('');
+                }
+            });
         });
-
-        // Evento para capturar la selección y mostrar el id en consola
-        $('#nombreUsuario').on('select2:select', function(e) {
-            var selectedId = e.params.data.id;
-            $('#idCliente').val(selectedId); //llenar el imput del id del cliente
-        });
-
-
-        function limpiarInput() {
-            $('#idCliente').val('');
-        }
     </script>
 
+    <!-- Script para Select de Nombre de Usuario y Distrito -->
+    <script>
+        $(document).ready(function() {
+            // Inicializar el select2 para Nombre de Usuario
+            $('#nombreUsuario').select2({
+                placeholder: "Seleccione un usuario",
+                allowClear: true,
+                ajax: {
+                    url: 'crudReservas.php?action=listarUsuarios', // URL para obtener usuarios
+                    dataType: 'json',
+                    method: 'GET',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term
+                        }; // Enviar el término de búsqueda
+                    },
+                    processResults: function(data) {
+                        // Transformar la respuesta para Select2
+                        return {
+                            results: data.data.map(function(cliente) {
+                                return {
+                                    id: cliente.id_cliente,
+                                    text: cliente.nombre_cliente
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Evento: Capturar selección del usuario
+            $('#nombreUsuario').on('select2:select', function(e) {
+                const selectedId = e.params.data.id;
+                $('#idCliente').val(selectedId); // Asignar ID al input oculto
+            });
+
+            // Para el select del distrito, con búsqueda dinámica
+            $('#distrito').select2({
+                placeholder: "Seleccione un distrito",
+                allowClear: true,
+                ajax: {
+                    url: 'crudUbicacion.php?action=listarDistrito', // URL para buscar distritos
+                    dataType: 'json',
+                    method: 'GET',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term // Enviar el término de búsqueda
+                        };
+                    },
+                    processResults: function(data) {
+                        // Transformar la respuesta para Select2
+                        return {
+                            results: data.data.map(function(distrito) {
+                                return {
+                                    id: distrito.idDist,
+                                    text: distrito.Distrito
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Evento para capturar la selección y asignar el ID del distrito
+            $('#distrito').on('select2:select', function(e) {
+                const selectedId = e.params.data.id;
+                $('#idDistrito').val(selectedId); // Asignar ID al input oculto
+            });
+
+            // Función adicional para limpiar inputs (si es necesaria)
+            function limpiarInput() {
+                $('#idCliente').val(''); // Limpia el input del cliente
+            }
+        });
+    </script>
+    <!-- Script para select de Metodo de Pago -->
+    <script>
+        // Cargar los métodos de pago en el select
+        function cargarMetodosPago() {
+            $.ajax({
+                url: 'crudMetodoPago.php?action=listarMetodo', // URL para obtener los métodos de pago
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    const $metodoPagoSelect = $('#metodoPago');
+                    $metodoPagoSelect.empty(); // Limpia las opciones actuales
+                    $metodoPagoSelect.append('<option value="" disabled selected>Seleccione un método de pago</option>'); // Placeholder
+
+                    response.data.forEach(metodo => {
+                        $metodoPagoSelect.append(`
+                    <option value="${metodo.idPago}">${metodo.descripcionPago} (${metodo.metodoPago})</option>
+                `);
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error al cargar los métodos de pago:', xhr);
+                }
+            });
+        }
+
+        // Evento para capturar la selección y asignar el ID del método de pago
+        $('#metodoPago').on('change', function() {
+            const idMetodoPago = $(this).val(); // Obtener el ID seleccionado
+            $('#idMetodoPago').val(idMetodoPago); // Asignar al input oculto
+        });
+
+        // Llamar a la función al cargar la página
+        $(document).ready(function() {
+            cargarMetodosPago();
+        });
+    </script>
+    <!-- Script para el Modal -->
     <script>
         $(document).ready(function() {
             // Array para almacenar los productos seleccionados
@@ -269,19 +371,17 @@
                     const subtotal = producto.cantidad * producto.precio;
                     total += subtotal;
 
-                    $resumenProductos.append(`
-                <tr data-id="${producto.id}">
-                    <td>${producto.nombre}</td>
-                    <td>${producto.cantidad}</td>
-                    <td>${producto.precio}</td>
-                    <td>${subtotal.toFixed(2)}</td>
-                    <td>
-                        <button type="button" class="btn btn-danger btnQuitar">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    </td>
-                </tr>
-            `);
+                    $resumenProductos.append(`<tr data-id="${producto.id}">
+                                                    <td>${producto.nombre}</td>
+                                                    <td>${producto.cantidad}</td>
+                                                    <td>${producto.precio}</td>
+                                                    <td>${subtotal.toFixed(2)}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btnQuitar">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>`);
                 });
 
                 // Actualizar el total en el input totalHora
@@ -316,6 +416,7 @@
                 }
 
                 actualizarResumen();
+                NuevoTotal();
             });
 
             // Evento para quitar un producto de la tabla resumen
@@ -327,6 +428,7 @@
                 productosSeleccionados = productosSeleccionados.filter(producto => producto.id !== id);
 
                 actualizarResumen();
+                NuevoTotal();
             });
 
             function imprimir() {
@@ -335,7 +437,163 @@
 
             // Inicializar con un input dinámico para el total
             $('#totalHora').val('$0.00');
+
+            // Actualizar o Agregar Producto
+            $('#formReservas').submit(function(event) {
+                event.preventDefault();
+
+                // Obtener valores del formulario para Cotización
+                const idCliente = $('#idCliente').val();
+                const totalFinal = $('#totalFinalHora').val();
+
+                // Obtenemos Valores de los productos seleccionados
+                // Serializar los datos del array en JSON
+                const productosSeleccionadosJSON = JSON.stringify(productosSeleccionados);
+                // Asignar el JSON al campo oculto
+                document.getElementById('ArrayProductos').value = productosSeleccionadosJSON;
+
+                console.log(productosSeleccionadosJSON)
+
+
+                const id = $('#idProducto').val();
+                const idCategoria = $('#idCategoria').val();
+                const idProveedor = $('#idProveedor').val();
+                const nombre = $('#nombreProducto').val();
+                const descripcion = $('#descripcionProducto').val();
+                const precio = $('#precioProducto').val();
+                const stock = $('#stockProducto').val();
+                const fotoNueva = $('#imagenProducto')[0].files[0]; // Obtener archivo si se subió
+                const fotoExistente = $('#fotoExistente').val(); // Ruta de la foto actual
+
+                // Crear objeto FormData para enviar datos
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('id_categoria', idCategoria);
+                formData.append('id_proveedor', idProveedor);
+                formData.append('nombre', nombre);
+                formData.append('descripcion', descripcion);
+                formData.append('precio_hr', precio);
+                formData.append('stock', stock);
+                formData.append('fotoExistente', fotoExistente);
+
+                // Verificar si el id es 0, significa que es un nuevo producto
+                if (id == 0) {
+                    if (!fotoNueva) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Advertencia',
+                            text: 'Debe ingresar una imagen para un nuevo producto.',
+                            confirmButtonText: 'Aceptar',
+                        });
+                        return; // Detiene la ejecución si no hay imagen
+                    }
+                }
+
+                // Adjuntar foto nueva solo si existe
+                if (fotoNueva) {
+                    formData.append('foto', fotoNueva);
+                }
+
+                // Determinar acción según el ID
+                const action = id == 0 ? 'crearProducto' : 'actualizarProducto';
+
+                // Enviar datos al servidor
+                // $.ajax({
+                //     url: `crudProductos.php?action=${action}`,
+                //     method: 'POST',
+                //     data: formData,
+                //     processData: false,
+                //     contentType: false,
+                //     success: function(response) {
+                //         const result = JSON.parse(response);
+
+                //         if (result.success) {
+                //             $('#modalEditar').modal('hide');
+                //             table.ajax.reload();
+                //             Swal.fire({
+                //                 icon: 'success',
+                //                 title: '¡Éxito!',
+                //                 text: 'Operación realizada correctamente.',
+                //                 confirmButtonText: 'Aceptar',
+                //             });
+                //         } else {
+                //             Swal.fire({
+                //                 icon: 'error',
+                //                 title: 'Error',
+                //                 text: result.error,
+                //                 confirmButtonText: 'Aceptar',
+                //             });
+                //         }
+                //     },
+                //     error: function() {
+                //         Swal.fire({
+                //             icon: 'error',
+                //             title: 'Error',
+                //             text: 'Ocurrió un error en la comunicación con el servidor.',
+                //             confirmButtonText: 'Aceptar',
+                //         });
+                //     },
+                // });
+            });
+
         });
+
+        function NuevoTotal() {
+            const duracionInput = document.getElementById('duracion');
+            const totalHoraInput = document.getElementById('totalHora');
+            const totalFinalHoraInput = document.getElementById('totalFinalHora');
+            console.log(totalHoraInput)
+
+
+            // Habilitar el campo duracion si totalHora > 0
+            function habilitarDuracion() {
+                const totalHora = parseFloat(totalHoraInput.value.replace('$', '')) || 0;
+                if (totalHora > 0) {
+                    duracionInput.removeAttribute('disabled');
+                } else {
+                    duracionInput.setAttribute('disabled', true);
+                    totalFinalHoraInput.value = ''; // Limpiar el total final si está deshabilitado
+                }
+            }
+
+            // Calcular el nuevo total
+            function calcularNuevoTotal() {
+                const totalHora = parseFloat(totalHoraInput.value.replace('$', '')) || 0;
+                const duracion = parseInt(duracionInput.value) || 1;
+
+                if (duracion > 0) {
+                    const nuevoTotal = totalHora * duracion;
+                    totalFinalHoraInput.value = `$${nuevoTotal.toFixed(2)}`;
+                } else {
+                    totalFinalHoraInput.value = ''; // Limpiar el total si la duración no es válida
+                }
+            }
+
+            // Escuchar cambios en totalHora
+            totalHoraInput.addEventListener('input', habilitarDuracion);
+
+            // Escuchar cambios en duracion
+            duracionInput.addEventListener('input', calcularNuevoTotal);
+            duracionInput.addEventListener('change', calcularNuevoTotal);
+
+            // Validar que la duración sea numérica y positiva
+            duracionInput.addEventListener('input', function() {
+                const duracion = parseInt(duracionInput.value);
+                if (duracion <= 0 || isNaN(duracion)) {
+                    duracionInput.setCustomValidity('La duración debe ser un número positivo.');
+                } else {
+                    duracionInput.setCustomValidity('');
+                }
+            });
+
+            // Inicializar validaciones
+            habilitarDuracion();
+        }
+    </script>
+
+    <!-- Script para ingresar nueva reserva -->
+    <script>
+
     </script>
 
 
