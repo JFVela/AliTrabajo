@@ -38,32 +38,18 @@
                     <!-- Servicios -->
                     <div class="mb-3">
                         <label class="form-label gestion-form-label">Servicios</label>
-                        <table class="table table-bordered">
+                        <table id="serviciosId" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Id Categoría</th>
+                                    <th>Id</th>
                                     <th>Servicio</th>
+                                    <th>Categoria</th>
                                     <th>Costo/hr</th>
-                                    <th>Agregar</th>
-                                    <th>Quitar</th>
+                                    <th>Accion (agregar)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Ejemplo de servicio -->
-                                <tr>
-                                    <td>1</td>
-                                    <td>Servicio A</td>
-                                    <td>$50</td>
-                                    <td><button type="button" class="btn btn-success">Agregar</button></td>
-                                    <td><button type="button" class="btn btn-danger">Quitar</button></td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Servicio B</td>
-                                    <td>$40</td>
-                                    <td><button type="button" class="btn btn-success">Agregar</button></td>
-                                    <td><button type="button" class="btn btn-danger">Quitar</button></td>
-                                </tr>
+                                <!-- Aquí se insertarán las filas de datos dinámicamente -->
                             </tbody>
                         </table>
                     </div>
@@ -83,6 +69,7 @@
                                     <th>Cantidad</th>
                                     <th>Costo</th>
                                     <th>Subtotal</th>
+                                    <th>Accion (quitar)</th>
                                 </tr>
                             </thead>
                             <tbody id="resumenProductos">
@@ -185,6 +172,7 @@
         </div>
     </form>
 
+    <!-- Para el Select de buscar nombre -->
     <script>
         //Para el select del nombre de usuario el cual funciona como buscador
         $('#nombreUsuario').select2({
@@ -220,85 +208,113 @@
             console.log('Cliente seleccionado ID:', selectedId);
         });
     </script>
+
     <script>
         $(document).ready(function() {
-            // Variables para almacenar productos seleccionados
-            let productos = [];
+            // Array para almacenar los productos seleccionados
+            let productosSeleccionados = [];
 
-            // Función para actualizar la tabla de resumen
+            // Cargar dinámicamente los productos desde el servidor
+            function cargarProductos() {
+                $.ajax({
+                    url: 'crudProductos.php?action=listarProductos',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        const $tablaServicios = $('#serviciosId tbody');
+                        $tablaServicios.empty(); // Limpiar la tabla antes de cargar los datos
+                        response.data.forEach(producto => {
+                            $tablaServicios.append(`
+                        <tr data-id="${producto.id_producto}">
+                            <td>${producto.id_producto}</td>
+                            <td>${producto.nombre}</td>
+                            <td>${producto.nombre_categoria}</td>
+                            <td>${producto.precio_hr}</td>
+                            <td>
+                                <input type="number" class="form-control cantidadInput" min="1" max="10" value="1" style="width: 80px;">
+                                <button type="button" class="btn btn-success btnAgregar">Agregar</button>
+                            </td>
+                        </tr>
+                    `);
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error('Error al cargar los productos:', xhr);
+                    }
+                });
+            }
+
+            // Actualizar la tabla de resumen
             function actualizarResumen() {
-                let total = 0;
                 const $resumenProductos = $('#resumenProductos');
                 $resumenProductos.empty();
 
-                productos.forEach((producto) => {
-                    const subtotal = producto.cantidad * producto.costo;
+                let total = 0;
+
+                productosSeleccionados.forEach(producto => {
+                    const subtotal = producto.cantidad * producto.precio;
                     total += subtotal;
 
-                    // Agregamos una fila a la tabla resumen
                     $resumenProductos.append(`
-            <tr data-id="${producto.id}">
-                <td>${producto.nombre}</td>
-                <td>
-                    <input type="number" class="form-control form-control-sm cantidadProducto" 
-                           value="${producto.cantidad}" min="10" style="width: 80px;">
-                </td>
-                <td>$${producto.costo}</td>
-                <td class="subtotal">$${subtotal.toFixed(2)}</td>
-            </tr>
-            `);
+                <tr data-id="${producto.id}">
+                    <td>${producto.nombre}</td>
+                    <td>${producto.cantidad}</td>
+                    <td>${producto.precio}</td>
+                    <td>${subtotal.toFixed(2)}</td>
+                    <td><button type="button" class="btn btn-danger btnQuitar">Quitar</button></td>
+                </tr>`);
                 });
 
-                // Actualizamos el total
+                // Actualizar el total en el input totalHora
                 $('#totalHora').val(`$${total.toFixed(2)}`);
+                imprimir()
             }
 
-            // Evento para agregar un producto
-            $('.btn-success').click(function() {
+            // Evento para agregar un producto a la tabla resumen
+            $('#serviciosId').on('click', '.btnAgregar', function() {
                 const $fila = $(this).closest('tr');
-                const id = $fila.find('td').eq(0).text();
+                const id = $fila.data('id');
                 const nombre = $fila.find('td').eq(1).text();
-                const costo = parseFloat($fila.find('td').eq(2).text().replace('$', ''));
+                const precio = parseFloat($fila.find('td').eq(3).text());
+                const cantidad = parseInt($fila.find('.cantidadInput').val()) || 1;
 
-                // Verificar si el producto ya está en el resumen
-                const productoExistente = productos.find((p) => p.id === id);
-                if (!productoExistente) {
-                    productos.push({
+                // Verificar si el producto ya existe en el array
+                const productoExistente = productosSeleccionados.find(producto => producto.id === id);
+
+                if (productoExistente) {
+                    // Reemplazar los datos del producto existente
+                    productoExistente.cantidad = cantidad;
+                    productoExistente.precio = precio;
+                } else {
+                    // Agregar un nuevo producto
+                    productosSeleccionados.push({
                         id,
                         nombre,
-                        costo,
-                        cantidad: 1
+                        precio,
+                        cantidad
                     });
                 }
 
                 actualizarResumen();
             });
 
-            // Evento para quitar un producto
-            $('.btn-danger').click(function() {
-                const $fila = $(this).closest('tr');
-                const id = $fila.find('td').eq(0).text();
-
-                // Filtrar el producto seleccionado
-                productos = productos.filter((p) => p.id !== id);
-
-                actualizarResumen();
-            });
-
-            // Evento para cambiar la cantidad en la tabla de resumen
-            $('#resumenProductos').on('input', '.cantidadProducto', function() {
+            // Evento para quitar un producto de la tabla resumen
+            $('#resumenProductos').on('click', '.btnQuitar', function() {
                 const $fila = $(this).closest('tr');
                 const id = $fila.data('id');
-                const nuevaCantidad = parseInt($(this).val()) || 1;
 
-                // Actualizar la cantidad en el array
-                const producto = productos.find((p) => p.id === id);
-                if (producto) {
-                    producto.cantidad = nuevaCantidad;
-                }
+                // Eliminar el producto del array
+                productosSeleccionados = productosSeleccionados.filter(producto => producto.id !== id);
 
                 actualizarResumen();
             });
+
+            function imprimir() {
+                console.log(productosSeleccionados);
+            }
+
+            // Cargar los productos al iniciar
+            cargarProductos();
         });
     </script>
 
