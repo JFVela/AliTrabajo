@@ -20,7 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 
-<body>
+<body style="background-color: white;">
     <form id="formReservas" enctype="multipart/form-data">
         <div class="row">
             <!-- Columna 1: Usuarios -->
@@ -34,18 +34,19 @@
                             <option value="" disabled selected>Seleccione un usuario</option>
                         </select>
                     </div>
+                    <input type="" id="idCliente">
 
                     <!-- Servicios -->
                     <div class="mb-3">
                         <label class="form-label gestion-form-label">Servicios</label>
-                        <table id="serviciosId" class="table table-bordered">
+                        <table id="serviciosId" class="gestion-tabla">
                             <thead>
                                 <tr>
                                     <th>Id</th>
                                     <th>Servicio</th>
                                     <th>Categoria</th>
                                     <th>Costo/hr</th>
-                                    <th>Accion (agregar)</th>
+                                    <th>Accion</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,20 +63,22 @@
                 <div id="resumenInputs">
                     <!-- Resumen de los productos seleccionados -->
                     <div class="mb-3">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Costo</th>
-                                    <th>Subtotal</th>
-                                    <th>Accion (quitar)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="resumenProductos">
-                                <!-- Aquí se generarán los productos seleccionados por el usuario -->
-                            </tbody>
-                        </table>
+                        <div class="contenedorTablaResumen">
+                            <table class="gestion-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Costo</th>
+                                        <th>Subtotal</th>
+                                        <th>Accion</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resumenProductos">
+                                    <!-- Aquí se generarán los productos seleccionados por el usuario -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <!-- Total por hora -->
                     <div class="mb-3">
@@ -204,9 +207,14 @@
 
         // Evento para capturar la selección y mostrar el id en consola
         $('#nombreUsuario').on('select2:select', function(e) {
-            var selectedId = e.params.data.id; // ID del cliente seleccionado
-            console.log('Cliente seleccionado ID:', selectedId);
+            var selectedId = e.params.data.id;
+            $('#idCliente').val(selectedId); //llenar el imput del id del cliente
         });
+
+
+        function limpiarInput() {
+            $('#idCliente').val('');
+        }
     </script>
 
     <script>
@@ -214,35 +222,41 @@
             // Array para almacenar los productos seleccionados
             let productosSeleccionados = [];
 
-            // Cargar dinámicamente los productos desde el servidor
-            function cargarProductos() {
-                $.ajax({
-                    url: 'crudProductos.php?action=listarProductos',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        const $tablaServicios = $('#serviciosId tbody');
-                        $tablaServicios.empty(); // Limpiar la tabla antes de cargar los datos
-                        response.data.forEach(producto => {
-                            $tablaServicios.append(`
-                        <tr data-id="${producto.id_producto}">
-                            <td>${producto.id_producto}</td>
-                            <td>${producto.nombre}</td>
-                            <td>${producto.nombre_categoria}</td>
-                            <td>${producto.precio_hr}</td>
-                            <td>
-                                <input type="number" class="form-control cantidadInput" min="1" max="10" value="1" style="width: 80px;">
-                                <button type="button" class="btn btn-success btnAgregar">Agregar</button>
-                            </td>
-                        </tr>
-                    `);
-                        });
-                    },
-                    error: function(xhr) {
-                        console.error('Error al cargar los productos:', xhr);
+            // Inicializar DataTable
+            const tablaServicios = $('#serviciosId').DataTable({
+                "ajax": "crudProductos.php?action=listarProductos", // Ruta para obtener los productos
+                "columns": [{
+                        "data": "id_producto"
+                    }, // ID del producto
+                    {
+                        "data": "nombre"
+                    }, // Nombre del producto
+                    {
+                        "data": "nombre_categoria"
+                    }, // Categoría del producto
+                    {
+                        "data": "precio_hr"
+                    }, // Precio por hora
+                    {
+                        "data": null, // Columna para acciones
+                        "render": function(data, type, row) {
+                            return `
+                    <div class="d-grid gap-2">
+                        <input type="number" class="form-control cantidadInput" 
+                               min="1" max="10" value="1" style="width: 80px;">
+                        <button type="button" class="btn btn-success btnAgregar" data-id="${row.id_producto}">
+                            <i class="bi bi-plus-circle-fill"></i>
+                        </button>
+                    </div>`;
+                        }
                     }
-                });
-            }
+                ],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json"
+                },
+                "lengthChange": false, // Desactiva la opción "Mostrar X registros"
+                "pageLength": 3 // Fija la cantidad de registros por página a 4
+            });
 
             // Actualizar la tabla de resumen
             function actualizarResumen() {
@@ -261,21 +275,27 @@
                     <td>${producto.cantidad}</td>
                     <td>${producto.precio}</td>
                     <td>${subtotal.toFixed(2)}</td>
-                    <td><button type="button" class="btn btn-danger btnQuitar">Quitar</button></td>
-                </tr>`);
+                    <td>
+                        <button type="button" class="btn btn-danger btnQuitar">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
                 });
 
                 // Actualizar el total en el input totalHora
                 $('#totalHora').val(`$${total.toFixed(2)}`);
-                imprimir()
+                imprimir();
             }
 
             // Evento para agregar un producto a la tabla resumen
             $('#serviciosId').on('click', '.btnAgregar', function() {
                 const $fila = $(this).closest('tr');
-                const id = $fila.data('id');
-                const nombre = $fila.find('td').eq(1).text();
-                const precio = parseFloat($fila.find('td').eq(3).text());
+                const id = $(this).data('id');
+                const data = tablaServicios.row($fila).data(); // Obtener datos del DataTable
+                const nombre = data.nombre;
+                const precio = parseFloat(data.precio_hr);
                 const cantidad = parseInt($fila.find('.cantidadInput').val()) || 1;
 
                 // Verificar si el producto ya existe en el array
@@ -313,8 +333,8 @@
                 console.log(productosSeleccionados);
             }
 
-            // Cargar los productos al iniciar
-            cargarProductos();
+            // Inicializar con un input dinámico para el total
+            $('#totalHora').val('$0.00');
         });
     </script>
 

@@ -112,10 +112,27 @@ body {
   background-color: var(--color-primario);
 }
 
-.gestionImagen{
+.gestionImagen {
   max-width: 200px;
 }
 
-.gestionImagenComprobante{
+.gestionImagenComprobante {
   max-width: 100px;
+}
+
+.contenedorTablaResumen {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.text-center {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 1.5rem;
+  color: #333;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #ffd700;
 }
