@@ -30,7 +30,7 @@
                     <!-- Nombre de Usuario (Select) -->
                     <div class="mb-3">
                         <label for="nombreUsuario" class="form-label gestion-form-label">Nombre de Usuario</label>
-                        <select id="nombreUsuario" class="form-control gestion-form-input" required>
+                        <select id="nombreUsuario" class="form-control gestion-form-input" style="width: 50%;" required>
                             <option value="" disabled selected>Seleccione un usuario</option>
                         </select>
                     </div>
@@ -39,20 +39,22 @@
                     <!-- Servicios -->
                     <div class="mb-3">
                         <label class="form-label gestion-form-label">Servicios</label>
-                        <table id="serviciosId" class="gestion-tabla">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Servicio</th>
-                                    <th>Categoria</th>
-                                    <th>Costo/hr</th>
-                                    <th>Accion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Aquí se insertarán las filas de datos dinámicamente -->
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table id="serviciosId" class="gestion-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Servicio</th>
+                                        <th>Categoria</th>
+                                        <th>Costo/hr</th>
+                                        <th>Accion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Aquí se insertarán las filas de datos dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -63,7 +65,7 @@
                 <div id="resumenInputs">
                     <!-- Resumen de los productos seleccionados -->
                     <div class="mb-3">
-                        <div class="contenedorTablaResumen">
+                        <div class="table-responsive contenedorTablaResumen">
                             <table class="gestion-tabla">
                                 <thead>
                                     <tr>
