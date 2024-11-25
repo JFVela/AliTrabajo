@@ -690,7 +690,6 @@
                                 text: 'Reserva creada correctamente.',
                                 confirmButtonText: 'Aceptar',
                             });
-                            limpiar();
                             $('#modalFormulario').modal('hide');
                         } else {
                             Swal.fire({
