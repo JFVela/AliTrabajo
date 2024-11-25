@@ -34,7 +34,7 @@
                             <option value="" disabled selected>Seleccione un usuario</option>
                         </select>
                     </div>
-                    <input type="" id="idCliente">
+                    <input type="hidden" id="idCliente">
 
                     <!-- Servicios -->
                     <div class="mb-3">
@@ -80,8 +80,6 @@
                             </table>
                         </div>
                     </div>
-                    <!-- Input para el array de objetos creados -->
-                    <input type="text" name="ArrayProductos" id="ArrayProductos" value="">
                     <!-- Total por hora -->
                     <div class="mb-3">
                         <label class="form-label gestion-form-label">Total * Hora</label>
@@ -122,11 +120,12 @@
                             <label for="hora" class="form-label gestion-form-label">Hora</label>
                             <input type="number" id="hora" class="form-control gestion-form-input" required min="1" max="12" value="1">
                             <div>
-                                <input type="radio" id="am" name="hora" value="am" required>
+                                <input type="radio" id="am" name="hora" value="AM" required>
                                 <label for="am">AM</label>
-                                <input type="radio" id="pm" name="hora" value="pm" required>
+                                <input type="radio" id="pm" name="hora" value="PM" required>
                                 <label for="pm">PM</label>
                             </div>
+                            <input type="hidden" id="horaElejida" value="">
                         </div>
                     </div>
 
@@ -137,7 +136,7 @@
                             <option value="" disabled selected>Seleccione un distrito</option>
                         </select>
                     </div>
-                    <input type="" id="idDistrito">
+                    <input type="hidden" id="idDistrito">
 
                     <!-- Dirección -->
                     <div class="mb-3">
@@ -158,7 +157,7 @@
                             <option value="" disabled selected>Seleccione un método de pago</option>
                         </select>
                     </div>
-                    <input type="" id="idMetodoPago"> <!-- Input oculto para guardar el ID seleccionado -->
+                    <input type="hidden" id="idMetodoPago"> <!-- Input oculto para guardar el ID seleccionado -->
 
                     <!-- Subir imagen -->
                     <div class="mb-3">
@@ -199,6 +198,15 @@
                 } else {
                     telefonoInput.setCustomValidity('');
                 }
+            });
+        });
+
+        //OBTENER EL AM O PM
+        document.querySelectorAll('input[name="hora"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                // Actualiza el campo con el valor del radio seleccionado
+                const horaElegida = document.querySelector('input[name="hora"]:checked').value;
+                document.getElementById('horaElejida').value = horaElegida;
             });
         });
     </script>
@@ -386,7 +394,6 @@
 
                 // Actualizar el total en el input totalHora
                 $('#totalHora').val(`$${total.toFixed(2)}`);
-                imprimir();
             }
 
             // Evento para agregar un producto a la tabla resumen
@@ -431,10 +438,6 @@
                 NuevoTotal();
             });
 
-            function imprimir() {
-                console.log(productosSeleccionados);
-            }
-
             // Inicializar con un input dinámico para el total
             $('#totalHora').val('$0.00');
 
@@ -442,108 +445,107 @@
             $('#formReservas').submit(function(event) {
                 event.preventDefault();
 
-                // Obtener valores del formulario para Cotización
-                const idCliente = $('#idCliente').val();
-                const totalFinal = $('#totalFinalHora').val();
+                let totalFinalHora = $('#totalFinalHora').val();
+                totalFinalHora = totalFinalHora.replace('$', '');
+                let totalFinalNumerico = parseFloat(totalFinalHora);
+                totalFinalNumerico = totalFinalNumerico.toFixed(2);
 
-                // Obtenemos Valores de los productos seleccionados
-                // Serializar los datos del array en JSON
-                const productosSeleccionadosJSON = JSON.stringify(productosSeleccionados);
-                // Asignar el JSON al campo oculto
-                document.getElementById('ArrayProductos').value = productosSeleccionadosJSON;
-
-                console.log(productosSeleccionadosJSON)
-
-
-                const id = $('#idProducto').val();
-                const idCategoria = $('#idCategoria').val();
-                const idProveedor = $('#idProveedor').val();
-                const nombre = $('#nombreProducto').val();
-                const descripcion = $('#descripcionProducto').val();
-                const precio = $('#precioProducto').val();
-                const stock = $('#stockProducto').val();
-                const fotoNueva = $('#imagenProducto')[0].files[0]; // Obtener archivo si se subió
-                const fotoExistente = $('#fotoExistente').val(); // Ruta de la foto actual
-
-                // Crear objeto FormData para enviar datos
+                // Crear objeto 
                 const formData = new FormData();
-                formData.append('id', id);
-                formData.append('id_categoria', idCategoria);
-                formData.append('id_proveedor', idProveedor);
-                formData.append('nombre', nombre);
-                formData.append('descripcion', descripcion);
-                formData.append('precio_hr', precio);
-                formData.append('stock', stock);
-                formData.append('fotoExistente', fotoExistente);
 
-                // Verificar si el id es 0, significa que es un nuevo producto
-                if (id == 0) {
-                    if (!fotoNueva) {
+                // Datos para la tabla `cotizaciones`
+                formData.append('idCliente', $('#idCliente').val());
+                formData.append('totalFinal', totalFinalNumerico);
+
+                // Datos para la tabla `cotizacion_detalles`
+                const productosSeleccionadosJSON = JSON.stringify(productosSeleccionados);
+                formData.append('productosSeleccionados', productosSeleccionadosJSON);
+                formData.append('horasAlquiler', $('#duracion').val());
+
+                // Datos para la tabla `capturapago`
+                const fotoNueva = $('#imagenPago')[0].files[0];
+                if (fotoNueva) {
+                    formData.append('capturaPago', fotoNueva);
+                }
+                formData.append('idMetodoPago', $('#idMetodoPago').val());
+
+                // Datos para la tabla `reservas`
+                formData.append('idDistrito', $('#idDistrito').val());
+                formData.append('direccion', $('#direccion').val());
+                formData.append('fechaReserva', $('#fecha').val());
+                formData.append('horaReserva', $('#hora').val());
+                formData.append('ampm', $('#horaElejida').val());
+                formData.append('telefonoContacto', $('#telefono').val());
+
+                //Enviar datos al servidor
+                $.ajax({
+                    url: `crudReservas.php?action=nuevaReserva`,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        const result = JSON.parse(response);
+                        if (result.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: 'Reserva creada correctamente.',
+                                confirmButtonText: 'Aceptar',
+                            });
+                            limpiar();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: result.error,
+                                confirmButtonText: 'Aceptar',
+                            });
+                        }
+                    },
+                    error: function() {
                         Swal.fire({
-                            icon: 'warning',
-                            title: 'Advertencia',
-                            text: 'Debe ingresar una imagen para un nuevo producto.',
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Ocurrió un error al comunicar con el servidor.',
                             confirmButtonText: 'Aceptar',
                         });
-                        return; // Detiene la ejecución si no hay imagen
-                    }
-                }
-
-                // Adjuntar foto nueva solo si existe
-                if (fotoNueva) {
-                    formData.append('foto', fotoNueva);
-                }
-
-                // Determinar acción según el ID
-                const action = id == 0 ? 'crearProducto' : 'actualizarProducto';
-
-                // Enviar datos al servidor
-                // $.ajax({
-                //     url: `crudProductos.php?action=${action}`,
-                //     method: 'POST',
-                //     data: formData,
-                //     processData: false,
-                //     contentType: false,
-                //     success: function(response) {
-                //         const result = JSON.parse(response);
-
-                //         if (result.success) {
-                //             $('#modalEditar').modal('hide');
-                //             table.ajax.reload();
-                //             Swal.fire({
-                //                 icon: 'success',
-                //                 title: '¡Éxito!',
-                //                 text: 'Operación realizada correctamente.',
-                //                 confirmButtonText: 'Aceptar',
-                //             });
-                //         } else {
-                //             Swal.fire({
-                //                 icon: 'error',
-                //                 title: 'Error',
-                //                 text: result.error,
-                //                 confirmButtonText: 'Aceptar',
-                //             });
-                //         }
-                //     },
-                //     error: function() {
-                //         Swal.fire({
-                //             icon: 'error',
-                //             title: 'Error',
-                //             text: 'Ocurrió un error en la comunicación con el servidor.',
-                //             confirmButtonText: 'Aceptar',
-                //         });
-                //     },
-                // });
+                    },
+                });
+                limpiar();
             });
 
+            //FUNCION LIMPIAR
+            function limpiar() {
+                //Limpiar los datos del cliente
+                $('#nombreUsuario').html('<option value="" disabled selected>Seleccione un usuario</option>');
+                $('#idCliente').val('');
+                //Limpiamos el array de productos y todo lo relacionado
+                productosSeleccionados = [];
+                tablaServicios.ajax.reload();
+                $('#resumenProductos').empty();
+                //Limpiamos la parte de reservas
+                $('#totalHora').val('$0.00');
+                $('#duracion').val('');
+                $('#totalFinalHora').val('');
+                $('#fecha').val('');
+                $('#hora').val('');
+                $('input[name="hora"]').prop('checked', false);
+                $('#horaElejida').val('');
+                $('#distrito').html('<option value="" disabled selected>Seleccione un distrito</option>');
+                $('#idDistrito').val('');
+                $('#direccion').val('');
+                $('#telefono').val('');
+                $('#metodoPago').val('').prop('selectedIndex', 0); // Restablece al valor inicial
+                $('#idMetodoPago').val(''); // Limpia el input oculto
+                $('#imagenPago').val('');
+            }
         });
 
         function NuevoTotal() {
             const duracionInput = document.getElementById('duracion');
             const totalHoraInput = document.getElementById('totalHora');
             const totalFinalHoraInput = document.getElementById('totalFinalHora');
-            console.log(totalHoraInput)
-
 
             // Habilitar el campo duracion si totalHora > 0
             function habilitarDuracion() {
@@ -590,12 +592,6 @@
             habilitarDuracion();
         }
     </script>
-
-    <!-- Script para ingresar nueva reserva -->
-    <script>
-
-    </script>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 

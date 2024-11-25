@@ -18,8 +18,8 @@ switch ($action) {
     case 'listarReservas':
         listarReservas($conn);
         break;
-    case 'crearReserva':
-        crearReserva($conn);
+    case 'nuevaReserva':
+        nuevaReserva($conn);
         break;
     case 'actualizarReserva':
         actualizarReserva($conn);
@@ -93,9 +93,71 @@ function listarReservas($conn)
 }
 
 // Función para crear una reserva (vacía por ahora)
-function crearReserva($conn)
+function nuevaReserva($conn)
 {
-    echo json_encode(["info" => "Función de creación aún no implementada."]);
+    // Obtener los datos enviados desde el cliente
+    $idCliente = $_POST['idCliente'];
+    $totalFinal = $_POST['totalFinal'];
+    $productosSeleccionados = json_decode($_POST['productosSeleccionados'], true);
+    $horasElegidas = $_POST['horasAlquiler'];
+    $foto = $_FILES['capturaPago'];
+    $idMetodoPago = $_POST['idMetodoPago'];
+    $idDistrito = $_POST['idDistrito'];
+    $direccion = $_POST['direccion'];
+    $fechaReserva = $_POST['fechaReserva'];
+    $horaReserva = $_POST['horaReserva'];
+    $ampm = $_POST['ampm'];
+    $telefonoContacto = $_POST['telefonoContacto'];
+
+    try {
+        // Iniciar una transacción
+        $conn->begin_transaction();
+
+        // 1. Insertar en la tabla `cotizaciones`
+        $stmt = $conn->prepare("INSERT INTO cotizaciones (id_cliente, fecha_cotizacion, total) VALUES (?, NOW(), ?)");
+        $stmt->bind_param("id", $idCliente, $totalFinal); // Vincular parámetros: "i" para entero, "d" para decimal
+        $stmt->execute();
+        $idCotizacion = $conn->insert_id; // Obtener el ID generado
+
+        // 2. Insertar en la tabla `cotizacion_detalles`
+        foreach ($productosSeleccionados as $producto) {
+            $idProducto = $producto['id'];
+            $cantidad = $producto['cantidad'];
+            $precio = $producto['precio'];
+            $subtotal = $precio * $cantidad * $horasElegidas;
+
+            $stmt = $conn->prepare("INSERT INTO cotizacion_detalles (id_cotizacion, id_producto, cantidad, horas_alquiler, subtotal) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("iiidd", $idCotizacion, $idProducto, $cantidad, $horasElegidas, $subtotal); // Vincular parámetros
+            $stmt->execute();
+        }
+
+        // 3. Subir la foto de pago y generar el registro en `capturapago`
+        $nombreArchivo = uniqid() . '_' . $foto['name'];
+        $rutaDestino = "../../../uploads/comprobantes/" . $nombreArchivo;
+
+        if (!move_uploaded_file($foto['tmp_name'], $rutaDestino)) {
+            throw new Exception("Error al subir la imagen de pago.");
+        }
+
+        $stmt = $conn->prepare("INSERT INTO capturapago (capturaPago_url, idPago) VALUES (?, ?)");
+        $stmt->bind_param("si", $nombreArchivo, $idMetodoPago); // Vincular parámetros
+        $stmt->execute();
+        $idCapt = $conn->insert_id; // Obtener el ID generado
+
+        // 4. Insertar en la tabla `reservas`
+        $stmt = $conn->prepare("INSERT INTO reservas (id_cotizacion, idDist, idCapt, direccion, fecha_reserva, hora_reserva, ampm, telefonoContacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iiisssss", $idCotizacion, $idDistrito, $idCapt, $direccion, $fechaReserva, $horaReserva, $ampm, $telefonoContacto); // Vincular parámetros
+        $stmt->execute();
+
+        // Confirmar la transacción
+        $conn->commit();
+
+        echo json_encode(["success" => true, "message" => "Reserva creada exitosamente."]);
+    } catch (Exception $e) {
+        // Revertir la transacción en caso de error
+        $conn->rollback();
+        echo json_encode(["success" => false, "error" => $e->getMessage()]);
+    }
 }
 
 // Función para actualizar una reserva (vacía por ahora)
@@ -153,7 +215,7 @@ function listarUsuarios($conn)
     }
 
     header('Content-Type: application/json');
-    echo json_encode(['data' => $clientes]); 
+    echo json_encode(['data' => $clientes]);
 }
 
 
