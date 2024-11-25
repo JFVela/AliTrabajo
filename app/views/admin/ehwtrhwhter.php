@@ -541,6 +541,7 @@
                 $('#metodoPago').val('').prop('selectedIndex', 0); // Restablece al valor inicial
                 $('#idMetodoPago').val(''); // Limpia el input oculto
                 $('#imagenPago').val('');
+                $('#modalEditar').modal('show');
             }
         });
 

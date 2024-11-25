@@ -132,5 +132,19 @@ body {
   margin: 20px 0;
   padding: 10px;
   background-color: #133e87;
-  border-bottom: 10px solid #608BC1;
+  border-bottom: 10px solid #608bc1;
+}
+
+.custom-modal-style {
+  background: rgba( 255, 255, 255, 0.7 );
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18); /* Para dar un borde suave */
+}
+
+/* IMPORTANTE POR COSAS DEL STILO DEL SELECT SE PONE ANTRAS DEL MODAL */
+.select2-container {
+  z-index: 1055; /* Bootstrap modal tiene z-index 1050 */
 }
