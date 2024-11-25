@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <!-- Modal para Editar Reservas -->
+    <!-- Modal para AGREGAR Reservas -->
     <div class="modal fade" id="modalFormulario" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content custom-modal-style">
@@ -140,7 +140,7 @@
                                         <!-- Duración -->
                                         <div class="col-md-6">
                                             <label for="duracion" class="form-label gestion-form-label">Duración</label>
-                                            <input type="number" id="duracion" min="1" max="12" value="1" class="form-control gestion-form-input" required disabled>
+                                            <input type="number" id="duracion" min="1" max="12" value="1" class="form-control gestion-form-input" required disabled placeholder="Duración del Evento">
                                         </div>
 
                                         <!-- Total Final Hora -->
@@ -161,7 +161,7 @@
                                         <!-- Hora -->
                                         <div class="col-md-6">
                                             <label for="hora" class="form-label gestion-form-label">Hora</label>
-                                            <input type="number" id="hora" class="form-control gestion-form-input" required min="1" max="12" value="1">
+                                            <input type="number" id="hora" class="form-control gestion-form-input" required min="1" max="12" value="1" placeholder="Hora de Evento">
                                             <div>
                                                 <input type="radio" id="am" name="hora" value="AM" required>
                                                 <label for="am">AM</label>
@@ -184,13 +184,15 @@
                                     <!-- Dirección -->
                                     <div class="mb-3">
                                         <label for="direccion" class="form-label gestion-form-label">Dirección</label>
-                                        <input type="text" id="direccion" class="form-control gestion-form-input" required>
+                                        <input type="text" id="direccion" class="form-control gestion-form-input" required placeholder="Escribe tu dirección (Ej: Av. Siempre Viva 742, Springfield)">
                                     </div>
 
                                     <!-- Teléfono -->
                                     <div class="mb-3">
                                         <label for="telefono" class="form-label gestion-form-label">Teléfono</label>
-                                        <input type="text" id="telefono" class="form-control gestion-form-input" required pattern="9[0-9]{8}" title="Debe contener 9 dígitos y comenzar con 9.">
+                                        <input type="text" id="telefono" class="form-control gestion-form-input"
+                                            required pattern="9[0-9]{8}" title="Debe contener 9 dígitos y comenzar con 9."
+                                            placeholder="Escribe tu número de celular (Ej: 912345678)">
                                     </div>
 
                                     <!-- Método de pago -->
@@ -225,573 +227,130 @@
         </div>
     </div>
 
-    <!-- Validaciones dinamicas -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Restringir la fecha al día de hoy en adelante
-            const fechaInput = document.getElementById('fecha');
-            const hoy = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            fechaInput.setAttribute('min', hoy);
+    <!-- Modal para Editar RESERVAS -->
+    <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header gestion-modal-header">
+                    <h5 class="modal-title gestion-modal-titulo"><span id="">Editar Reserva</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarReserva" enctype="multipart/form-data">
+                        <div class="row">
+                            <!-- Primera columna -->
+                            <!-- id reserva -->
+                            <input type="" id="id_Reserva" value="0">
+                            <div class="col-md-6">
+                                <!-- Cliente -->
+                                <div class="mb-3">
+                                    <label for="id_editar_cliente" class="form-label gestion-form-label">Nombre del cliente</label>
+                                    <input type="text" id="id_editar_cliente" class="form-control gestion-form-input" required
+                                        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$"
+                                        title="El nombre del cliente puede contener letras, números y espacios"
+                                        maxlength="100">
+                                </div>
 
-            // Validar el teléfono
-            const telefonoInput = document.getElementById('telefono');
-            telefonoInput.addEventListener('input', function() {
-                const valor = telefonoInput.value;
-                const esValido = /^[9][0-9]{8}$/.test(valor);
+                                <!-- Distrito -->
+                                <div class="mb-3">
+                                    <label for="id_editar_distrito" class="form-label gestion-form-label">Distrito</label>
+                                    <select id="id_editar_distrito" class="form-control gestion-form-input" required style="width: 100%;">
+                                        <option value="" disabled selected>Seleccione un distrito</option>
+                                    </select>
+                                </div>
+                                <!-- id del distriuto -->
+                                <input type="text" id="idDistrito_editar">
 
-                if (!esValido && valor.length > 0) {
-                    telefonoInput.setCustomValidity('El teléfono debe tener 9 dígitos y comenzar con 9.');
-                } else {
-                    telefonoInput.setCustomValidity('');
-                }
-            });
-        });
+                                <!-- Foto -->
+                                <div class="mb-3 d-flex flex-column align-items-center">
+                                    <label for="id_editar_foto" class="form-label gestion-form-label">Foto</label>
+                                    <img id="id_editar_foto" src="ruta/a/imagen.jpg" alt="Foto de la reserva" class="img-fluid border"
+                                        style="height: 100%; max-height: 250px;">
+                                </div>
+                            </div>
 
-        //OBTENER EL AM O PM
-        document.querySelectorAll('input[name="hora"]').forEach(radio => {
-            radio.addEventListener('change', () => {
-                // Actualiza el campo con el valor del radio seleccionado
-                const horaElegida = document.querySelector('input[name="hora"]:checked').value;
-                document.getElementById('horaElejida').value = horaElegida;
-            });
-        });
-    </script>
+                            <!-- Segunda columna -->
+                            <div class="col-md-6">
+                                <!-- Dirección -->
+                                <div class="mb-3">
+                                    <label for="id_editar_direccion" class="form-label gestion-form-label">Dirección</label>
+                                    <input type="text" id="id_editar_direccion" class="form-control gestion-form-input" required
+                                        maxlength="255"
+                                        title="Ingrese la dirección del cliente">
+                                </div>
+
+                                <!-- Fecha Reserva -->
+                                <div class="mb-3">
+                                    <label for="id_editar_fecha_reserva" class="form-label gestion-form-label">Fecha Reserva</label>
+                                    <input type="date" id="id_editar_fecha_reserva" class="form-control gestion-form-input" required>
+                                </div>
+
+                                <!-- Hora y AM/PM -->
+                                <div class="mb-3 row">
+                                    <div class="col-md-6">
+                                        <label for="id_editar_hora_reserva" class="form-label gestion-form-label">Hora Reserva</label>
+                                        <input type="number" id="id_editar_hora_reserva" class="form-control gestion-form-input" required
+                                            min="0" max="23"
+                                            title="Ingrese la hora en formato 24 horas">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="id_editar_ampm" class="form-label gestion-form-label">AM/PM</label>
+                                        <select id="id_editar_ampm" class="form-control gestion-form-input" required>
+                                            <option value="AM">AM</option>
+                                            <option value="PM">PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Teléfono de Contacto -->
+                                <div class="mb-3">
+                                    <label for="id_editar_telefono_contacto" class="form-label gestion-form-label">Teléfono de Contacto</label>
+                                    <input type="tel" id="id_editar_telefono_contacto" class="form-control gestion-form-input" required
+                                        pattern="^[0-9]{9,11}$"
+                                        title="El teléfono debe contener entre 9 y 11 dígitos"
+                                        maxlength="11">
+                                </div>
+
+                                <!-- Estado Reserva -->
+                                <div class="mb-3">
+                                    <label for="id_editar_estado_reserva" class="form-label gestion-form-label">Estado de Reserva</label>
+                                    <select id="id_editar_estado_reserva" class="form-control gestion-form-input" required>
+                                        <option value="" disabled selected>Seleccione el estado</option>
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="En proceso">En proceso</option>
+                                        <option value="Finalizado">Finalizado</option>
+                                        <option value="Cancelado">Cancelado</option>
+                                        <option value="No completado">No completado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón para guardar cambios -->
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="gestion-boton-modal">
+                                <span>Editar</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- scripr para modal de nueva reserva -->
+    <script src="../../../public/js/validacionReservas.js"></script>
     <!-- Script para Select de Nombre de Usuario y Distrito -->
-    <script>
-        $(document).ready(function() {
-            // Inicializar el select2 para Nombre de Usuario
-            $('#nombreUsuario').select2({
-                placeholder: "Seleccione un usuario",
-                allowClear: true,
-                ajax: {
-                    url: 'crudReservas.php?action=listarUsuarios', // URL para obtener usuarios
-                    dataType: 'json',
-                    method: 'GET',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            q: params.term
-                        }; // Enviar el término de búsqueda
-                    },
-                    processResults: function(data) {
-                        // Transformar la respuesta para Select2
-                        return {
-                            results: data.data.map(function(cliente) {
-                                return {
-                                    id: cliente.id_cliente,
-                                    text: cliente.nombre_cliente
-                                };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-            // Evento: Capturar selección del usuario
-            $('#nombreUsuario').on('select2:select', function(e) {
-                const selectedId = e.params.data.id;
-                $('#idCliente').val(selectedId); // Asignar ID al input oculto
-            });
-
-            // Para el select del distrito, con búsqueda dinámica
-            $('#distrito').select2({
-                placeholder: "Seleccione un distrito",
-                allowClear: true,
-                ajax: {
-                    url: 'crudUbicacion.php?action=listarDistrito', // URL para buscar distritos
-                    dataType: 'json',
-                    method: 'GET',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            q: params.term // Enviar el término de búsqueda
-                        };
-                    },
-                    processResults: function(data) {
-                        // Transformar la respuesta para Select2
-                        return {
-                            results: data.data.map(function(distrito) {
-                                return {
-                                    id: distrito.idDist,
-                                    text: distrito.Distrito
-                                };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-            // Evento para capturar la selección y asignar el ID del distrito
-            $('#distrito').on('select2:select', function(e) {
-                const selectedId = e.params.data.id;
-                $('#idDistrito').val(selectedId); // Asignar ID al input oculto
-            });
-
-            // Función adicional para limpiar inputs (si es necesaria)
-            function limpiarInput() {
-                $('#idCliente').val(''); // Limpia el input del cliente
-            }
-        });
-    </script>
+    <script src="../../../public/js/selectNombreyDistritos.js"></script>
     <!-- Script para select de Metodo de Pago -->
-    <script>
-        // Cargar los métodos de pago en el select
-        function cargarMetodosPago() {
-            $.ajax({
-                url: 'crudMetodoPago.php?action=listarMetodo', // URL para obtener los métodos de pago
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    const $metodoPagoSelect = $('#metodoPago');
-                    $metodoPagoSelect.empty(); // Limpia las opciones actuales
-                    $metodoPagoSelect.append('<option value="" disabled selected>Seleccione un método de pago</option>'); // Placeholder
+    <script src="../../../public/js/metodoPago.js"></script>
+    <!-- Script para el Modal -->
+    <script src="../../../public/js/modalGenerarReserva.js"></script>
+    <!-- Script para el RESERVA -->
+    <script src="../../../public/js/reservasCrud.js"></script>
 
-                    response.data.forEach(metodo => {
-                        $metodoPagoSelect.append(`
-                    <option value="${metodo.idPago}">${metodo.descripcionPago} (${metodo.metodoPago})</option>
-                `);
-                    });
-                },
-                error: function(xhr) {
-                    console.error('Error al cargar los métodos de pago:', xhr);
-                }
-            });
-        }
-
-        // Evento para capturar la selección y asignar el ID del método de pago
-        $('#metodoPago').on('change', function() {
-            const idMetodoPago = $(this).val(); // Obtener el ID seleccionado
-            $('#idMetodoPago').val(idMetodoPago); // Asignar al input oculto
-        });
-
-        // Llamar a la función al cargar la página
-        $(document).ready(function() {
-            cargarMetodosPago();
-        });
-    </script>
-
-    <script>
-        //Variables globales
-        let textoModal = document.getElementById("textoDinamico");
-        let tituloModal = document.getElementById("tituloModal");
-        // Tabla Ajax
-        $(document).ready(function() {
-            const table = $('#reservasTable').DataTable({
-                "ajax": "crudReservas.php?action=listarReservas", // Ruta para obtener las reservas
-                "columns": [{
-                        "data": "id_reserva" // ID de reserva
-                    },
-                    {
-                        "data": "nombre_cliente" // Nombre del cliente
-                    },
-                    {
-                        "data": "capturaPago_url", // Comprobante de pago
-                        "render": function(data, type, row) {
-                            return `
-                        <img src="../../../uploads/comprobantes/${data}" alt="${data}" class="gestionImagenComprobante img-thumbnail">`;
-                        }
-                    },
-                    {
-                        "data": "estadoPago" // Estado del pago
-                    },
-                    {
-                        "data": "direccion_reserva" // Dirección de la reserva
-                    },
-                    {
-                        "data": "fecha_reserva" // Fecha de la reserva
-                    },
-                    {
-                        "data": null, // Hora de la reserva (combinada)
-                        "render": function(data, type, row) {
-                            return `${row.hora_reserva} ${row.ampm}`;
-                        }
-                    },
-                    {
-                        "data": "estado_reserva" // Estado de la reserva
-                    },
-                    {
-                        "data": null, // Detalle
-                        "render": function(data, type, row) {
-                            return `
-                        <a href="detalleReserva.php?id=${row.id_reserva}" class="btn btn-info btn-sm">
-                            <i class="bi bi-list-check"></i>
-                        </a>`;
-                        }
-                    },
-                    {
-                        "data": null, // Imprimir
-                        "render": function(data, type, row) {
-                            return `
-                        <a href="../fpdp/imprimir.php?accion=imprimirReserva&id=${row.id_reserva}" target="_blank" class="btn btn-dark btn-sm">
-                            <i class="bi bi-file-earmark-pdf-fill"></i>
-                        </a>`;
-                        }
-                    },
-                    {
-                        "data": null, // Acción (editar/eliminar)
-                        "render": function(data, type, row) {
-                            return `
-                        <button class="btn btn-warning btn-sm editar" 
-                            data-id="${row.id_reserva}">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <button class="btn btn-danger btn-sm eliminar" 
-                            data-id="${row.id_reserva}" 
-                            data-foto="${row.capturaPago_url}" 
-                            data-nombre="${row.nombre_cliente}">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>`;
-                        }
-                    }
-                ],
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/2.1.8/i18n/es-ES.json"
-                }
-            });
-
-            // Inicializar SweetAlert con botones personalizados
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: "btn btn-success mx-2",
-                    cancelButton: "btn btn-danger mx-2"
-                },
-                buttonsStyling: false
-            });
-
-            // Eliminar reserva
-            $('#reservasTable').on('click', '.eliminar', function() {
-                const id = $(this).data('id');
-                const nombre = $(this).data('nombre');
-                const foto = $(this).data('foto');
-
-                // Confirmar eliminación con SweetAlert
-                swalWithBootstrapButtons.fire({
-                    title: `¿Está seguro de eliminar la reserva de ${nombre}?`,
-                    text: "Esta acción no se puede revertir.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Sí, eliminar",
-                    cancelButtonText: "Cancelar",
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Llamada AJAX para eliminar la reserva
-                        $.post('crudReservas.php?action=eliminarReserva', {
-                            id_reserva: id,
-                            foto: foto
-                        }, function(response) {
-                            const result = JSON.parse(response);
-                            if (result.success) {
-                                // Mostrar mensaje de éxito
-                                swalWithBootstrapButtons.fire({
-                                    title: "¡Eliminado!",
-                                    text: `La reserva de ${nombre} ha sido eliminada con éxito.`,
-                                    icon: "success"
-                                });
-                                table.ajax.reload(); // Recargar la tabla
-                            } else {
-                                // Mostrar mensaje de error con el código o descripción del error
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error al eliminar",
-                                    text: result.error
-                                });
-                            }
-                        }).fail(function(jqXHR) {
-                            // Manejar errores de la llamada AJAX
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error del servidor",
-                                text: `No se pudo completar la operación. Código de error: ${jqXHR.status}`
-                            });
-                        });
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        // Cancelación de la acción
-                        swalWithBootstrapButtons.fire({
-                            title: "Cancelado",
-                            text: "La eliminación ha sido cancelada.",
-                            icon: "error"
-                        });
-                    }
-                });
-            });
-
-            // Limpiar datos para nueva categoría
-            $('#btnAgregarReserva').click(function() {
-                tituloModal.textContent = "Nueva Reserva";
-                textoModal.textContent = "Agregar Reserva";
-                limpiar();
-                $('#modalFormulario').modal('show');
-            });
-
-            // Array para almacenar los productos seleccionados
-            let productosSeleccionados = [];
-
-            // Inicializar DataTable
-            const tablaServicios = $('#serviciosId').DataTable({
-                "ajax": "crudProductos.php?action=listarProductos", // Ruta para obtener los productos
-                "columns": [{
-                        "data": "id_producto"
-                    }, // ID del producto
-                    {
-                        "data": "nombre"
-                    }, // Nombre del producto
-                    {
-                        "data": "nombre_categoria"
-                    }, // Categoría del producto
-                    {
-                        "data": "precio_hr"
-                    }, // Precio por hora
-                    {
-                        "data": null, // Columna para acciones
-                        "render": function(data, type, row) {
-                            return `
-                    <div class="d-grid gap-2">
-                        <input type="number" class="form-control cantidadInput" 
-                               min="1" max="10" value="1" style="width: 80px;">
-                        <button type="button" class="btn btn-success btnAgregar" data-id="${row.id_producto}">
-                            <i class="bi bi-plus-circle-fill"></i>
-                        </button>
-                    </div>`;
-                        }
-                    }
-                ],
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json"
-                },
-                "lengthChange": false, // Desactiva la opción "Mostrar X registros"
-                "pageLength": 3 // Fija la cantidad de registros por página a 4
-            });
-
-            // Actualizar la tabla de resumen
-            function actualizarResumen() {
-                const $resumenProductos = $('#resumenProductos');
-                $resumenProductos.empty();
-
-                let total = 0;
-
-                productosSeleccionados.forEach(producto => {
-                    const subtotal = producto.cantidad * producto.precio;
-                    total += subtotal;
-
-                    $resumenProductos.append(`<tr data-id="${producto.id}">
-                                                    <td>${producto.nombre}</td>
-                                                    <td>${producto.cantidad}</td>
-                                                    <td>${producto.precio}</td>
-                                                    <td>${subtotal.toFixed(2)}</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-danger btnQuitar">
-                                                            <i class="bi bi-trash-fill"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>`);
-                });
-
-                // Actualizar el total en el input totalHora
-                $('#totalHora').val(`$${total.toFixed(2)}`);
-            }
-
-            // Evento para agregar un producto a la tabla resumen
-            $('#serviciosId').on('click', '.btnAgregar', function() {
-                const $fila = $(this).closest('tr');
-                const id = $(this).data('id');
-                const data = tablaServicios.row($fila).data(); // Obtener datos del DataTable
-                const nombre = data.nombre;
-                const precio = parseFloat(data.precio_hr);
-                const cantidad = parseInt($fila.find('.cantidadInput').val()) || 1;
-
-                // Verificar si el producto ya existe en el array
-                const productoExistente = productosSeleccionados.find(producto => producto.id === id);
-
-                if (productoExistente) {
-                    // Reemplazar los datos del producto existente
-                    productoExistente.cantidad = cantidad;
-                    productoExistente.precio = precio;
-                } else {
-                    // Agregar un nuevo producto
-                    productosSeleccionados.push({
-                        id,
-                        nombre,
-                        precio,
-                        cantidad
-                    });
-                }
-
-                actualizarResumen();
-                NuevoTotal();
-            });
-
-            // Evento para quitar un producto de la tabla resumen
-            $('#resumenProductos').on('click', '.btnQuitar', function() {
-                const $fila = $(this).closest('tr');
-                const id = $fila.data('id');
-
-                // Eliminar el producto del array
-                productosSeleccionados = productosSeleccionados.filter(producto => producto.id !== id);
-
-                actualizarResumen();
-                NuevoTotal();
-            });
-
-            // Inicializar con un input dinámico para el total
-            $('#totalHora').val('$0.00');
-
-            // Actualizar o Agregar Producto
-            $('#formReservas').submit(function(event) {
-                event.preventDefault();
-
-                let totalFinalHora = $('#totalFinalHora').val();
-                totalFinalHora = totalFinalHora.replace('$', '');
-                let totalFinalNumerico = parseFloat(totalFinalHora);
-                totalFinalNumerico = totalFinalNumerico.toFixed(2);
-
-                // Crear objeto 
-                const formData = new FormData();
-
-                // Datos para la tabla `cotizaciones`
-                formData.append('idCliente', $('#idCliente').val());
-                formData.append('totalFinal', totalFinalNumerico);
-
-                // Datos para la tabla `cotizacion_detalles`
-                const productosSeleccionadosJSON = JSON.stringify(productosSeleccionados);
-                formData.append('productosSeleccionados', productosSeleccionadosJSON);
-                formData.append('horasAlquiler', $('#duracion').val());
-
-                // Datos para la tabla `capturapago`
-                const fotoNueva = $('#imagenPago')[0].files[0];
-                if (fotoNueva) {
-                    formData.append('capturaPago', fotoNueva);
-                }
-                formData.append('idMetodoPago', $('#idMetodoPago').val());
-
-                // Datos para la tabla `reservas`
-                formData.append('idDistrito', $('#idDistrito').val());
-                formData.append('direccion', $('#direccion').val());
-                formData.append('fechaReserva', $('#fecha').val());
-                formData.append('horaReserva', $('#hora').val());
-                formData.append('ampm', $('#horaElejida').val());
-                formData.append('telefonoContacto', $('#telefono').val());
-
-                //Enviar datos al servidor
-                $.ajax({
-                    url: `crudReservas.php?action=nuevaReserva`,
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        const result = JSON.parse(response);
-                        if (result.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Éxito!',
-                                text: 'Reserva creada correctamente.',
-                                confirmButtonText: 'Aceptar',
-                            });
-                            $('#modalFormulario').modal('hide');
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: result.error,
-                                confirmButtonText: 'Aceptar',
-                            });
-                        }
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Ocurrió un error al comunicar con el servidor.',
-                            confirmButtonText: 'Aceptar',
-                        });
-                    },
-                });
-            });
-
-            //FUNCION LIMPIAR
-            function limpiar() {
-                //Limpiar los datos del cliente
-                $('#nombreUsuario').html('<option value="" disabled selected>Seleccione un usuario</option>');
-                $('#idCliente').val('');
-                //Limpiamos el array de productos y todo lo relacionado
-                productosSeleccionados = [];
-                tablaServicios.ajax.reload();
-                $('#resumenProductos').empty();
-                //Limpiamos la parte de reservas
-                $('#totalHora').val('$0.00');
-                $('#duracion').val('');
-                $('#totalFinalHora').val('');
-                $('#fecha').val('');
-                $('#hora').val('');
-                $('input[name="hora"]').prop('checked', false);
-                $('#horaElejida').val('');
-                $('#distrito').html('<option value="" disabled selected>Seleccione un distrito</option>');
-                $('#idDistrito').val('');
-                $('#direccion').val('');
-                $('#telefono').val('');
-                $('#metodoPago').val('').prop('selectedIndex', 0); // Restablece al valor inicial
-                $('#idMetodoPago').val(''); // Limpia el input oculto
-                $('#imagenPago').val('');
-            }
-        });
-
-        function NuevoTotal() {
-            const duracionInput = document.getElementById('duracion');
-            const totalHoraInput = document.getElementById('totalHora');
-            const totalFinalHoraInput = document.getElementById('totalFinalHora');
-
-            // Habilitar el campo duracion si totalHora > 0
-            function habilitarDuracion() {
-                const totalHora = parseFloat(totalHoraInput.value.replace('$', '')) || 0;
-                if (totalHora > 0) {
-                    duracionInput.removeAttribute('disabled');
-                } else {
-                    duracionInput.setAttribute('disabled', true);
-                    totalFinalHoraInput.value = ''; // Limpiar el total final si está deshabilitado
-                }
-            }
-
-            // Calcular el nuevo total
-            function calcularNuevoTotal() {
-                const totalHora = parseFloat(totalHoraInput.value.replace('$', '')) || 0;
-                const duracion = parseInt(duracionInput.value) || 1;
-
-                if (duracion > 0) {
-                    const nuevoTotal = totalHora * duracion;
-                    totalFinalHoraInput.value = `$${nuevoTotal.toFixed(2)}`;
-                } else {
-                    totalFinalHoraInput.value = ''; // Limpiar el total si la duración no es válida
-                }
-            }
-
-            // Escuchar cambios en totalHora
-            totalHoraInput.addEventListener('input', habilitarDuracion);
-
-            // Escuchar cambios en duracion
-            duracionInput.addEventListener('input', calcularNuevoTotal);
-            duracionInput.addEventListener('change', calcularNuevoTotal);
-
-            // Validar que la duración sea numérica y positiva
-            duracionInput.addEventListener('input', function() {
-                const duracion = parseInt(duracionInput.value);
-                if (duracion <= 0 || isNaN(duracion)) {
-                    duracionInput.setCustomValidity('La duración debe ser un número positivo.');
-                } else {
-                    duracionInput.setCustomValidity('');
-                }
-            });
-
-            // Inicializar validaciones
-            habilitarDuracion();
-        }
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-
 </body>
 
 </html>

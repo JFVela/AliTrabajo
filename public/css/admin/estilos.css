@@ -146,5 +146,8 @@ body {
 
 /* IMPORTANTE POR COSAS DEL STILO DEL SELECT SE PONE ANTRAS DEL MODAL */
 .select2-container {
-  z-index: 1055; /* Bootstrap modal tiene z-index 1050 */
+  z-index: 2050 !important; /* Mayor que el z-index del modal de Bootstrap */
+}
+.modal {
+  overflow: visible !important;
 }
