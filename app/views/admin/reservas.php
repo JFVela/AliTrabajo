@@ -140,13 +140,13 @@
                                         <!-- Duración -->
                                         <div class="col-md-6">
                                             <label for="duracion" class="form-label gestion-form-label">Duración</label>
-                                            <input type="number" id="duracion" min="1" max="12" value="1" class="form-control gestion-form-input" required disabled placeholder="Duración del Evento">
+                                            <input type="number" id="duracion" min="1" max="12" value="" class="form-control gestion-form-input" required disabled placeholder="Duración del Evento">
                                         </div>
 
                                         <!-- Total Final Hora -->
                                         <div class="col-md-6">
                                             <label for="totalFinalHora" class="form-label gestion-form-label">Total Final Hora</label>
-                                            <input type="text" id="totalFinalHora" class="form-control gestion-form-input" disabled>
+                                            <input type="text" id="totalFinalHora" class="form-control gestion-form-input" disabled value="$0.00">
                                         </div>
                                     </div>
 
@@ -161,7 +161,7 @@
                                         <!-- Hora -->
                                         <div class="col-md-6">
                                             <label for="hora" class="form-label gestion-form-label">Hora</label>
-                                            <input type="number" id="hora" class="form-control gestion-form-input" required min="1" max="12" value="1" placeholder="Hora de Evento">
+                                            <input type="number" id="hora" class="form-control gestion-form-input" required min="1" max="12" value="" placeholder="Hora de Evento">
                                             <div>
                                                 <input type="radio" id="am" name="hora" value="AM" required>
                                                 <label for="am">AM</label>
@@ -344,8 +344,6 @@
     <script src="../../../public/js/selectNombreyDistritos.js"></script>
     <!-- Script para select de Metodo de Pago -->
     <script src="../../../public/js/metodoPago.js"></script>
-    <!-- Script para el Modal -->
-    <script src="../../../public/js/modalGenerarReserva.js"></script>
     <!-- Script para el RESERVA -->
     <script src="../../../public/js/reservasCrud.js"></script>
 
