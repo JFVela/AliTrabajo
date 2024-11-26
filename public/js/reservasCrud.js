@@ -46,7 +46,7 @@ $(document).ready(function () {
             "data": null, // Imprimir
             "render": function (data, type, row) {
                 return `
-                <a href="../fpdp/imprimir.php?accion=imprimirReserva&id=${row.id_reserva}" target="_blank" class="btn btn-dark btn-sm">
+               <a href="../fpdp/imprimir.php?accion=imprimirReserva&id=${row.id_reserva}" target="_blank" class="btn btn-dark btn-sm">
                     <i class="bi bi-file-earmark-pdf-fill"></i>
                 </a>`;
             }

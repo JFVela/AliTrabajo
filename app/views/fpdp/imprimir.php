@@ -154,5 +154,127 @@ if ($accion == 'imprimirCliente') {
     $pdf->Output('Cliente_' . $cliente['id_cliente'] . '.pdf', 'D');
 }
 
+// Verificar acción para imprimir detalles de la reserva
+if ($accion == 'imprimirReserva') {
+    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+    if ($id <= 0) {
+        die("ID no válido.");
+    }
+
+    // Consultar datos de la reserva
+    $query = "
+        SELECT 
+            r.id_reserva, r.direccion AS direccion_reserva, r.fecha_reserva,
+            r.hora_reserva, r.ampm, r.telefonoContacto, r.estado_reserva,
+            c.id_cotizacion, c.fecha_cotizacion, c.total, cl.nombre_cliente,
+            cl.telefono AS telefono_cliente, cl.email,
+            cl.direccion AS direccion_cliente, cl.dni, cp.capturaPago_url,
+            cp.estadoPago, dp.metodoPago AS descripcionPago, dp.descripcionPago AS metodoPago,
+            d.Distrito, p.Provincia, dept.Departamento
+        FROM reservas r 
+        JOIN cotizaciones c ON r.id_cotizacion = c.id_cotizacion 
+        JOIN clientes cl ON c.id_cliente = cl.id_cliente 
+        JOIN capturapago cp ON r.idCapt = cp.idCapt 
+        JOIN descripcionpago dp ON cp.idPago = dp.idPago 
+        JOIN distritos d ON r.idDist = d.idDist 
+        JOIN provincias p ON d.idProv = p.idProv 
+        JOIN departamentos dept ON p.idDepa = dept.idDepa 
+        WHERE r.id_reserva = ?
+    ";
+
+    // Preparar y ejecutar consulta
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        die("Reserva no encontrada.");
+    }
+
+    $reserva = $result->fetch_assoc();
+
+    // Crear PDF
+    class PDF extends FPDF
+    {
+        function Header()
+        {
+            // Fecha en la esquina superior derecha
+            $this->SetFont('Arial', '', 10);
+            $this->Cell(0, 10, 'Fecha de Impresion: ' . date('d/m/Y'), 0, 0, 'R');
+            $this->Ln(10);
+
+            // Título centrado
+            $this->SetFont('Arial', 'B', 16);
+            $this->Cell(0, 10, utf8_decode('Detalle de Reserva'), 0, 1, 'C');
+            $this->Ln(5);
+        }
+
+        function Footer()
+        {
+            $this->SetY(-15);
+            $this->SetFont('Arial', 'I', 8);
+            $this->Cell(0, 10, utf8_decode('Página ') . $this->PageNo(), 0, 0, 'C');
+        }
+
+        function TableSection($title, $data)
+        {
+            // Título de la sección
+            $this->SetFont('Arial', 'B', 12);
+            $this->Cell(0, 10, utf8_decode($title), 0, 1);
+            $this->Ln(2);
+
+            // Tabla
+            $this->SetFont('Arial', '', 12);
+            foreach ($data as $key => $value) {
+                $this->Cell(50, 10, utf8_decode($key), 1);
+                $this->Cell(0, 10, utf8_decode($value), 1, 1);
+            }
+            $this->Ln(5);
+        }
+    }
+
+    // Crear el PDF
+    $pdf = new PDF();
+    $pdf->AddPage();
+
+    // Información de la reserva
+    $pdf->TableSection('Información de la Reserva', [
+        'ID Reserva' => $reserva['id_reserva'],
+        'Fecha de Reserva' => $reserva['fecha_reserva'],
+        'Hora de Reserva' => $reserva['hora_reserva'] . ' ' . $reserva['ampm'],
+        'Estado de Reserva' => $reserva['estado_reserva']
+    ]);
+
+    // Información del cliente
+    $pdf->TableSection('Información del Cliente', [
+        'Nombre del Cliente' => $reserva['nombre_cliente'],
+        'Teléfono del Cliente' => $reserva['telefono_cliente'],
+        'Email' => $reserva['email'],
+        'Dirección del Cliente' => $reserva['direccion_cliente'],
+        'DNI' => $reserva['dni']
+    ]);
+
+    // Información de la ubicación
+    $pdf->TableSection('Información de Ubicación', [
+        'Dirección de la Reserva' => $reserva['direccion_reserva'],
+        'Distrito' => $reserva['Distrito'],
+        'Provincia' => $reserva['Provincia'],
+        'Departamento' => $reserva['Departamento']
+    ]);
+
+    // Información del pago
+    $pdf->TableSection('Información del Pago', [
+        'Método de Pago' => $reserva['metodoPago'],
+        'Descripción del Pago' => $reserva['descripcionPago'],
+        'Estado del Pago' => $reserva['estadoPago'],
+        'Total Cotización' => $reserva['total']
+    ]);
+
+    // Salida del PDF
+    $pdf->Output('Reserva_' . $reserva['id_reserva'] . '.pdf', 'D');
+}
+
 // Cerrar conexión
 $conn->close();
