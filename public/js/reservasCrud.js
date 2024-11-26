@@ -37,7 +37,7 @@ $(document).ready(function () {
             "data": null, // Detalle
             "render": function (data, type, row) {
                 return `
-                <a href="detalleReserva.php?id=${row.id_reserva}" class="btn btn-info btn-sm">
+                <a  href="detalleReserva.php?id=${row.id_reserva}" class="btn btn-info btn-sm">
                     <i class="bi bi-list-check"></i>
                 </a>`;
             }

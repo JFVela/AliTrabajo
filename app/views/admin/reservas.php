@@ -240,7 +240,7 @@
                         <div class="row">
                             <!-- Primera columna -->
                             <!-- id reserva -->
-                            <input type="" id="id_Reserva" value="0">
+                            <input type="hidden" id="id_Reserva" value="0">
                             <div class="col-md-6">
                                 <!-- Cliente -->
                                 <div class="mb-3">
@@ -256,7 +256,7 @@
                                     </select>
                                 </div>
                                 <!-- id del distriuto -->
-                                <input type="" id="idDistrito_editar" value="">
+                                <input type="hidden" id="idDistrito_editar" value="">
 
                                 <!-- Foto -->
                                 <div class="mb-3 d-flex flex-column align-items-center">

@@ -1,0 +1,112 @@
+body {
+  background-color: #f8f9fa;
+  font-family: "Arial", sans-serif;
+}
+
+.container {
+  max-width: 1000px;
+}
+
+h1 {
+  color: #333;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.detalle-item {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.detalle-item:last-child {
+  border-bottom: none;
+}
+
+.detalle-item span:first-child {
+  min-width: 150px;
+  display: inline-block;
+}
+
+.badge {
+  font-size: 0.9em;
+  padding: 0.5em 0.7em;
+}
+
+.img-thumbnail {
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.img-thumbnail:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .detalle-item span:first-child {
+    min-width: auto;
+    display: block;
+    margin-bottom: 5px;
+  }
+}
+
+/* Estilo para el grupo de botones */
+.button-group {
+    display: flex;
+    gap: 15px; /* Espacio entre botones */
+    justify-content: center;
+}
+
+/* Botón de Volver */
+.btn-back {
+    background-color: #6c757d;
+    color: white;
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #5a6268;
+    color: white;
+}
+
+/* Botón de Actualizar */
+.btn-refresh {
+    background-color: #007bff;
+    color: white;
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-refresh:hover {
+    background-color: #0056b3;
+    color: white;
+}
