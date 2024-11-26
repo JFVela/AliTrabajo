@@ -23,7 +23,7 @@
 <body>
     <!-- Tabla en html -->
     <div class="container gestion-container">
-        <h2 class="gestion-titulo">Gestión de Productos</h2>
+        <h2 class="gestion-titulo">Gestión de Reservas</h2>
         <button type="button" id="btnAgregarReserva" class="gestion-boton-agregar">
             Agregar <i class="bi bi-box-arrow-in-up-right"></i>
         </button>
@@ -58,7 +58,7 @@
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content custom-modal-style">
                 <div class="modal-header">
-                    <h5 class="modal-title gestion-modal-titulo"><span id="tituloModal"></span></h5>
+                    <h5 class="modal-title gestion-modal-titulo">Agregar una Reserva</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -218,7 +218,7 @@
 
                         <div class="mt-4 text-end">
                             <button type="submit" class="gestion-boton-modal">
-                                <span id="textoDinamico">Reservar</span>
+                                Agregar Reserva
                             </button>
                         </div>
                     </form>
@@ -232,7 +232,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header gestion-modal-header">
-                    <h5 class="modal-title gestion-modal-titulo"><span id="">Editar Reserva</span></h5>
+                    <h5 class="modal-title gestion-modal-titulo">Editar Reserva</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -328,7 +328,7 @@
                         <!-- Botón para guardar cambios -->
                         <div class="mt-4 text-end">
                             <button type="submit" class="gestion-boton-modal">
-                                <span>Editar</span>
+                                Editar 
                             </button>
                         </div>
                     </form>

@@ -1,7 +1,3 @@
-//Variables globales
-let textoModal = document.getElementById("textoDinamico");
-let tituloModal = document.getElementById("tituloModal");
-
 // Tabla Ajax
 $(document).ready(function () {
     const tableReserva = $('#reservasTable').DataTable({
@@ -495,8 +491,6 @@ $(document).ready(function () {
 
     // Limpiar datos para nueva categoría
     $('#btnAgregarReserva').click(function () {
-        tituloModal.textContent = "Nueva Reserva";
-        textoModal.textContent = "Agregar Reserva";
         limpiar()
         $('#modalFormulario').modal('show');
     });
