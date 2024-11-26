@@ -71,7 +71,7 @@
                                     <!-- Nombre de Usuario (Select) -->
                                     <div class="mb-3">
                                         <label for="nombreUsuario" class="form-label gestion-form-label">Nombre de Usuario</label>
-                                        <select id="nombreUsuario" class="form-control gestion-form-input" style="width: 50%;" required>
+                                        <select id="nombreUsuario" class="form-select gestion-form-input" style="width: 50%;" required>
                                             <option value="" disabled selected>Seleccione un usuario</option>
                                         </select>
                                     </div>
@@ -175,7 +175,7 @@
                                     <!-- Distrito -->
                                     <div class="mb-3">
                                         <label for="distrito" class="form-label gestion-form-label">Distrito</label>
-                                        <select id="distrito" class="form-control gestion-form-input" required>
+                                        <select id="distrito" class="form-select gestion-form-input" required>
                                             <option value="" disabled selected>Seleccione un distrito</option>
                                         </select>
                                     </div>
@@ -198,7 +198,7 @@
                                     <!-- Método de pago -->
                                     <div class="mb-3">
                                         <label for="metodoPago" class="form-label gestion-form-label">Método de Pago</label>
-                                        <select id="metodoPago" class="form-control gestion-form-input" required>
+                                        <select id="metodoPago" class="form-select gestion-form-input" required>
                                             <option value="" disabled selected>Seleccione un método de pago</option>
                                         </select>
                                     </div>
@@ -245,25 +245,22 @@
                                 <!-- Cliente -->
                                 <div class="mb-3">
                                     <label for="id_editar_cliente" class="form-label gestion-form-label">Nombre del cliente</label>
-                                    <input type="text" id="id_editar_cliente" class="form-control gestion-form-input" required
-                                        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$"
-                                        title="El nombre del cliente puede contener letras, números y espacios"
-                                        maxlength="100">
+                                    <input type="text" id="id_editar_cliente" class="form-control gestion-form-input" disabled>
                                 </div>
 
                                 <!-- Distrito -->
                                 <div class="mb-3">
                                     <label for="id_editar_distrito" class="form-label gestion-form-label">Distrito</label>
-                                    <select id="id_editar_distrito" class="form-control gestion-form-input" required style="width: 100%;">
+                                    <select id="id_editar_distrito" class="form-select gestion-form-input" required style="width: 100%;">
                                         <option value="" disabled selected>Seleccione un distrito</option>
                                     </select>
                                 </div>
                                 <!-- id del distriuto -->
-                                <input type="text" id="idDistrito_editar">
+                                <input type="" id="idDistrito_editar" value="">
 
                                 <!-- Foto -->
                                 <div class="mb-3 d-flex flex-column align-items-center">
-                                    <label for="id_editar_foto" class="form-label gestion-form-label">Foto</label>
+                                    <label for="id_editar_foto" class="form-label gestion-form-label">Comprobante de Pago</label>
                                     <img id="id_editar_foto" src="ruta/a/imagen.jpg" alt="Foto de la reserva" class="img-fluid border"
                                         style="height: 100%; max-height: 250px;">
                                 </div>
@@ -274,9 +271,11 @@
                                 <!-- Dirección -->
                                 <div class="mb-3">
                                     <label for="id_editar_direccion" class="form-label gestion-form-label">Dirección</label>
-                                    <input type="text" id="id_editar_direccion" class="form-control gestion-form-input" required
+                                    <input type="text" id="id_editar_direccion" class="form-control gestion-form-input"
+                                        required
                                         maxlength="255"
-                                        title="Ingrese la dirección del cliente">
+                                        title="Ingrese la dirección del cliente"
+                                        placeholder="Ingrese la direccion del evento.">
                                 </div>
 
                                 <!-- Fecha Reserva -->
@@ -291,11 +290,11 @@
                                         <label for="id_editar_hora_reserva" class="form-label gestion-form-label">Hora Reserva</label>
                                         <input type="number" id="id_editar_hora_reserva" class="form-control gestion-form-input" required
                                             min="0" max="23"
-                                            title="Ingrese la hora en formato 24 horas">
+                                            title="Ingrese la hora en formato 24 horas" placeholder="Duración del Evento">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="id_editar_ampm" class="form-label gestion-form-label">AM/PM</label>
-                                        <select id="id_editar_ampm" class="form-control gestion-form-input" required>
+                                        <select id="id_editar_ampm" class="form-select gestion-form-input" required>
                                             <option value="AM">AM</option>
                                             <option value="PM">PM</option>
                                         </select>
@@ -306,15 +305,15 @@
                                 <div class="mb-3">
                                     <label for="id_editar_telefono_contacto" class="form-label gestion-form-label">Teléfono de Contacto</label>
                                     <input type="tel" id="id_editar_telefono_contacto" class="form-control gestion-form-input" required
-                                        pattern="^[0-9]{9,11}$"
-                                        title="El teléfono debe contener entre 9 y 11 dígitos"
-                                        maxlength="11">
+                                        required pattern="9[0-9]{8}" title="Debe contener 9 dígitos y comenzar con 9."
+                                        maxlength="11"
+                                        placeholder="Digite número del contacto. (Ej: 912345678)">
                                 </div>
 
                                 <!-- Estado Reserva -->
                                 <div class="mb-3">
                                     <label for="id_editar_estado_reserva" class="form-label gestion-form-label">Estado de Reserva</label>
-                                    <select id="id_editar_estado_reserva" class="form-control gestion-form-input" required>
+                                    <select id="id_editar_estado_reserva" class="form-select gestion-form-input" required>
                                         <option value="" disabled selected>Seleccione el estado</option>
                                         <option value="Pendiente">Pendiente</option>
                                         <option value="En proceso">En proceso</option>

@@ -71,8 +71,40 @@ $(document).ready(function () {
         $('#idDistrito').val(selectedId); // Asignar ID al input oculto
     });
 
-    // Función adicional para limpiar inputs (si es necesaria)
-    function limpiarInput() {
-        $('#idCliente').val(''); // Limpia el input del cliente
-    }
+    // Para el select del distrito en el modal de Editar
+    $('#id_editar_distrito').select2({
+        placeholder: "Seleccione un distrito",
+        dropdownParent: $('#modalEditar'), // Evita conflictos de estilo
+        allowClear: true,
+        ajax: {
+            url: 'crudUbicacion.php?action=listarDistrito', // URL para buscar distritos
+            dataType: 'json',
+            method: 'GET',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term // Enviar el término de búsqueda
+                };
+            },
+            processResults: function (data) {
+                // Transformar la respuesta para Select2
+                return {
+                    results: data.data.map(function (distrito) {
+                        return {
+                            id: distrito.idDist,
+                            text: distrito.Distrito
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+
+    // Evento para capturar la selección y asignar el ID del distrito
+    $('#id_editar_distrito').on('select2:select', function (e) {
+        const selectedId = e.params.data.id;
+        $('#idDistrito_editar').val(selectedId); // Asignar ID al input oculto
+    });
+
 });

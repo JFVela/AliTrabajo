@@ -160,11 +160,46 @@ function nuevaReserva($conn)
     }
 }
 
-// Función para actualizar una reserva (vacía por ahora)
+// Función para actualizar una reserva
 function actualizarReserva($conn)
 {
-    echo json_encode(["info" => "Función de actualización aún no implementada."]);
+    // Verificar que los datos necesarios se hayan enviado
+    if (isset($_POST['idReserva'], $_POST['idDist'], $_POST['direccion'], $_POST['fecha'], $_POST['hora'], $_POST['ampm'], $_POST['telf'], $_POST['estado'])) {
+        // Obtener datos enviados por el cliente
+        $idReserva = $_POST['idReserva'];
+        $idDist = $_POST['idDist'];
+        $direccion = $_POST['direccion'];
+        $fecha = $_POST['fecha'];
+        $hora = $_POST['hora'];
+        $ampm = $_POST['ampm'];
+        $telf = $_POST['telf'];
+        $estado = $_POST['estado'];
+
+        // Preparar la consulta SQL
+        $query = "UPDATE reservas SET idDist = ?, direccion = ?, fecha_reserva = ?, hora_reserva = ?, ampm = ?, telefonoContacto = ?, estado_reserva = ? WHERE id_reserva = ?";
+
+        // Preparar la declaración para evitar inyección SQL
+        if ($stmt = $conn->prepare($query)) {
+            // Vincular parámetros
+            $stmt->bind_param('sssssssi', $idDist, $direccion, $fecha, $hora, $ampm, $telf, $estado, $idReserva);
+
+            // Ejecutar la consulta
+            if ($stmt->execute()) {
+                echo json_encode(["success" => true]);
+            } else {
+                echo json_encode(["success" => false, "error" => "Error al ejecutar la consulta: " . $stmt->error]);
+            }
+
+            // Cerrar la declaración
+            $stmt->close();
+        } else {
+            echo json_encode(["success" => false, "error" => "Error al preparar la consulta: " . $conn->error]);
+        }
+    } else {
+        echo json_encode(["success" => false, "error" => "Faltan datos obligatorios."]);
+    }
 }
+
 
 // Función para eliminar una reserva
 function eliminarReserva($conn)

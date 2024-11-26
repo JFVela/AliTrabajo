@@ -63,8 +63,9 @@ $(document).ready(function () {
                     data-id="${row.id_reserva}"
                     data-nombre_cliente="${row.nombre_cliente}"
                     data-iddist="${row.idDist}"
-                    data-nombre_provincia="${row.nombre_provincia}"
+                    data-nombre_distrito="${row.nombre_distrito}"
                     data-capturaPago_url="${row.capturaPago_url}"
+                    data-direccion_reserva="${row.direccion_reserva}"
                     data-fecha_reserva="${row.fecha_reserva}"
                     data-hora_reserva="${row.hora_reserva}"
                     data-ampm="${row.ampm}"
@@ -244,14 +245,14 @@ $(document).ready(function () {
             success: function (response) {
                 const result = JSON.parse(response);
                 if (result.success) {
+                    $('#modalFormulario').modal('hide');
+                    limpiar();
                     Swal.fire({
                         icon: 'success',
                         title: '¡Éxito!',
                         text: 'Reserva creada correctamente.',
                         confirmButtonText: 'Aceptar',
                     });
-                    $('#modalFormulario').modal('hide');
-                    limpiar();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -367,15 +368,16 @@ $(document).ready(function () {
         });
     });
 
-    // Editar Producto
+    // Boton Editar Servicios
     $('#reservasTable').on('click', '.editar', function () {
         // Obtener los datos de la reserva seleccionada
-        
+
         const idReserva = $(this).data('id');
         const nombreCliente = $(this).data('nombre_cliente');
         const idDistrito = $(this).data('iddist');
-        const nombreDistrito = $(this).data('nombre_provincia');
+        const nombreDistrito = $(this).data('nombre_distrito');
         const capturaPagoUrl = $(this).data('capturapago_url');
+        const direccionReserva = $(this).data('direccion_reserva');
         const fechaReserva = $(this).data('fecha_reserva');
         const horaReserva = $(this).data('hora_reserva');
         const ampm = $(this).data('ampm');
@@ -385,17 +387,110 @@ $(document).ready(function () {
         // Rellenar los campos del formulario con los datos de la reserva
         $('#id_Reserva').val(idReserva);
         $('#id_editar_cliente').val(nombreCliente);
-        $('#id_editar_distrito').val(idDistrito);
-        $('#id_editar_foto').attr('src', capturaPagoUrl);
-        $('#id_editar_direccion').val($(this).data('direccion'));
+        $('#idDistrito_editar').val(idDistrito);
+        $('#id_editar_foto').attr('src', "../../../uploads/comprobantes/" + capturaPagoUrl);
+        $('#id_editar_direccion').val(direccionReserva);
         $('#id_editar_fecha_reserva').val(fechaReserva);
         $('#id_editar_hora_reserva').val(horaReserva);
         $('#id_editar_ampm').val(ampm);
         $('#id_editar_telefono_contacto').val(telefonoContacto);
         $('#id_editar_estado_reserva').val(estadoReserva);
 
+        // Establecer el distrito actual en el select2
+        const distritoActual = {
+            id: idDistrito,
+            text: nombreDistrito
+        };
+        // Agregar la opción al select2 y seleccionarla
+        const $select = $('#id_editar_distrito');
+        const option = new Option(distritoActual.text, distritoActual.id, true, true);
+        $select.append(option).trigger('change');
+
         // Mostrar el modal
         $('#modalEditar').modal('show');
+    });
+
+    //Funcion limpiar los datos de modal Editar
+    function limpiarDatosEditar() {
+        tablaServicios.ajax.reload();
+        tableReserva.ajax.reload();
+        $('#id_Reserva').val('');
+        $('#id_editar_cliente').val('');
+        $('#idDistrito_editar').val('');
+        $('#id_editar_foto').attr('src', ''); // Limpia la imagen
+        $('#id_editar_fecha_reserva').val('');
+        $('#id_editar_hora_reserva').val('');
+        $('#id_editar_ampm').val('');
+        $('#id_editar_telefono_contacto').val('');
+        $('#id_editar_estado_reserva').val('');
+
+        // Limpiar el select2 del distrito
+        const $select = $('#id_editar_distrito');
+        $select.val(null).trigger('change'); // Resetea el select2
+    }
+
+    // Actualizar o Agregar Producto
+    $('#formEditarReserva').submit(function (event) {
+        event.preventDefault();
+
+        // Obtener valores del formulario
+        const idReserva = $('#id_Reserva').val();
+        const idDistrito = $('#idDistrito_editar').val();
+        const direccion = $('#id_editar_direccion').val();
+        const fecha = $('#id_editar_fecha_reserva').val();
+        const horaReserva = $('#id_editar_hora_reserva').val();
+        const ampm = $('#id_editar_ampm').val();
+        const telfContacto = $('#id_editar_telefono_contacto').val();
+        const estadoReserva = $('#id_editar_estado_reserva').val();
+
+        // Crear objeto FormData para enviar datos
+        const formData = new FormData();
+        formData.append('idReserva', idReserva);
+        formData.append('idDist', idDistrito);
+        formData.append('direccion', direccion);
+        formData.append('fecha', fecha);
+        formData.append('hora', horaReserva);
+        formData.append('ampm', ampm);
+        formData.append('telf', telfContacto);
+        formData.append('estado', estadoReserva);
+
+        // Enviar datos al servidor
+        $.ajax({
+            url: `crudReservas.php?action=actualizarReserva`,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                const result = JSON.parse(response);
+                if (result.success) {
+                    $('#modalEditar').modal('hide');
+                    limpiarDatosEditar();
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: 'Reserva actualizada correctamente.',
+                        confirmButtonText: 'Aceptar',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.error,
+                        confirmButtonText: 'Aceptar',
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error en la comunicación con el servidor.',
+                    confirmButtonText: 'Aceptar',
+                });
+            },
+        });
+        limpiarDatosEditar();
     });
 
     // Limpiar datos para nueva categoría
