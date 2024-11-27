@@ -64,10 +64,10 @@
                     {
                         "data": null, // Detalle
                         "render": function(data, type, row) {
-                            return `
-                    <a href="detalleCotizacion.php?id=${row.id_cotizacion}" class="btn btn-info btn-sm">
-                        <i class="bi bi-list-check"></i>
-                    </a>`;
+                            return `<a href="detalleCotizacion.php?id=${row.id_cotizacion}" 
+                                        class="btn btn-info btn-sm">
+                                        <i class="bi bi-list-check"></i>
+                                    </a>`;
                         }
                     },
                     {

@@ -39,10 +39,14 @@ switch ($action) {
     case 'actualizarDetalle':
         actualizarDetalle($conn);
         break;
+    case 'agregarServiciosDetalle':
+        agregarServiciosDetalle($conn);
+        break;
     default:
         echo json_encode(["error" => "Acción no válida"]);
         break;
 }
+
 
 // Función para listar cotizaciones
 function listarCotizacion($conn)
@@ -182,26 +186,34 @@ function eliminarOtrosRegistros($conn)
 // Función para listar detalles por el id de la cotizacion
 function listarDetalles($conn)
 {
-    $query = "  SELECT 
-                    cd.id_detalle,
-                    cd.id_cotizacion,
-                    p.id_producto,
-                    p.nombre AS nombre_producto,
-                    p.id_proveedor,
-                    pr.nomb_empresa AS nombre_proveedor,
-                    pr.nomb_contacto AS contacto_proveedor,
-                    p.id_categoria,
-                    c.nombre_categoria AS nombre_categoria,
-                    p.precio_hr,
-                    p.foto,
-                    cd.cantidad,
-                    cd.horas_alquiler,
-                    cd.subtotal
-                FROM cotizacion_detalles cd
-                INNER JOIN productos p ON cd.id_producto = p.id_producto
-                INNER JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
-                INNER JOIN categorias c ON p.id_categoria = c.id_categoria
-                where cd.id_cotizacion = 18;";
+    $idCotizacion = isset($_POST['id_cotizacion']) ? intval($_POST['id_cotizacion']) : 0;
+
+    // Validar el ID
+    if ($idCotizacion <= 0) {
+        echo json_encode(['data' => []]);
+        return;
+    }
+
+    $query = "SELECT 
+                cd.id_detalle,
+                cd.id_cotizacion,
+                p.id_producto,
+                p.nombre AS nombre_producto,
+                p.id_proveedor,
+                pr.nomb_empresa AS nombre_proveedor,
+                pr.nomb_contacto AS contacto_proveedor,
+                p.id_categoria,
+                c.nombre_categoria AS nombre_categoria,
+                p.precio_hr,
+                p.foto,
+                cd.cantidad,
+                cd.horas_alquiler,
+                cd.subtotal
+            FROM cotizacion_detalles cd
+            INNER JOIN productos p ON cd.id_producto = p.id_producto
+            INNER JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
+            INNER JOIN categorias c ON p.id_categoria = c.id_categoria
+            WHERE cd.id_cotizacion = $idCotizacion";
 
     $result = $conn->query($query);
 
@@ -213,6 +225,7 @@ function listarDetalles($conn)
     header('Content-Type: application/json');
     echo json_encode(['data' => $detalleCotizacion]);
 }
+
 
 function eliminarDetalle($conn)
 {
@@ -292,5 +305,54 @@ function actualizarDetalle($conn)
     }
     $stmtUpdate->close();
 }
+
+// Función para crear una cotización
+function agregarServiciosDetalle($conn)
+{
+    // Obtener datos del POST
+    $idCotizacion = intval($_POST['idCotizacion']); // ID de la cotización
+    $horas = intval($_POST['horas']); // Horas de alquiler
+    $productosSeleccionados = json_decode($_POST['productosSeleccionados'], true); // Convertir JSON a array
+    $totalFinal = floatval($_POST['totalFinal']); // Total del formulario
+
+    // Validar que exista el ID de cotización
+    if ($idCotizacion <= 0 || empty($productosSeleccionados)) {
+        echo json_encode(["error" => "Datos inválidos."]);
+        return;
+    }
+
+    // Iniciar la transacción para asegurar consistencia
+    $conn->begin_transaction();
+    try {
+        // Insertar los detalles en la tabla cotizacion_detalles
+        $queryDetalle = "INSERT INTO cotizacion_detalles (id_cotizacion, id_producto, cantidad, horas_alquiler, subtotal) VALUES (?, ?, ?, ?, ?)";
+        $stmtDetalle = $conn->prepare($queryDetalle);
+
+        foreach ($productosSeleccionados as $producto) {
+            $idProducto = intval($producto['id']);
+            $cantidad = intval($producto['cantidad']);
+            $subtotal = floatval($producto['precio']) * $cantidad * $horas; // Calcular subtotal
+
+            $stmtDetalle->bind_param('iiids', $idCotizacion, $idProducto, $cantidad, $horas, $subtotal);
+            $stmtDetalle->execute();
+        }
+
+        // Actualizar el total en la tabla cotizaciones
+        $queryUpdateCotizacion = "UPDATE cotizaciones SET total = total + ? WHERE id_cotizacion = ?";
+        $stmtUpdate = $conn->prepare($queryUpdateCotizacion);
+        $stmtUpdate->bind_param('di', $totalFinal, $idCotizacion);
+        $stmtUpdate->execute();
+
+        // Confirmar la transacción
+        $conn->commit();
+
+        echo json_encode(["success" => "Servicios agregados correctamente."]);
+    } catch (Exception $e) {
+        // Si ocurre un error, revertir la transacción
+        $conn->rollback();
+        echo json_encode(["error" => "Error al agregar servicios: " . $e->getMessage()]);
+    }
+}
+
 
 $conn->close();

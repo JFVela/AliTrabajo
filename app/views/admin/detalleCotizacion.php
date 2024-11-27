@@ -1,3 +1,13 @@
+<?php
+// Obtener el ID de la cotización desde la URL
+$idCotizacion = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Si no hay un ID válido, redirigir o mostrar un error
+if ($idCotizacion <= 0) {
+    die("ID de cotización inválido.");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -143,6 +153,100 @@
         </div>
     </div>
 
+    <!-- Modal Agregar más servicios a la cotización -->
+    <div class="modal fade" id="modalAgregarServicios" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content contenido__modal">
+                <div class="modal-header modal__cabecera cabecera__modal">
+                    <h5 class="modal-title modal__titulo"><span id="tituloModal"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formulariServiciosNuevos" enctype="multipart/form-data">
+                        <!-- Input oculto para el número de cotización -->
+                        <input type="hidden" id="numeroDeCotizacion" name="numeroDeCotizacion" value="<?= $idCotizacion ?>">
+
+                        <div class="row">
+                            <!-- Columna 1: Servicios -->
+                            <div class="col-md-6">
+                                <div class="mb-3 row">
+                                    <!-- Duración -->
+                                    <div class="col-md-6">
+                                        <label for="agregarDuracion" class="form-label label__formulario">Duración</label>
+                                        <input type="number" id="agregarDuracion" min="1" max="12" value=""
+                                            class="form-control input__formulario"
+                                            required disabled
+                                            placeholder="Ingrese duración de Evento">
+                                    </div>
+                                    <!-- Total Final Hora -->
+                                    <div class="col-md-6">
+                                        <label for="totalDefinitivo" class="form-label label__formulario">Total Final Hora</label>
+                                        <input type="text" id="totalDefinitivo" class="form-control input__formulario" disabled>
+                                    </div>
+                                </div>
+                                <!-- Tabla de servicios -->
+                                <div class="mb-3">
+                                    <label class="form-label label__formulario">Servicios</label>
+                                    <div class="table-responsive">
+                                        <table id="tablaServicios" class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Servicio</th>
+                                                    <th>Categoría</th>
+                                                    <th>Costo/hr</th>
+                                                    <th>Acción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Aquí se insertarán las filas de datos dinámicamente -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Columna 2: Resumen -->
+                            <div class="col-md-6 d-flex flex-column align-items-center">
+                                <!-- Resumen de los productos seleccionados -->
+                                <div class="mb-3 w-100">
+                                    <label class="form-label label__formulario">Resumen de servicios seleccionados</label>
+                                    <div class="tabla__resumen" style="max-height: 300px; overflow-y: auto;">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Costo</th>
+                                                    <th>Subtotal</th>
+                                                    <th>Acción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listaServicios">
+                                                <!-- Aquí se generarán los productos seleccionados por el usuario -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- Total por hora -->
+                                <div class="mb-3 w-100">
+                                    <label class="form-label label__formulario">Total * Hora</label>
+                                    <input type="text" id="totalHora" class="form-control input__formulario" disabled>
+                                </div>
+                                <!-- Botón de acción -->
+                                <div class="mt-4 w-100">
+                                    <button type="submit" class="btn btn-primary botonEnviar w-100">
+                                        <span id="textoDinamico">Reservar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const cantidadInput = document.getElementById("editarCantidad");
@@ -173,16 +277,22 @@
         });
     </script>
 
-
     <script>
         //Variables globales
         let textoModal = document.getElementById("textoDinamico");
         let tituloModal = document.getElementById("tituloModal");
         // Tabla Ajax
         $(document).ready(function() {
+            const idCotizacion = <?= $idCotizacion ?>;
             // Inicializar DataTable
             const tableDetalleCotizacion = $('#detalleCotizacionTable').DataTable({
-                "ajax": "crudCotizaciones.php?action=listarDetalles", // Ruta ajustada
+                "ajax": {
+                    "url": "crudCotizaciones.php?action=listarDetalles",
+                    "type": "POST",
+                    "data": {
+                        "id_cotizacion": idCotizacion
+                    }
+                },
                 "columns": [{
                         "data": "id_detalle"
                     }, // Id-Det
@@ -242,7 +352,6 @@
                     "url": "//cdn.datatables.net/plug-ins/2.1.8/i18n/es-ES.json"
                 }
             });
-
 
             // Inicializar SweetAlert con botones personalizados
             const swalWithBootstrapButtons = Swal.mixin({
@@ -310,7 +419,6 @@
                     }
                 });
             });
-
 
             // Editar categoría
             $('#detalleCotizacionTable').on('click', '.editar', function() {
@@ -400,11 +508,10 @@
 
             // Limpiar datos para nueva categoría
             $('#btnNuevoServicio').click(function() {
+                limpiarDatos()
                 tituloModal.textContent = "Nueva Categoría";
                 textoModal.textContent = "Agregar Categoría";
-                limpiarDatos();
-                $('#editarId').val(0);
-                $('#modalEditarDetalleCotizacion').modal('show');
+                $('#modalAgregarServicios').modal('show');
             });
 
             function limpiarDatos() {
@@ -413,6 +520,195 @@
                 $('#editarDescripcion').val("");
                 $('#fotoExistente').val("");
             }
+
+            let productosSeleccionados = [];
+
+            const tablaAgregarServicios = $('#tablaServicios').DataTable({
+                "ajax": "crudProductos.php?action=listarProductos",
+                "columns": [{
+                        "data": "id_producto"
+                    },
+                    {
+                        "data": "nombre"
+                    },
+                    {
+                        "data": "nombre_categoria"
+                    },
+                    {
+                        "data": "precio_hr"
+                    },
+                    {
+                        "data": null,
+                        "render": function(data, type, row) {
+                            return `<div class="d-grid gap-2">
+                    <input type="number" class="form-control cantidadInput" min="1" max="10" value="1" style="width: 80px;">
+                    <button type="button" class="btn btn-success btnAgregar" data-id="${row.id_producto}">
+                        <i class="bi bi-plus-circle-fill"></i>
+                    </button>
+                </div>`;
+                        }
+                    }
+                ],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json"
+                },
+                "lengthChange": false,
+                "pageLength": 3
+            });
+
+            function actualizar() {
+                const $listaServicios = $('#listaServicios');
+                $listaServicios.empty();
+
+                let total = 0;
+
+                productosSeleccionados.forEach(producto => {
+                    const subtotal = producto.cantidad * producto.precio;
+                    total += subtotal;
+
+                    $listaServicios.append(`<tr data-id="${producto.id}">
+                            <td>${producto.nombre}</td>
+                            <td>${producto.cantidad}</td>
+                            <td>${producto.precio}</td>
+                            <td>${subtotal.toFixed(2)}</td>
+                            <td>
+                                <button type="button" class="btn btn-danger btnQuitar">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </td>
+                        </tr>`);
+                });
+
+                $('#totalHora').val(total.toFixed(2));
+                verificarDuracion(total);
+            }
+
+            $('#tablaServicios').on('click', '.btnAgregar', function() {
+                const $fila = $(this).closest('tr');
+                const id = $(this).data('id');
+                const data = tablaAgregarServicios.row($fila).data();
+                const nombre = data.nombre;
+                const precio = parseFloat(data.precio_hr);
+                const cantidad = parseInt($fila.find('.cantidadInput').val()) || 1;
+
+                const productoExistente = productosSeleccionados.find(producto => producto.id === id);
+
+                if (productoExistente) {
+                    productoExistente.cantidad = cantidad;
+                    productoExistente.precio = precio;
+                } else {
+                    productosSeleccionados.push({
+                        id,
+                        nombre,
+                        precio,
+                        cantidad
+                    });
+                }
+
+                actualizar();
+                calcularNuevoTotal();
+            });
+
+            $('#listaServicios').on('click', '.btnQuitar', function() {
+                const $fila = $(this).closest('tr');
+                const id = $fila.data('id');
+
+                productosSeleccionados = productosSeleccionados.filter(producto => producto.id !== id);
+
+                actualizar();
+                calcularNuevoTotal();
+            });
+
+            $('#formulariServiciosNuevos').submit(function(event) {
+                event.preventDefault();
+
+                let idCotizacion = $('#numeroDeCotizacion').val();
+                let horas = $('#agregarDuracion').val();
+                let totalDefinitivo = $('#totalDefinitivo').val();
+                let totalFinalNumerico = parseFloat(totalDefinitivo);
+
+                if (isNaN(totalFinalNumerico) || totalFinalNumerico <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Advertencia',
+                        text: 'Agrega algun servicio y elije la duración',
+                        confirmButtonText: 'Aceptar',
+                    });
+                    return;
+                }
+
+                const formData = new FormData();
+                const productosSeleccionadosJSON = JSON.stringify(productosSeleccionados);
+                formData.append('productosSeleccionados', productosSeleccionadosJSON);
+                formData.append('totalFinal', totalFinalNumerico);
+                formData.append('idCotizacion', idCotizacion);
+                formData.append('horas', horas);
+
+                $.ajax({
+                    url: `crudCotizaciones.php?action=agregarServiciosDetalle`,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        const result = JSON.parse(response);
+                        if (result.success) {
+                            tableDetalleCotizacion.ajax.reload();
+                            $('#modalAgregarServicios').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: 'Servicio agregado correctamente.',
+                                confirmButtonText: 'Aceptar',
+                            });
+                            limpiar();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: result.error,
+                                confirmButtonText: 'Aceptar',
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Ocurrió un error al comunicar con el servidor.',
+                            confirmButtonText: 'Aceptar',
+                        });
+                    },
+                });
+            });
+
+            function limpiar() {
+                productosSeleccionados = [];
+                tablaAgregarServicios.ajax.reload();
+                $('#listaServicios').empty();
+                $('#totalHora').val('0.00');
+                $('#agregarDuracion').val('').prop('disabled', true);
+                $('#totalDefinitivo').val('0.00');
+            }
+
+            function verificarDuracion(totalHora) {
+                const duracionInput = $('#agregarDuracion');
+                if (totalHora > 0) {
+                    duracionInput.prop('disabled', false);
+                } else {
+                    duracionInput.prop('disabled', true).val('');
+                }
+            }
+
+            function calcularNuevoTotal() {
+                const totalHora = parseFloat($('#totalHora').val()) || 0;
+                const duracion = parseInt($('#agregarDuracion').val()) || 1;
+                const totalDefinitivo = totalHora * duracion;
+
+                $('#totalDefinitivo').val(totalDefinitivo.toFixed(2));
+            }
+
+            $('#agregarDuracion').on('input change', calcularNuevoTotal);
 
         });
     </script>
