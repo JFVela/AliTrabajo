@@ -49,58 +49,130 @@
     </div>
 
     <!-- Modal para Editar CATEGORIAS -->
-    <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade" id="modalEditarDetalleCotizacion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header gestion-modal-header">
                     <h5 class="modal-title gestion-modal-titulo"><span id="tituloModal"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formEditar" enctype="multipart/form-data">
+                    <form id="formularioEditarDetalleCotizacion" class="row">
                         <input type="hidden" id="editarId">
 
-                        <!-- Nombre -->
-                        <div class="mb-3">
-                            <label for="editarNombre" class="form-label gestion-form-label">Nombre</label>
-                            <input type="text" id="editarNombre" class="form-control gestion-form-input" required
-                                pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
-                                title="El nombre no puede contener números ni caracteres especiales"
-                                maxlength="100">
-                            <small class="form-text text-muted">
-                                Máximo 100 caracteres.
-                                <span id="nombreCounter">0/100</span>
-                            </small>
+                        <!-- Primera columna -->
+                        <div class="col-md-6">
+                            <!-- Nombre del producto -->
+                            <div class="mb-3">
+                                <label for="editarNombreProducto" class="form-label gestion-form-label">Nombre del producto</label>
+                                <input type="text" id="editarNombreProducto" class="form-control gestion-form-input" disabled>
+                            </div>
+
+                            <!-- Proveedor -->
+                            <div class="mb-3">
+                                <label for="editarProveedor" class="form-label gestion-form-label">Proveedor</label>
+                                <input type="text" id="editarProveedor" class="form-control gestion-form-input" disabled>
+                            </div>
+
+                            <!-- Categoría -->
+                            <div class="mb-3">
+                                <label for="editarCategoria" class="form-label gestion-form-label">Categoría</label>
+                                <input type="text" id="editarCategoria" class="form-control gestion-form-input" disabled>
+                            </div>
+
+                            <!-- Foto -->
+                            <div class="mb-3 d-flex flex-column align-items-center">
+                                <label for="editarFoto" class="form-label gestion-form-label">Foto</label>
+                                <img id="editarFoto" class="img-fluid border" alt="Foto del producto" style="height: 100%; max-height: 200px;">
+                            </div>
                         </div>
 
-                        <!-- Descripción -->
-                        <div class="mb-3">
-                            <label for="editarDescripcion" class="form-label gestion-form-label">Descripción</label>
-                            <textarea id="editarDescripcion" class="form-control gestion-form-input" rows="3"
-                                title="Agregue una descripción"></textarea>
-                        </div>
+                        <!-- Segunda columna -->
+                        <div class="col-md-6">
+                            <!-- Precio -->
+                            <div class="mb-3">
+                                <label for="editarPrecio" class="form-label gestion-form-label">Precio</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" id="editarPrecio" class="form-control gestion-form-input" disabled>
+                                </div>
+                            </div>
 
-                        <!-- Foto existente -->
-                        <input type="hidden" id="fotoExistente">
+                            <!-- Cantidad y Horas en la misma fila -->
+                            <div class="row mb-3">
+                                <!-- Cantidad -->
+                                <div class="col-md-6">
+                                    <label for="editarCantidad" class="form-label gestion-form-label">Cantidad</label>
+                                    <div class="input-group">
+                                        <input type="number" id="editarCantidad" class="form-control gestion-form-input"
+                                            placeholder="1-10 unidades" min="1" max="10" required>
+                                        <span class="input-group-text">Unidades</span>
+                                    </div>
+                                </div>
 
-                        <!-- Foto (nueva) -->
-                        <div class="mb-3">
-                            <label for="editarImagen" class="form-label gestion-form-label">Foto</label>
-                            <input type="file" id="editarImagen" class="form-control gestion-form-input"
-                                accept="image/*"
-                                title="Seleccione una imagen">
-                            <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF.</small>
+                                <!-- Horas de alquiler -->
+                                <div class="col-md-6">
+                                    <label for="editarHoras" class="form-label gestion-form-label">Horas de alquiler</label>
+                                    <div class="input-group">
+                                        <input type="number" id="editarHoras" class="form-control gestion-form-input"
+                                            placeholder="1-12 horas" min="1" max="12" required>
+                                        <span class="input-group-text">Horas</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Subtotal -->
+                            <div class="mb-3">
+                                <label for="editarSubtotal" class="form-label gestion-form-label">Subtotal</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" id="editarSubtotal" class="form-control gestion-form-input" disabled>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Botón Actualizar -->
-                        <button type="submit" class="gestion-boton-modal">
-                            <span id="textoDinamico"></span>
-                        </button>
+                        <div class="col-12">
+                            <button type="submit" class="gestion-boton-modal">
+                                <span id="textoDinamico"></span>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const cantidadInput = document.getElementById("editarCantidad");
+            const horasInput = document.getElementById("editarHoras");
+            const precioInput = document.getElementById("editarPrecio");
+            const subtotalInput = document.getElementById("editarSubtotal");
+
+            function calcularSubtotal() {
+                const cantidad = parseInt(cantidadInput.value, 10);
+                const horas = parseInt(horasInput.value, 10);
+                const precio = parseFloat(precioInput.value);
+
+                if (isNaN(cantidad) || isNaN(horas) || cantidad < 1 || horas < 1) {
+                    subtotalInput.value = "No exceda el límite";
+                    return;
+                }
+
+                if (cantidad > 10 || horas > 12) {
+                    subtotalInput.value = "No exceda el límite";
+                    return;
+                }
+
+                subtotalInput.value = (cantidad * horas * precio).toFixed(2);
+            }
+
+            cantidadInput.addEventListener("input", calcularSubtotal);
+            horasInput.addEventListener("input", calcularSubtotal);
+        });
+    </script>
+
 
     <script>
         //Variables globales
@@ -153,7 +225,8 @@
                                         data-precio="${row.precio_hr}" 
                                         data-cantidad="${row.cantidad}" 
                                         data-horas="${row.horas_alquiler}" 
-                                        data-foto="${row.foto}">
+                                        data-foto="${row.foto}"
+                                        data-subtotal="${row.subtotal}">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
                                     <button class="btn btn-danger btn-sm eliminar" 
@@ -243,64 +316,52 @@
             $('#detalleCotizacionTable').on('click', '.editar', function() {
                 tituloModal.textContent = "Editar Categoría";
                 textoModal.textContent = "Editar";
-                const id = $(this).data('id');
-                const nombre = $(this).data('nombre');
-                const descripcion = $(this).data('descripcion');
-                const imagen = $(this).data('foto'); // Ruta o nombre de la imagen
+
+                const idDetalle = $(this).data('id');
+                const nombreProducto = $(this).data('nombre');
+                const proveedor = $(this).data('proveedor');
+                const categoria = $(this).data('categoria');
+                const foto = $(this).data('foto');
+                const precio = $(this).data('precio');
+                const cantidad = $(this).data('cantidad');
+                const horas = $(this).data('horas');
+                const subtotal = $(this).data('subtotal');
 
                 // Rellenar los campos del modal
-                $('#editarId').val(id);
-                $('#editarNombre').val(nombre);
-                $('#editarDescripcion').val(descripcion);
-                $('#fotoExistente').val(imagen); // Guardar la ruta/nombre de la imagen actual
+                $('#editarId').val(idDetalle);
+                $('#editarNombreProducto').val(nombreProducto);
+                $('#editarProveedor').val(proveedor);
+                $('#editarCategoria').val(categoria);
+                $('#editarFoto').attr('src', "../../../uploads/productos/" + foto);
+                $('#editarPrecio').val(precio);
+                $('#editarCantidad').val(cantidad);
+                $('#editarHoras').val(horas);
+                $('#editarSubtotal').val(subtotal);
 
                 // Mostrar el modal
-                $('#modalEditar').modal('show');
+                $('#modalEditarDetalleCotizacion').modal('show');
             });
 
-            // Actualizar o Agregar categoría
-            $('#formEditar').submit(function(event) {
+            // Actualizar
+            $('#formularioEditarDetalleCotizacion').submit(function(event) {
                 event.preventDefault();
 
                 // Obtener valores del formulario
-                const id = $('#editarId').val();
-                const nombre = $('#editarNombre').val();
-                const descripcion = $('#editarDescripcion').val();
-                const fotoNueva = $('#editarImagen')[0].files[0]; // Obtener archivo si se subió
-                const fotoExistente = $('#fotoExistente').val(); // Ruta de la foto actual
+                const idDetalle = $('#editarId').val();
+                const cantidad = $('#editarCantidad').val();
+                const horas = $('#editarHoras').val();
+                const subtotal = $('#editarSubtotal').val();
 
                 // Crear objeto FormData para enviar datos
                 const formData = new FormData();
-                formData.append('id', id);
-                formData.append('nombre', nombre);
-                formData.append('descripcion', descripcion);
-                formData.append('fotoExistente', fotoExistente);
-
-                // Verificar si el id es 0, significa que es una nueva categoría
-                if (id == 0) {
-                    // Si el id es 0 y no se ha subido una nueva foto
-                    if (!fotoNueva) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Advertencia',
-                            text: 'Debe ingresar una imagen para una nueva categoría.',
-                            confirmButtonText: 'Aceptar'
-                        });
-                        return; // Detiene la ejecución si no hay imagen
-                    }
-                }
-
-                // Adjuntar foto nueva solo si existe
-                if (fotoNueva) {
-                    formData.append('foto', fotoNueva);
-                }
-
-                // Determinar acción según el ID
-                const action = id == 0 ? 'crearCategoria' : 'actualizarCategoria';
+                formData.append('id', idDetalle);
+                formData.append('cantidad', cantidad);
+                formData.append('horas', horas);
+                formData.append('subtotal', subtotal);
 
                 // Enviar datos al servidor
                 $.ajax({
-                    url: `crudCategorias.php?action=${action}`,
+                    url: `crudCotizaciones.php?action=actualizarDetalle`,
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -309,12 +370,12 @@
                         const result = JSON.parse(response);
 
                         if (result.success) {
-                            $('#modalEditar').modal('hide');
-                            table.ajax.reload();
+                            $('#modalEditarDetalleCotizacion').modal('hide');
+                            tableDetalleCotizacion.ajax.reload();
                             Swal.fire({
                                 icon: 'success',
                                 title: '¡Éxito!',
-                                text: 'Operación realizada correctamente.',
+                                text: 'Actualización ser servicio exitosa!',
                                 confirmButtonText: 'Aceptar'
                             });
                         } else {
@@ -343,7 +404,7 @@
                 textoModal.textContent = "Agregar Categoría";
                 limpiarDatos();
                 $('#editarId').val(0);
-                $('#modalEditar').modal('show');
+                $('#modalEditarDetalleCotizacion').modal('show');
             });
 
             function limpiarDatos() {

@@ -36,6 +36,9 @@ switch ($action) {
     case 'eliminarDetalle':
         eliminarDetalle($conn);
         break;
+    case 'actualizarDetalle':
+        actualizarDetalle($conn);
+        break;
     default:
         echo json_encode(["error" => "Acción no válida"]);
         break;
@@ -197,7 +200,8 @@ function listarDetalles($conn)
                 FROM cotizacion_detalles cd
                 INNER JOIN productos p ON cd.id_producto = p.id_producto
                 INNER JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
-                INNER JOIN categorias c ON p.id_categoria = c.id_categoria;";
+                INNER JOIN categorias c ON p.id_categoria = c.id_categoria
+                where cd.id_cotizacion = 18;";
 
     $result = $conn->query($query);
 
@@ -239,5 +243,54 @@ function eliminarDetalle($conn)
     }
 }
 
+// Función para actualizar una cotización
+function actualizarDetalle($conn)
+{
+    $idDetalle = $_POST['id'];
+    $cantidad = $_POST['cantidad'];
+    $horas = $_POST['horas'];
+    $newSubtotal = $_POST['subtotal'];
+
+    // Obtener el subtotal actual del detalle
+    $queryOldSubtotal = "SELECT subtotal, id_cotizacion FROM cotizacion_detalles WHERE id_detalle = ?";
+    $stmtOld = $conn->prepare($queryOldSubtotal);
+    $stmtOld->bind_param("i", $idDetalle);
+    $stmtOld->execute();
+    $result = $stmtOld->get_result();
+    $row = $result->fetch_assoc();
+
+    $oldSubtotal = $row['subtotal'];
+    $idCotizacion = $row['id_cotizacion'];
+    $stmtOld->close();
+
+    // Calcular la diferencia
+    $diferencia = $newSubtotal - $oldSubtotal;
+
+    // Actualizar el subtotal del detalle
+    $queryUpdateDetalle = "UPDATE cotizacion_detalles 
+                           SET cantidad = ?, horas_alquiler = ?, subtotal = ? 
+                           WHERE id_detalle = ?";
+    $stmtUpdate = $conn->prepare($queryUpdateDetalle);
+    $stmtUpdate->bind_param("iidi", $cantidad, $horas, $newSubtotal, $idDetalle);
+
+    if ($stmtUpdate->execute()) {
+        // Actualizar el total de la cotización
+        $queryUpdateCotizacion = "UPDATE cotizaciones 
+                                  SET total = total + ? 
+                                  WHERE id_cotizacion = ?";
+        $stmtUpdateCotizacion = $conn->prepare($queryUpdateCotizacion);
+        $stmtUpdateCotizacion->bind_param("di", $diferencia, $idCotizacion);
+
+        if ($stmtUpdateCotizacion->execute()) {
+            echo json_encode(["success" => "Detalle y cotización actualizados correctamente"]);
+        } else {
+            echo json_encode(["error" => "Error al actualizar el total de la cotización: " . $stmtUpdateCotizacion->error]);
+        }
+        $stmtUpdateCotizacion->close();
+    } else {
+        echo json_encode(["error" => "Error al actualizar el detalle: " . $stmtUpdate->error]);
+    }
+    $stmtUpdate->close();
+}
 
 $conn->close();
