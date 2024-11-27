@@ -30,6 +30,12 @@ switch ($action) {
     case 'eliminarOtrosRegistros':
         eliminarOtrosRegistros($conn);
         break;
+    case 'listarDetalles':
+        listarDetalles($conn);
+        break;
+    case 'eliminarDetalle':
+        eliminarDetalle($conn);
+        break;
     default:
         echo json_encode(["error" => "Acción no válida"]);
         break;
@@ -170,6 +176,68 @@ function eliminarOtrosRegistros($conn)
     }
 }
 
+// Función para listar detalles por el id de la cotizacion
+function listarDetalles($conn)
+{
+    $query = "  SELECT 
+                    cd.id_detalle,
+                    cd.id_cotizacion,
+                    p.id_producto,
+                    p.nombre AS nombre_producto,
+                    p.id_proveedor,
+                    pr.nomb_empresa AS nombre_proveedor,
+                    pr.nomb_contacto AS contacto_proveedor,
+                    p.id_categoria,
+                    c.nombre_categoria AS nombre_categoria,
+                    p.precio_hr,
+                    p.foto,
+                    cd.cantidad,
+                    cd.horas_alquiler,
+                    cd.subtotal
+                FROM cotizacion_detalles cd
+                INNER JOIN productos p ON cd.id_producto = p.id_producto
+                INNER JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
+                INNER JOIN categorias c ON p.id_categoria = c.id_categoria;";
+
+    $result = $conn->query($query);
+
+    $detalleCotizacion = [];
+    while ($row = $result->fetch_assoc()) {
+        $detalleCotizacion[] = $row;
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(['data' => $detalleCotizacion]);
+}
+
+function eliminarDetalle($conn)
+{
+    $idDetalle = $_POST['id_detalle'];
+    $idCotizacion = $_POST['id_cotizacion'];
+
+    // Obtener el subtotal del detalle a eliminar
+    $querySubtotal = "SELECT subtotal FROM cotizacion_detalles WHERE id_detalle = $idDetalle";
+    $resultSubtotal = $conn->query($querySubtotal);
+
+    if ($resultSubtotal && $resultSubtotal->num_rows > 0) {
+        $detalle = $resultSubtotal->fetch_assoc();
+        $subtotal = $detalle['subtotal'];
+
+        // Restar el subtotal del total en la cotización
+        $queryUpdateTotal = "UPDATE cotizaciones SET total = total - $subtotal WHERE id_cotizacion = $idCotizacion";
+        $conn->query($queryUpdateTotal);
+
+        // Eliminar el detalle
+        $queryEliminarDetalle = "DELETE FROM cotizacion_detalles WHERE id_detalle = $idDetalle";
+        if ($conn->query($queryEliminarDetalle)) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => "Error al eliminar detalle: " . $conn->error]);
+        }
+    } else {
+        echo json_encode(['success' => false, 'error' => "Detalle no encontrado."]);
+    }
+}
 
 
 $conn->close();
