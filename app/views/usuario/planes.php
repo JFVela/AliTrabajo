@@ -42,7 +42,7 @@ include '../../../includes/header.php';
 
         while ($producto = $result->fetch_assoc()) {
             echo '<div class="card">';
-            echo '<img src="../../../' . htmlspecialchars($producto['foto']) . '" class="fotito" alt="' . htmlspecialchars($producto['nombre']) . '">';
+            echo '<img src="../../../uploads/productos/' . htmlspecialchars($producto['foto']) . '" class="fotito" alt="' . htmlspecialchars($producto['nombre']) . '">';
             echo '<div class="card-body">';
             echo '<h5 class="card-title">' . htmlspecialchars($producto['nombre']) . '</h5>';
             echo '<p class="card-text">Precio: $' . htmlspecialchars($producto['precio_hr']) . '</p>';

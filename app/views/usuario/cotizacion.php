@@ -99,7 +99,7 @@
             background-color: #218838;
         }
     </style>
-        <link rel="stylesheet" href="/public/css/usuario/includes.css">
+    <link rel="stylesheet" href="/public/css/usuario/includes.css">
     <script>
         function mostrarSiguiente(idCategoria) {
             // Redirigir a Planes.php con el ID de la categoría
@@ -127,7 +127,7 @@
         // Bucle a través de los resultados
         while ($categoria = $result->fetch_assoc()) {
             echo '<div class="card">';
-            echo '<img src="../../../' . htmlspecialchars($categoria['foto_categoria']) . '" class="foto_categoria" alt="' . htmlspecialchars($categoria['nombre_categoria']) . '">';
+            echo '<img src="../../../uploads/categorias/' . htmlspecialchars($categoria['foto_categoria']) . '" class="foto_categoria" alt="' . htmlspecialchars($categoria['nombre_categoria']) . '">';
             echo '<div class="card-body">';
             echo '<h5 class="card-title">' . htmlspecialchars($categoria['nombre_categoria']) . '</h5>';
             echo '<button class="btn" onclick="mostrarSiguiente(' . $categoria['id_categoria'] . ')">Elegir</button>'; // Cambiado

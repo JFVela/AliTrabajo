@@ -2,7 +2,8 @@
 .sectionReserva {
   display: flex;
   justify-content: center;
-  padding: 20px;
+  padding-top: 80px;
+  padding-bottom: 20px;
   background-color: #f7f7f7;
   font-family: Arial, sans-serif;
 }
