@@ -17,6 +17,8 @@
 </head>
 
 <body>
+    <?php include '../../../includes/headerAdmin.php'; ?>
+
     <!-- Tabla en html -->
     <div class="container gestion-container">
         <h2 class="gestion-titulo">Cotizaciones</h2>

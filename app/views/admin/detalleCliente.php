@@ -98,6 +98,8 @@ $conn->close();
 </head>
 
 <body>
+    <?php include '../../../includes/headerAdmin.php'; ?>
+
     <div class="cliente-detalle-container">
         <h2 class="cliente-detalle-titulo">Detalle del Cliente</h2>
         <ul class="cliente-detalle-lista">

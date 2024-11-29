@@ -15,7 +15,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/public/css/admin/estilos.css">
 </head>
+
 <body>
+    <?php include '../../../includes/headerAdmin.php'; ?>
 
     <!-- Tabla en html -->
     <div class="container gestion-container">

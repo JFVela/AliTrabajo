@@ -60,6 +60,8 @@ if (isset($_GET['id'])) {
 </head>
 
 <body>
+    <?php include '../../../includes/headerAdmin.php'; ?>
+
     <div class="container my-5">
         <h1 class="text-center mb-5">Detalle de Reserva</h1>
         <!-- Botones: Volver y Actualizar -->

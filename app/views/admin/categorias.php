@@ -18,6 +18,9 @@
 
 <body>
 
+    <?php include '../../../includes/headerAdmin.php'; ?>
+
+
     <!-- Tabla en html -->
     <div class="container gestion-container">
         <h2 class="gestion-titulo">Gestión de Categorias</h2>

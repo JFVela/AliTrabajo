@@ -21,6 +21,8 @@
 </head>
 
 <body>
+    <?php include '../../../includes/headerAdmin.php'; ?>
+
     <!-- Tabla en html -->
     <div class="container gestion-container">
         <h2 class="gestion-titulo">Gestión de Reservas</h2>
@@ -328,7 +330,7 @@
                         <!-- Botón para guardar cambios -->
                         <div class="mt-4 text-end">
                             <button type="submit" class="gestion-boton-modal">
-                                Editar 
+                                Editar
                             </button>
                         </div>
                     </form>

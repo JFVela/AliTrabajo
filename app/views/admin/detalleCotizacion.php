@@ -27,6 +27,8 @@ if ($idCotizacion <= 0) {
 </head>
 
 <body>
+    <?php include '../../../includes/headerAdmin.php'; ?>
+
     <!-- Tabla en html -->
     <div class="container gestion-container">
         <h2 class="gestion-titulo">Detalle de cotización</h2>

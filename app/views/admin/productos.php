@@ -17,6 +17,8 @@
 </head>
 
 <body>
+    <?php include '../../../includes/headerAdmin.php'; ?>
+
     <!-- Tabla en html -->
     <div class="container gestion-container">
         <h2 class="gestion-titulo">Gestión de Productos</h2>
@@ -50,7 +52,7 @@
 
     <!-- Modal para Editar PRODUCTOS -->
     <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header gestion-modal-header">
                     <h5 class="modal-title gestion-modal-titulo"><span id="tituloModal"></span></h5>
@@ -61,70 +63,72 @@
                         <input type="hidden" id="idProducto">
                         <input type="hidden" id="idCategoria">
                         <input type="hidden" id="idProveedor">
+                        <div class="row">
+                            <!-- Primera columna -->
+                            <div class="col-md-6">
+                                <!-- Nombre -->
+                                <div class="mb-3">
+                                    <label for="nombreProducto" class="form-label gestion-form-label">Nombre</label>
+                                    <input type="text" id="nombreProducto" class="form-control gestion-form-input" required
+                                        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$"
+                                        title="El nombre puede contener letras, números y espacios"
+                                        maxlength="100">
+                                    <small class="form-text text-muted">
+                                        Máximo 100 caracteres.
+                                        <span id="nombreProductoCounter">0/100</span>
+                                    </small>
+                                </div>
 
-                        <!-- Nombre -->
-                        <div class="mb-3">
-                            <label for="nombreProducto" class="form-label gestion-form-label">Nombre</label>
-                            <input type="text" id="nombreProducto" class="form-control gestion-form-input" required
-                                pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$"
-                                title="El nombre puede contener letras, números y espacios"
-                                maxlength="100">
-                            <small class="form-text text-muted">
-                                Máximo 100 caracteres.
-                                <span id="nombreProductoCounter">0/100</span>
-                            </small>
-                        </div>
+                                <!-- Descripción -->
+                                <div class="mb-3">
+                                    <label for="descripcionProducto" class="form-label gestion-form-label">Descripción</label>
+                                    <textarea id="descripcionProducto" class="form-control gestion-form-input" rows="3"
+                                        title="Agregue una descripción" maxlength="2500" required></textarea>
+                                    <small class="form-text text-muted">Máximo 500 palabras.</small>
+                                </div>
 
-                        <!-- Descripción -->
-                        <div class="mb-3">
-                            <label for="descripcionProducto" class="form-label gestion-form-label">Descripción</label>
-                            <textarea id="descripcionProducto" class="form-control gestion-form-input" rows="3"
-                                title="Agregue una descripción" maxlength="2500" required></textarea>
-                            <small class="form-text text-muted">Máximo 500 palabras.</small>
-                        </div>
+                                <!-- Categoría (Select) -->
+                                <div class="mb-3">
+                                    <label for="categoriaProducto" class="form-label gestion-form-label">Categoría</label>
+                                    <select id="categoriaProducto" class="form-select form-control gestion-form-input" required>
+                                        <option value="" disabled selected>Seleccione una categoría</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                        <!-- Categoría (Select) -->
-                        <div class="mb-3">
-                            <label for="categoriaProducto" class="form-label gestion-form-label">Categoría</label>
-                            <select id="categoriaProducto" class="form-control gestion-form-input" required>
-                                <!-- Opción predeterminada (esto se mantendrá) -->
-                                <option value="" disabled selected>Seleccione una categoría</option>
-                            </select>
-                        </div>
+                            <!-- Segunda columna -->
+                            <div class="col-md-6">
+                                <!-- Proveedor (Select) -->
+                                <div class="mb-3">
+                                    <label for="proveedorProducto" class="form-label gestion-form-label">Proveedor</label>
+                                    <select id="proveedorProducto" class="form-select form-control gestion-form-input" required>
+                                        <option value="" disabled selected>Seleccione un proveedor</option>
+                                    </select>
+                                </div>
 
-                        <!-- Proveedor (Select) -->
-                        <div class="mb-3">
-                            <label for="proveedorProducto" class="form-label gestion-form-label">Proveedor</label>
-                            <select id="proveedorProducto" class="form-control gestion-form-input" required>
-                                <!-- Aquí se llenarán las opciones con un AJAX o de forma estática -->
-                                <option value="" disabled selected>Seleccione un proveedor</option>
-                            </select>
-                        </div>
+                                <!-- Precio por hora -->
+                                <div class="mb-3">
+                                    <label for="precioProducto" class="form-label gestion-form-label">Precio por hora</label>
+                                    <input type="number" id="precioProducto" class="form-control gestion-form-input" required
+                                        step="0.01" min="0" max="999.99" title="Precio por hora, máximo 3 cifras">
+                                </div>
 
-                        <!-- Precio por hora -->
-                        <div class="mb-3">
-                            <label for="precioProducto" class="form-label gestion-form-label">Precio por hora</label>
-                            <input type="number" id="precioProducto" class="form-control gestion-form-input" required
-                                step="0.01" min="0" max="999.99" title="Precio por hora, máximo 3 cifras">
-                        </div>
+                                <!-- Stock -->
+                                <div class="mb-3">
+                                    <label for="stockProducto" class="form-label gestion-form-label">Stock</label>
+                                    <input type="number" id="stockProducto" class="form-control gestion-form-input" required
+                                        min="1" max="100" title="Stock debe ser entre 1 y 100">
+                                </div>
 
-                        <!-- Stock -->
-                        <div class="mb-3">
-                            <label for="stockProducto" class="form-label gestion-form-label">Stock</label>
-                            <input type="number" id="stockProducto" class="form-control gestion-form-input" required
-                                min="1" max="100" title="Stock debe ser entre 1 y 100">
-                        </div>
-
-                        <!-- Foto existente -->
-                        <input type="hidden" id="fotoExistente">
-
-                        <!-- Foto (Nueva) -->
-                        <div class="mb-3">
-                            <label for="imagenProducto" class="form-label gestion-form-label">Foto</label>
-                            <input type="file" id="imagenProducto" class="form-control gestion-form-input"
-                                accept="image/*"
-                                title="Seleccione una imagen">
-                            <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF.</small>
+                                <!-- Foto (Nueva) -->
+                                <div class="mb-3">
+                                    <label for="imagenProducto" class="form-label gestion-form-label">Foto</label>
+                                    <input type="file" id="imagenProducto" class="form-control gestion-form-input"
+                                        accept="image/*"
+                                        title="Seleccione una imagen">
+                                    <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF.</small>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Botón para crear producto -->
