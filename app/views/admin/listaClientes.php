@@ -49,7 +49,7 @@
 
     <!-- Modal para Editar Cliente -->
     <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header gestion-modal-header">
                     <h5 class="modal-title gestion-modal-titulo"><span id="tituloModal"></span></h5>
@@ -58,63 +58,70 @@
                 <div class="modal-body">
                     <form id="formEditar">
                         <input type="hidden" id="editarId">
-                        <!-- Nombre -->
-                        <div class="mb-3">
-                            <label for="editarNombre" class="form-label gestion-form-label">Nombre</label>
-                            <input type="text" id="editarNombre" class="form-control gestion-form-input" required
-                                pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
-                                title="El nombre no puede contener números ni caracteres especiales"
-                                maxlength="100">
-                            <small class="form-text text-muted">
-                                Máximo 100 caracteres.
-                                <span id="nombreCounter">0/100</span>
-                            </small>
-                        </div>
+                        <div class="row">
+                            <!-- Primera columna -->
+                            <div class="col-md-6">
+                                <!-- Nombre -->
+                                <div class="mb-3">
+                                    <label for="editarNombre" class="form-label gestion-form-label">Nombre</label>
+                                    <input type="text" id="editarNombre" class="form-control gestion-form-input" required
+                                        pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+                                        title="El nombre no puede contener números ni caracteres especiales"
+                                        maxlength="100">
+                                    <small class="form-text text-muted">
+                                        Máximo 100 caracteres.
+                                        <span id="nombreCounter">0/100</span>
+                                    </small>
+                                </div>
 
-                        <!-- Teléfono -->
-                        <div class="mb-3">
-                            <label for="editarTelefono" class="form-label gestion-form-label">Teléfono</label>
-                            <input type="text" id="editarTelefono" class="form-control gestion-form-input" required
-                                pattern="^9\d{8}$"
-                                title="El teléfono debe comenzar con 9 y tener 9 dígitos">
-                        </div>
+                                <!-- Teléfono -->
+                                <div class="mb-3">
+                                    <label for="editarTelefono" class="form-label gestion-form-label">Teléfono</label>
+                                    <input type="text" id="editarTelefono" class="form-control gestion-form-input" required
+                                        pattern="^9\d{8}$"
+                                        title="El teléfono debe comenzar con 9 y tener 9 dígitos">
+                                </div>
 
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label for="editarEmail" class="form-label gestion-form-label">Email</label>
-                            <input type="email" id="editarEmail" class="form-control gestion-form-input" required>
-                        </div>
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="editarEmail" class="form-label gestion-form-label">Email</label>
+                                    <input type="email" id="editarEmail" class="form-control gestion-form-input" required>
+                                </div>
+                            </div>
 
-                        <!-- Dirección -->
-                        <div class="mb-3">
-                            <label for="editarDireccion" class="form-label gestion-form-label">Dirección</label>
-                            <input type="text" id="editarDireccion" class="form-control gestion-form-input" required
-                                maxlength="255">
-                            <small class="form-text text-muted">
-                                Máximo 255 caracteres.
-                                <span id="direccionCounter">0/255</span>
-                            </small>
-                        </div>
+                            <!-- Segunda columna -->
+                            <div class="col-md-6">
+                                <!-- Dirección -->
+                                <div class="mb-3">
+                                    <label for="editarDireccion" class="form-label gestion-form-label">Dirección</label>
+                                    <input type="text" id="editarDireccion" class="form-control gestion-form-input" required
+                                        maxlength="255">
+                                    <small class="form-text text-muted">
+                                        Máximo 255 caracteres.
+                                        <span id="direccionCounter">0/255</span>
+                                    </small>
+                                </div>
 
-                        <!-- DNI -->
-                        <div class="mb-3">
-                            <label for="editarDni" class="form-label gestion-form-label">DNI</label>
-                            <input type="text" id="editarDni" class="form-control gestion-form-input" required
-                                pattern="^\d{8}$"
-                                title="El DNI debe ser un número de 8 dígitos">
-                        </div>
+                                <!-- DNI -->
+                                <div class="mb-3">
+                                    <label for="editarDni" class="form-label gestion-form-label">DNI</label>
+                                    <input type="text" id="editarDni" class="form-control gestion-form-input" required
+                                        pattern="^\d{8}$"
+                                        title="El DNI debe ser un número de 8 dígitos">
+                                </div>
 
-                        <!-- Contraseña -->
-                        <div class="mb-3 position-relative">
-                            <label for="editarPassword" class="form-label gestion-form-label">Crea nueva contraseña</label>
-                            <div class="input-group">
-                                <input type="password" id="editarPassword" class="form-control gestion-form-input">
-                                <button type="button" id="togglePassword" class="btn btn-outline-secondary">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                                <!-- Contraseña -->
+                                <div class="mb-3 position-relative">
+                                    <label for="editarPassword" class="form-label gestion-form-label">Crea nueva contraseña</label>
+                                    <div class="input-group">
+                                        <input type="password" id="editarPassword" class="form-control gestion-form-input">
+                                        <button type="button" id="togglePassword" class="btn btn-outline-secondary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
                         <!-- Botón Actualizar -->
                         <button type="submit" class="gestion-boton-modal"><span id="textoDinamico"></span></button>
                     </form>

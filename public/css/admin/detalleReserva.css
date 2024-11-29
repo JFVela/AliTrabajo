@@ -81,7 +81,7 @@ h1 {
 
 /* Botón de Volver */
 .btn-back {
-    background-color: #6c757d;
+    background-color: red;
     color: white;
     flex: 1;
     padding: 10px 20px;
