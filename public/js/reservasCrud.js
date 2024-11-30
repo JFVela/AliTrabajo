@@ -366,6 +366,7 @@ $(document).ready(function () {
 
     // Boton Editar Servicios
     $('#reservasTable').on('click', '.editar', function () {
+        limpiarDatosEditar();
         // Obtener los datos de la reserva seleccionada
 
         const idReserva = $(this).data('id');
@@ -385,6 +386,7 @@ $(document).ready(function () {
         $('#id_editar_cliente').val(nombreCliente);
         $('#idDistrito_editar').val(idDistrito);
         $('#id_editar_foto').attr('src', "../../../uploads/comprobantes/" + capturaPagoUrl);
+        $('#fotoExistente').val(capturaPagoUrl);
         $('#id_editar_direccion').val(direccionReserva);
         $('#id_editar_fecha_reserva').val(fechaReserva);
         $('#id_editar_hora_reserva').val(horaReserva);
@@ -411,6 +413,8 @@ $(document).ready(function () {
         tablaServicios.ajax.reload();
         tableReserva.ajax.reload();
         $('#id_Reserva').val('');
+        $('#fotoExistente').val('');
+        $('#nuevaBoleta').val('');
         $('#id_editar_cliente').val('');
         $('#idDistrito_editar').val('');
         $('#id_editar_foto').attr('src', ''); // Limpia la imagen
@@ -438,6 +442,8 @@ $(document).ready(function () {
         const ampm = $('#id_editar_ampm').val();
         const telfContacto = $('#id_editar_telefono_contacto').val();
         const estadoReserva = $('#id_editar_estado_reserva').val();
+        const fotoNueva = $('#nuevaBoleta')[0].files[0];
+        const fotoExistente = $('#fotoExistente').val();
 
         // Crear objeto FormData para enviar datos
         const formData = new FormData();
@@ -449,6 +455,10 @@ $(document).ready(function () {
         formData.append('ampm', ampm);
         formData.append('telf', telfContacto);
         formData.append('estado', estadoReserva);
+        formData.append('fotoExistente', fotoExistente);
+        if (fotoNueva) {
+            formData.append('foto', fotoNueva);
+        }
 
         // Enviar datos al servidor
         $.ajax({

@@ -270,6 +270,15 @@
 
                             <!-- Segunda columna -->
                             <div class="col-md-6">
+                                <input type="hidden" name="fotoExistente" id="fotoExistente">
+                                <!-- Foto (Nueva) -->
+                                <div class="mb-3">
+                                    <label for="nuevaBoleta" class="form-label gestion-form-label">Foto</label>
+                                    <input type="file" id="nuevaBoleta" class="form-control gestion-form-input"
+                                        accept="image/*"
+                                        title="Seleccione una imagen">
+                                    <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF.</small>
+                                </div>
                                 <!-- Dirección -->
                                 <div class="mb-3">
                                     <label for="id_editar_direccion" class="form-label gestion-form-label">Dirección</label>

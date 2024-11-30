@@ -174,32 +174,75 @@ function actualizarReserva($conn)
         $ampm = $_POST['ampm'];
         $telf = $_POST['telf'];
         $estado = $_POST['estado'];
+        $fotoExistente = $_POST['fotoExistente'];
+        $foto = $fotoExistente;
 
-        // Preparar la consulta SQL
-        $query = "UPDATE reservas SET idDist = ?, direccion = ?, fecha_reserva = ?, hora_reserva = ?, ampm = ?, telefonoContacto = ?, estado_reserva = ? WHERE id_reserva = ?";
+        // Procesar nueva foto si se envió
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+            $uploadDir = '../../../uploads/comprobantes/';
 
-        // Preparar la declaración para evitar inyección SQL
-        if ($stmt = $conn->prepare($query)) {
-            // Vincular parámetros
-            $stmt->bind_param('sssssssi', $idDist, $direccion, $fecha, $hora, $ampm, $telf, $estado, $idReserva);
+            // Generar el nuevo nombre de la foto
+            $foto = uniqid() . '_' . basename($_FILES['foto']['name']);
+            $uploadFile = $uploadDir . $foto;
 
-            // Ejecutar la consulta
-            if ($stmt->execute()) {
-                echo json_encode(["success" => true]);
-            } else {
-                echo json_encode(["success" => false, "error" => "Error al ejecutar la consulta: " . $stmt->error]);
+            // Eliminar la foto existente si es diferente de la predeterminada (por ejemplo, "default.png")
+            if ($fotoExistente !== 'default.png' && file_exists($uploadDir . $fotoExistente)) {
+                unlink($uploadDir . $fotoExistente);
             }
 
-            // Cerrar la declaración
-            $stmt->close();
-        } else {
-            echo json_encode(["success" => false, "error" => "Error al preparar la consulta: " . $conn->error]);
+            // Mover la nueva foto al servidor
+            if (!move_uploaded_file($_FILES['foto']['tmp_name'], $uploadFile)) {
+                echo json_encode(["error" => "Error al subir la foto."]);
+                return;
+            }
+        }
+
+        // Iniciar una transacción para garantizar consistencia
+        $conn->begin_transaction();
+
+        try {
+            // Preparar la consulta SQL para actualizar la tabla reservas
+            $queryReservas = "UPDATE reservas SET idDist = ?, direccion = ?, fecha_reserva = ?, hora_reserva = ?, ampm = ?, telefonoContacto = ?, estado_reserva = ? WHERE id_reserva = ?";
+
+            if ($stmt = $conn->prepare($queryReservas)) {
+                $stmt->bind_param('sssssssi', $idDist, $direccion, $fecha, $hora, $ampm, $telf, $estado, $idReserva);
+
+                if (!$stmt->execute()) {
+                    throw new Exception("Error al actualizar la tabla reservas: " . $stmt->error);
+                }
+
+                $stmt->close();
+            } else {
+                throw new Exception("Error al preparar la consulta para reservas: " . $conn->error);
+            }
+
+            // Actualizar la tabla capturapago con el nuevo nombre de la foto
+            $queryCapturaPago = "UPDATE capturapago SET capturaPago_url = ? WHERE idCapt = (SELECT idCapt FROM reservas WHERE id_reserva = ?)";
+
+            if ($stmtCaptura = $conn->prepare($queryCapturaPago)) {
+                $stmtCaptura->bind_param('si', $foto, $idReserva);
+
+                if (!$stmtCaptura->execute()) {
+                    throw new Exception("Error al actualizar la tabla capturapago: " . $stmtCaptura->error);
+                }
+
+                $stmtCaptura->close();
+            } else {
+                throw new Exception("Error al preparar la consulta para capturapago: " . $conn->error);
+            }
+
+            // Confirmar la transacción
+            $conn->commit();
+            echo json_encode(["success" => true]);
+        } catch (Exception $e) {
+            // Revertir la transacción en caso de error
+            $conn->rollback();
+            echo json_encode(["success" => false, "error" => $e->getMessage()]);
         }
     } else {
         echo json_encode(["success" => false, "error" => "Faltan datos obligatorios."]);
     }
 }
-
 
 // Función para eliminar una reserva
 function eliminarReserva($conn)
